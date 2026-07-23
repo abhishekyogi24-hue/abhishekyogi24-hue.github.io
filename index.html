@@ -96,7 +96,117 @@
   </section>
 
   <section id="project" class="section project">
-    <h2>Featured Project</h2>
+    <h2>Featured Projects</h2>
+
+    <article class="case-study">
+      <div class="case-head">
+        <h3>CheapOair AI Chatbot</h3>
+        <p class="case-tag">0→1 → evolved into a Gen AI multi-agent system · Professional project at Fareportal</p>
+      </div>
+
+      <p class="case-lede">
+        A fully-fledged AI chatbot for post-booking flight support, live at cheapoair.com — built on rule-based
+        NLP, then rearchitected into a multi-agent Gen AI system as customers shifted toward free-form,
+        ChatGPT-style conversation.
+      </p>
+
+      <div class="case-phase">
+        <h4>Why a chatbot</h4>
+        <p>
+          Call and email were the only support channels. ~60% of bookings are international relative to the US,
+          making calls expensive due to roaming, while email was too slow for time-sensitive travel issues.
+          Validated the need through customer surveys on preferred support channels, IVR feedback, and frontline
+          agents' voice-of-customer input, then greenlit a chatbot for quick post-booking flight support.
+        </p>
+      </div>
+
+      <div class="case-phase">
+        <h4>Phase 1 — Dialogflow ES (rule-based NLP)</h4>
+        <p>
+          Launched at 20% automation across basic flows — booking and billing details — with anything
+          transactional handed off to travel experts. Built on Google Dialogflow ES: each intent hand-defined
+          with training phrases, matched to user input via keyword-based NLP, each carrying its own responses,
+          CTAs, and sub-intents.
+        </p>
+        <p>
+          Scaled to <strong>50% automation</strong>, <strong>62% CSAT</strong>, and <strong>60% engagement</strong>
+          by onboarding self-serve flows for new bookings, cancellations, exchanges, schedule changes, add-ons,
+          CCD, and CCV — coordinating with product and business owners on each process, then owning integration
+          end-to-end and enabling agent teams to back the chatbot. Day-to-day: reviewing chat transcripts,
+          running stakeholder syncs, and turning feedback into the next round of conversational improvements.
+        </p>
+      </div>
+
+      <div class="case-phase">
+        <h4>Why we moved to Gen AI</h4>
+        <p>
+          As ChatGPT normalized free-form chat, users increasingly typed casually and expected multi-turn,
+          contextual conversation — exposing Dialogflow ES's ceiling as basic keyword-matching NLP: no
+          multi-turn memory, no context carry-over, and frequent intent misclassification sending users down
+          the wrong flow. As a stopgap on major flows (exchange, cancel, schedule change, add-ons), once intent
+          was identified via CTA or booking source we locked the typing box to a fixed path — free typing
+          mid-flow had been derailing users into the wrong flow, hurting both conversion and satisfaction. In
+          parallel, we ran a POC on Dialogflow CX with Google's product team, reviewing architecture, webhook
+          handling, and the migration path, but shelved it on cost and ROI grounds.
+        </p>
+      </div>
+
+      <div class="case-phase">
+        <h4>Phase 2 — Vertex AI multi-agent architecture</h4>
+        <p>
+          Built our own architecture on Google Vertex AI APIs instead (we already held the GCP billing
+          relationship), aimed squarely at better intent classification and a more natural chat experience: an
+          orchestrator agent routing each query, backed by specialized agents — Intent Classifier, Booking
+          Details, Small Talk, FAQs, and Agent Summarization.
+        </p>
+        <p><strong>Functionality shipped:</strong></p>
+        <ul>
+          <li><strong>Digression</strong> — resume the original flow after answering an interrupting side question</li>
+          <li><strong>Flow switch</strong> — confirm with the user before jumping from one major intent to another</li>
+          <li><strong>Flow queries</strong> — answer side questions inside a major flow, then resume where it left off</li>
+          <li><strong>Global queries</strong> — answer any query upfront, regardless of the current flow</li>
+          <li><strong>Clarification</strong> — surface likely next steps when a query is ambiguous</li>
+        </ul>
+      </div>
+
+      <div class="case-grid">
+        <div>
+          <h4>Offline eval</h4>
+          <p>Golden sets (ground truth), adversarial sets (edge cases, prompt injection), and regression sets (basic sanity checks).</p>
+        </div>
+        <div>
+          <h4>Online eval</h4>
+          <p>LLM-as-judge plus App Insights logging, scored on groundedness, faithfulness, safety, jailbreak resistance, and answer relevancy.</p>
+        </div>
+      </div>
+
+      <div class="case-phase">
+        <h4>Compliance &amp; rollout</h4>
+        <p>
+          Partnered with Legal, InfoSec, and the internal AI committee to clear the system against Gen AI usage
+          guidelines. Opened first to internal stakeholders, then org-wide, gathering and acting on feedback at
+          each stage, before going live to 5% of production traffic.
+        </p>
+      </div>
+
+      <p class="case-metrics-caption">Dialogflow ES chatbot → Gen AI chatbot (Vertex AI)</p>
+      <div class="case-metrics">
+        <div class="metric"><span class="metric-value">58% <span class="arrow">→</span> 70%</span><span class="metric-label">Engagement</span></div>
+        <div class="metric"><span class="metric-value">48% <span class="arrow">→</span> 53%</span><span class="metric-label">Containment</span></div>
+        <div class="metric"><span class="metric-value">62% <span class="arrow">→</span> 80%</span><span class="metric-label">CSAT</span></div>
+      </div>
+
+      <p class="case-challenge"><strong>Biggest challenge:</strong> developing prompt engineering mastery — the discipline the entire multi-agent system's reliability hinged on.</p>
+
+      <div class="case-stack">
+        <span>Dialogflow ES</span><span>Dialogflow CX</span><span>Vertex AI</span><span>Multi-Agent Orchestration</span><span>LLM Evals</span><span>Prompt Engineering</span>
+      </div>
+
+      <div class="case-links">
+        <a class="btn btn-primary" href="https://www.cheapoair.com/chatbot" target="_blank" rel="noopener">Visit live chatbot →</a>
+      </div>
+    </article>
+
     <article class="case-study">
       <div class="case-head">
         <h3>Arthritis Companion</h3>
