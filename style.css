@@ -202,6 +202,23 @@ main { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
 }
 .case-grid p { margin: 0; font-size: 0.95rem; }
 
+.project-group { margin-bottom: 20px; }
+.project-group--divider { margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border); }
+
+.project-group-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 6px;
+}
+.project-group-note {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+}
+
 .case-study + .case-study { margin-top: 32px; }
 
 .case-phase { margin-bottom: 24px; }
