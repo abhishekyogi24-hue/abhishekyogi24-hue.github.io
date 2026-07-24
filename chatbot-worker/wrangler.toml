@@ -1,0 +1,7 @@
+name = "portfolio-chatbot"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# The ANTHROPIC_API_KEY is NOT stored here — it is a secret.
+# Set it once after deploy with:
+#   wrangler secret put ANTHROPIC_API_KEY
