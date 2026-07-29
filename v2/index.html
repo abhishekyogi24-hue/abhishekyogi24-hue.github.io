@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abhishek Yogi — AI Product Manager</title>
+<meta name="description" content="Abhishek Yogi — AI Product Manager. 7+ years building 0→1 and growth-stage AI products, chatbots, and B2B platforms.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body id="top">
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">Abhishek Yogi</a>
+    <nav class="nav-links">
+      <a href="#projects" data-section="projects">Projects<span class="dot"></span></a>
+      <a href="#about" data-section="about">About<span class="dot"></span></a>
+      <a href="#contact" data-section="contact">Contact<span class="dot"></span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="avatar">AY</div>
+    <p class="badge"><span class="badge-dot"></span> Open to AI Product Manager roles</p>
+    <h1>I build AI products people actually use.</h1>
+    <p class="hero-sub">
+      AI Product Manager with 7+ years shipping 0→1 and growth-stage products across conversational
+      AI, platforms, and B2B SaaS — from a chatbot driving $1M+ monthly revenue to a trip planner
+      used by millions of travelers.
+    </p>
+    <a class="cta-link" href="#projects">See what I've shipped <span aria-hidden="true">↓</span></a>
+  </section>
+
+  <!-- ============ SELECTED PROJECTS ============ -->
+  <section class="section" id="projects">
+    <p class="label">Selected projects</p>
+
+    <article class="project">
+      <div class="project-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="project-body">
+        <p class="project-date">2021 — present</p>
+        <h3>CheapOair AI Chatbot</h3>
+        <p class="project-desc">
+          Post-booking flight support chatbot at cheapoair.com. Rebuilt from a rule-based
+          Dialogflow bot into a Vertex AI multi-agent system — CSAT 62%→80%, containment 48%→53%.
+        </p>
+        <div class="project-links">
+          <a class="try-link" href="https://www.cheapoair.com/chatbot" target="_blank" rel="noopener">Try it out <span aria-hidden="true">↗</span></a>
+          <details class="case-toggle">
+            <summary>Case study</summary>
+            <div class="case-body">
+              <p><strong>Why a chatbot.</strong> Call and email were the only support channels. ~60% of bookings are international, making calls expensive and email too slow.</p>
+              <p><strong>Phase 1.</strong> Launched on Dialogflow ES (keyword-matching NLP) at 20% automation, scaled to 50% automation, 62% CSAT, 60% engagement across self-serve flows.</p>
+              <p><strong>Phase 2.</strong> As users expected free-form, ChatGPT-style chat, rebuilt on Vertex AI as a multi-agent system — an orchestrator plus Intent Classifier, Booking Details, Small Talk, FAQ, and Summarization agents — with digression, flow-switching, and clarification handling.</p>
+              <p><strong>Evaluation.</strong> Offline golden/adversarial/regression suites, online LLM-as-judge scoring (groundedness, faithfulness, safety, jailbreak resistance), cleared with Legal, InfoSec, and an internal AI committee before a 5% traffic rollout.</p>
+              <p><strong>Result.</strong> Engagement 58%→70%, containment 48%→53%, CSAT 62%→80%. Biggest challenge: prompt engineering mastery.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="16.2 7.8 13.6 13.6 7.8 16.2 10.4 10.4 16.2 7.8"/></svg>
+      </div>
+      <div class="project-body">
+        <p class="project-date">2023 — present</p>
+        <h3>Oli — AI Trip Planner</h3>
+        <p class="project-desc">
+          Conversational trip-planning assistant in the CheapOair app. Owned from problem framing
+          and PRD through a phased roadmap — +15% engagement, 65+ daily flight conversions.
+        </p>
+        <div class="project-links">
+          <details class="case-toggle">
+            <summary>Case study</summary>
+            <div class="case-body">
+              <p><strong>Problem.</strong> Travelers discover destinations in one place, search flights in another, and lose all planning context between sessions — the app and Oli ran as two disconnected journeys.</p>
+              <p><strong>Personas.</strong> Explorer ("I don't know where to go"), Planner ("I know where I want to go"), Shopper ("I want the best flight").</p>
+              <p><strong>Capabilities.</strong> Destination discovery, trip planning, flight discovery, context persistence, journey intelligence, proactive engagement, all personalized via geolocation, behavioral signals, and conversation memory.</p>
+              <p><strong>Roadmap.</strong> Phase 1 — discovery, itineraries, flights, sharing. Phase 2 — behavior syncing, journey intelligence, personalized recs. Phase 3 — proactive notifications, recommendation optimization, deep booking-funnel integration.</p>
+              <p><strong>Result.</strong> +15% engagement, 65+ daily flight conversions.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </article>
+
+    <article class="project">
+      <div class="project-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </div>
+      <div class="project-body">
+        <p class="project-date">2026</p>
+        <h3>Arthritis Companion</h3>
+        <p class="project-desc">
+          A login-free daily PWA for tracking arthritis symptoms and gentle exercises — designed
+          around one real person's arthritic hands. Vibe-coded solo as the PM.
+        </p>
+        <div class="project-links">
+          <a class="try-link" href="https://abhishekyogi24-hue.github.io/og-pm/" target="_blank" rel="noopener">Try it out <span aria-hidden="true">↗</span></a>
+          <a class="try-link" href="https://github.com/abhishekyogi24-hue/og-pm" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a>
+          <details class="case-toggle">
+            <summary>Case study</summary>
+            <div class="case-body">
+              <p><strong>Problem.</strong> Existing symptom trackers assume fine motor control — sliders, drag gestures, small tap targets. For someone managing arthritis, the tool meant to help was itself hard to use.</p>
+              <p><strong>Design constraints.</strong> Large tap targets, no sliders or drag gestures, voice-friendly notes, a fixed bottom "Done" button reachable one-handed, no login or account.</p>
+              <p><strong>Approach.</strong> Local-first: all data on-device via IndexedDB, no backend, exportable backups. Four focused screens — Today, History, Exercises, Guides.</p>
+              <p><strong>How it was built.</strong> No engineering team — Abhishek vibe-coded it solo. His job was the product: framing the problem, setting constraints, making scope/UX calls, and reviewing every screen against a real user, with AI coding tools turning those decisions into shipped code.</p>
+              <p><strong>Outcome.</strong> An installable, offline-capable PWA a real user opens daily to log symptoms and exercises in seconds, one-handed, with zero account friction.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ ABOUT (experience, skills, education, awards) ============ -->
+  <section class="section" id="about">
+    <p class="label">Experience</p>
+
+    <article class="job">
+      <div class="job-head">
+        <h3>AI Product Manager → Product Manager → Associate PM</h3>
+        <span class="job-meta">Fareportal · Aug 2021 – Present</span>
+      </div>
+      <ul>
+        <li>Built an AI chatbot on Vertex AI with robust intent detection, multilingual support, and context handling, lifting CSAT by 29%</li>
+        <li>Architected the AI Trip Planner end-to-end, driving 15% engagement and 65+ daily flight conversions</li>
+        <li>Launched a RAG Agent Co-Pilot on the internal knowledge base, cutting AHT by 12% and enabling 5+ chats per agent</li>
+        <li>Partnered with Google to onboard Vertex AI APIs; led WhatsApp Cloud API and NICE CX integrations</li>
+        <li>Spearheaded B2B subscription monetization, scaling chatbot adoption across 8 local travel agents to $40K MRR</li>
+        <li>Shipped a Dialogflow-based chatbot handling 10K daily chats — 55% automation, $33.3K daily revenue</li>
+        <li>Led 12 SDEs, 3 QAs, and 2 designers, and served as single POC across Sales, Support, Revenue, and Payments</li>
+      </ul>
+    </article>
+
+    <article class="job">
+      <div class="job-head">
+        <h3>Sr. Business Analyst → Business Analyst</h3>
+        <span class="job-meta">OYO Rooms · Jun 2019 – Jul 2021</span>
+      </div>
+      <ul>
+        <li>Increased monthly SHNs by 6% (~$50K) by identifying high-potential areas and optimizing supply</li>
+        <li>Boosted vacation bookings 10% by building the BRIX model, driving execution with 25 account managers</li>
+        <li>Optimized pricing via sensitivity analysis on floor prices, driving ₹2.98 Cr in impact</li>
+        <li>Designed and automated 30+ live dashboards and 100+ reports using Excel, SQL, and Power BI</li>
+      </ul>
+    </article>
+
+    <p class="label label-spaced">Skills</p>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>Gen AI / Tech</h4>
+        <p>Conversational AI, Evals, Vibe Coding, RAG, Prompt Engineering, Error Analysis, Prototyping, Machine Learning</p>
+      </div>
+      <div class="skill-group">
+        <h4>Analytics</h4>
+        <p>Advanced Excel, SQL, Python, R, Power BI, Google Analytics, FullStory, Tableau, Statistical Analysis, C/C++</p>
+      </div>
+      <div class="skill-group">
+        <h4>Product</h4>
+        <p>0→1 Roadmap, Agile/Scrum, A/B Testing, User Research, Wireframing, First Principles Thinking, GTM</p>
+      </div>
+      <div class="skill-group">
+        <h4>Platform</h4>
+        <p>Cursor, Azure, Google Cloud, Figma, FullStory, SQL Server, NICE CX One, App Insights, WhatsApp Cloud</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <p class="label label-spaced">Awards</p>
+        <ul class="plain-list">
+          <li><strong>1st Prize ($560)</strong> — Fareportal Bug Hunt 2024, for identifying the most impactful org-wide bug</li>
+          <li><strong>Top 5 Product Manager (2024)</strong> — for WhatsApp and GenAI POCs driving product innovation</li>
+          <li><strong>Certificate of Excellence</strong> — OYO, for boosting conversions via data-driven behavioral analysis</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label label-spaced">Education</p>
+        <p class="edu">
+          <strong>Indian Institute of Technology, Kanpur</strong><br>
+          B.Tech–M.Tech, Civil Engineering · CPI 8.2/10<br>
+          July 2014 – May 2019
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section contact" id="contact">
+    <p class="label">Get in touch</p>
+    <h2>Open to AI Product Manager roles and collaborations.</h2>
+    <div class="contact-links">
+      <a href="mailto:abhishekyogi.24@gmail.com">abhishekyogi.24@gmail.com</a>
+      <a href="tel:+917755057809">+91-7755057809</a>
+      <a href="https://www.linkedin.com/in/abhiyogi/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/abhishekyogi24-hue" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Built by Abhishek Yogi. <a href="../index.html">Original design →</a></p>
+</footer>
+
+<!-- Chatbot widget (shared with main site) -->
+<div id="chat-widget">
+  <div id="chat-frame-wrap" hidden>
+    <iframe id="chat-frame" title="Ask about Abhishek" loading="lazy"></iframe>
+  </div>
+  <button id="chat-launcher" type="button" aria-label="Open chat" aria-expanded="false">
+    <svg class="icon-open" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+    </svg>
+    <svg class="icon-close" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+(function () {
+  // Chat widget open/close
+  var launcher = document.getElementById('chat-launcher');
+  var wrap = document.getElementById('chat-frame-wrap');
+  var frame = document.getElementById('chat-frame');
+  var widget = document.getElementById('chat-widget');
+  var loaded = false;
+
+  function openChat() {
+    if (!loaded) { frame.src = '../chatbot.html'; loaded = true; }
+    wrap.hidden = false;
+    requestAnimationFrame(function () { widget.classList.add('open'); });
+    launcher.setAttribute('aria-label', 'Close chat');
+    launcher.setAttribute('aria-expanded', 'true');
+  }
+  function closeChat() {
+    widget.classList.remove('open');
+    launcher.setAttribute('aria-label', 'Open chat');
+    launcher.setAttribute('aria-expanded', 'false');
+    setTimeout(function () { if (!widget.classList.contains('open')) wrap.hidden = true; }, 200);
+  }
+  launcher.addEventListener('click', function () {
+    if (widget.classList.contains('open')) closeChat(); else openChat();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && widget.classList.contains('open')) closeChat();
+  });
+
+  // Scrollspy: toggle active dot in nav based on visible section
+  var navLinks = document.querySelectorAll('.nav-links a[data-section]');
+  var sections = ['projects', 'about', 'contact'].map(function (id) { return document.getElementById(id); });
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        navLinks.forEach(function (link) {
+          link.classList.toggle('active', link.getAttribute('data-section') === id);
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+  sections.forEach(function (s) { if (s) observer.observe(s); });
+})();
+</script>
+
+</body>
+</html>
