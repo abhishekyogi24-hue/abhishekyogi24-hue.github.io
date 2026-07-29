@@ -62,6 +62,7 @@
         <li>Architected the AI Trip Planner end-to-end, driving 15% engagement and 65+ daily flight conversions</li>
         <li>Orchestrated LLM-based evaluation with offline error analysis and continuous live monitoring for reliable outputs</li>
         <li>Launched a RAG Agent Co-Pilot on the internal knowledge base, cutting AHT by 12% and enabling 5+ chats per agent</li>
+        <li>Built personal AI agents to sentiment-analyze weekly chat transcripts and auto-triage negative feedback into Azure Board tickets</li>
       </ul>
 
       <h4>Platform Integrations &amp; B2B</h4>
@@ -115,83 +116,23 @@
         increasingly expected free-form, ChatGPT-style conversation.
       </p>
 
-      <div class="case-phase">
-        <h4>Why a chatbot</h4>
-        <p>
-          Call and email were the only support channels. ~60% of bookings are international relative to the US,
-          making calls expensive due to roaming, while email was too slow for time-sensitive travel issues.
-          Validated the need through customer surveys on preferred support channels, IVR feedback, and frontline
-          agents' voice-of-customer input, then greenlit a chatbot for quick post-booking flight support.
-        </p>
-      </div>
-
-      <div class="case-phase">
-        <h4>Phase 1 — Dialogflow ES (rule-based NLP)</h4>
-        <p>
-          Launched at 20% automation across basic flows — booking and billing details — with anything
-          transactional handed off to travel experts. Built on Google Dialogflow ES: each intent hand-defined
-          with training phrases, matched to user input via keyword-based NLP, each carrying its own responses,
-          CTAs, and sub-intents.
-        </p>
-        <p>
-          Scaled to <strong>50% automation</strong>, <strong>62% CSAT</strong>, and <strong>60% engagement</strong>
-          by onboarding self-serve flows for new bookings, cancellations, exchanges, schedule changes, add-ons,
-          CCD, and CCV — coordinating with product and business owners on each process, then owning integration
-          end-to-end and enabling agent teams to back the chatbot. Day-to-day: reviewing chat transcripts,
-          running stakeholder syncs, and turning feedback into the next round of conversational improvements.
-        </p>
-      </div>
-
-      <div class="case-phase">
-        <h4>Why we moved to Gen AI</h4>
-        <p>
-          As ChatGPT normalized free-form chat, users increasingly typed casually and expected multi-turn,
-          contextual conversation — exposing Dialogflow ES's ceiling as basic keyword-matching NLP: no
-          multi-turn memory, no context carry-over, and frequent intent misclassification sending users down
-          the wrong flow. As a stopgap on major flows (exchange, cancel, schedule change, add-ons), once intent
-          was identified via CTA or booking source we locked the typing box to a fixed path — free typing
-          mid-flow had been derailing users into the wrong flow, hurting both conversion and satisfaction. In
-          parallel, we ran a POC on Dialogflow CX with Google's product team, reviewing architecture, webhook
-          handling, and the migration path, but shelved it on cost and ROI grounds.
-        </p>
-      </div>
-
-      <div class="case-phase">
-        <h4>Phase 2 — Vertex AI multi-agent architecture</h4>
-        <p>
-          Built our own architecture on Google Vertex AI APIs instead (we already held the GCP billing
-          relationship), aimed squarely at better intent classification and a more natural chat experience: an
-          orchestrator agent routing each query, backed by specialized agents — Intent Classifier, Booking
-          Details, Small Talk, FAQs, and Agent Summarization.
-        </p>
-        <p><strong>Functionality shipped:</strong></p>
-        <ul>
-          <li><strong>Digression</strong> — resume the original flow after answering an interrupting side question</li>
-          <li><strong>Flow switch</strong> — confirm with the user before jumping from one major intent to another</li>
-          <li><strong>Flow queries</strong> — answer side questions inside a major flow, then resume where it left off</li>
-          <li><strong>Global queries</strong> — answer any query upfront, regardless of the current flow</li>
-          <li><strong>Clarification</strong> — surface likely next steps when a query is ambiguous</li>
-        </ul>
-      </div>
-
       <div class="case-grid">
         <div>
-          <h4>Offline eval</h4>
-          <p>Golden sets (ground truth), adversarial sets (edge cases, prompt injection), and regression sets (basic sanity checks).</p>
+          <h4>Problem</h4>
+          <p>Call and email were the only support channels — expensive for the ~60% of bookings that are international, too slow for time-sensitive issues.</p>
         </div>
         <div>
-          <h4>Online eval</h4>
-          <p>LLM-as-judge plus App Insights logging, scored on groundedness, faithfulness, safety, jailbreak resistance, and answer relevancy.</p>
+          <h4>Approach</h4>
+          <p>Launched on Dialogflow ES, then rearchitected onto Vertex AI as a multi-agent system (orchestrator + specialist agents) as users expected free-form, ChatGPT-style conversation.</p>
         </div>
-      </div>
-
-      <div class="case-phase">
-        <h4>Compliance &amp; rollout</h4>
-        <p>
-          Partnered with Legal, InfoSec, and the internal AI committee to clear the system against Gen AI usage
-          guidelines. Opened first to internal stakeholders, then org-wide, gathering and acting on feedback at
-          each stage, before going live to 5% of production traffic.
-        </p>
+        <div>
+          <h4>Evaluation &amp; rollout</h4>
+          <p>Offline (golden/adversarial/regression) and online (LLM-as-judge) evals, cleared with Legal, InfoSec, and an AI committee before a staged 5% traffic rollout.</p>
+        </div>
+        <div>
+          <h4>Ask the chatbot for more</h4>
+          <p>Architecture details, functionality shipped, and the full Dialogflow → Gen AI migration story are one question away — try the chat icon.</p>
+        </div>
       </div>
 
       <p class="case-metrics-caption">Dialogflow ES chatbot → Gen AI chatbot (Vertex AI)</p>
@@ -226,18 +167,6 @@
       </p>
 
       <div class="case-phase">
-        <h4>Problem — planning travel is fragmented</h4>
-        <p>
-          Travelers discover destinations in one place, search flights in another, and research itineraries
-          separately — returning multiple times before booking and losing all planning context between
-          sessions. Worse, the app experience and Oli's conversations ran as two disconnected journeys, ignoring
-          the contextual signals — searches, bookings, browsing behavior, location, preferences — that could
-          make guidance feel personal. Origins had to be typed in manually, and prior context was near-impossible
-          to reuse.
-        </p>
-      </div>
-
-      <div class="case-phase">
         <h4>Who it's for — three planning mindsets</h4>
         <div class="case-grid case-grid-3">
           <div>
@@ -255,68 +184,23 @@
         </div>
       </div>
 
-      <div class="case-phase">
-        <h4>Core capabilities scoped</h4>
-        <ul>
-          <li><strong>Destination discovery</strong> — describe preferences conversationally and get location- and origin-aware destination ideas</li>
-          <li><strong>Trip planning</strong> — generate itineraries, ask trip questions, and refine plans through conversation</li>
-          <li><strong>Flight discovery</strong> — search conversationally, with flight tiles that surface alternate dates and nearby airports</li>
-          <li><strong>Context persistence</strong> — resume eligible past conversations so planning survives across sessions</li>
-          <li><strong>Journey intelligence</strong> — read searches, browsing, booking status, intent, and trip stage to guide proactively</li>
-          <li><strong>Proactive engagement &amp; sharing</strong> — reach travelers via push, email, and in-app messaging; share destinations and itineraries</li>
-        </ul>
-      </div>
-
-      <div class="case-phase">
-        <h4>Research &amp; execution</h4>
-        <p>
-          The mandate came from leadership: solve trip-planning discovery with AI. Kicked off with competitive
-          analysis of Trip.com and Mindtrip, circulated internally to pressure-test the approach, then a month
-          of iteration with a UX designer — reviewed with leadership at each pass — before locking the
-          interaction model. Execution ran across three engineering pods in daily grooming syncs:
-          <strong>Chatbot</strong> (UI and conversational logic), <strong>RPA</strong> (the Gen AI content
-          backend), and <strong>App</strong> (where Oli surfaces) — each edge case reshaping the requirements
-          in real time.
-        </p>
-      </div>
-
-      <div class="case-phase">
-        <h4>Personalization framework</h4>
-        <p>
-          Three signal layers feed the experience: <strong>geolocation</strong> (with consent — detect the current
-          city, confirm it, and use it as a default origin), <strong>behavioral signals</strong> (searches, bookings,
-          browsing, preferences, engagement history), and <strong>conversation memory</strong> (planning context,
-          selected itineraries, and destination interests carried forward).
-        </p>
-      </div>
-
-      <div class="case-phase">
-        <h4>Phased roadmap</h4>
-        <div class="case-grid case-grid-3">
-          <div>
-            <h4>Phase 1</h4>
-            <p>Destination discovery, itinerary generation, flight discovery, sharing, copy, and past conversations.</p>
-          </div>
-          <div>
-            <h4>Phase 2</h4>
-            <p>App-behavior syncing, journey intelligence, and personalized recommendations.</p>
-          </div>
-          <div>
-            <h4>Phase 3</h4>
-            <p>Proactive notifications, recommendation-engine optimization, and deep booking-funnel integration.</p>
-          </div>
+      <div class="case-grid">
+        <div>
+          <h4>Problem</h4>
+          <p>Destination discovery, flight search, and itinerary planning lived in separate flows, losing all context between sessions.</p>
         </div>
-      </div>
-
-      <div class="case-phase">
-        <h4>Staged rollout</h4>
-        <p>
-          Launched gated on traffic, not time: internal UAT, then an org-wide test pass for feedback, then 5%
-          of app traffic — auditing chat transcripts for bugs and gaps while watching A/B metrics to confirm
-          Oli wasn't cannibalizing the app's existing conversion and bookings. Only once those metrics trended
-          positive did rollout advance — 5% → 20% → 50% → 100%. Instrumented via A/B testing, Excel/Power BI
-          dashboards, and Google Analytics funnel tracking, with App Insights for technical logging.
-        </p>
+        <div>
+          <h4>Approach</h4>
+          <p>One conversational assistant personalized via geolocation, behavioral signals, and conversation memory — backed by leadership-driven competitive research and a month of UX iteration.</p>
+        </div>
+        <div>
+          <h4>Execution &amp; rollout</h4>
+          <p>Coordinated 3 engineering pods (Chatbot, RPA, App) via daily syncs; launched through a metrics-gated rollout — UAT → 5% → 20% → 50% → 100%.</p>
+        </div>
+        <div>
+          <h4>Ask the chatbot for more</h4>
+          <p>Feature-by-feature capabilities, the phased roadmap, and the full rollout story are one question away — try the chat icon.</p>
+        </div>
       </div>
 
       <p class="case-metrics-caption">Outcome after end-to-end launch</p>
@@ -413,6 +297,10 @@
       <div class="skill-group">
         <h4>Platform</h4>
         <p>Cursor, Azure, Google Cloud, Figma, FullStory, SQL Server, NICE CX One, App Insights, WhatsApp Cloud</p>
+      </div>
+      <div class="skill-group">
+        <h4>Daily AI Tools</h4>
+        <p>Claude Code (vibe coding), Cursor, ChatGPT, Microsoft Copilot, Ghostty, Obsidian, Whisperflow, Nanobanana</p>
       </div>
     </div>
   </section>

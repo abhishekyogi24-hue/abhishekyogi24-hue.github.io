@@ -215,20 +215,56 @@
       a: "Abhishek's featured projects:\n\n1. CheapOair AI Chatbot (professional) — a production conversational support system, rebuilt from Dialogflow into a Vertex AI multi-agent architecture.\n2. Oli — AI Trip Planner (professional) — a conversational trip-planning assistant in the CheapOair app.\n3. Arthritis Companion (curiosity build) — a login-free PWA he vibe-coded solo as a PM.\n\nAsk me about any of them!"
     },
     {
-      keys: ['cheapoair', 'chatbot project', 'support bot', 'dialogflow', 'multi-agent', 'multi agent'],
-      a: "CheapOair AI Chatbot — the post-booking flight support bot at cheapoair.com. Abhishek owned it end-to-end:\n\n• Phase 1: a Dialogflow ES rule-based bot, scaled to 50% automation and 62% CSAT.\n• Phase 2: rearchitected onto Vertex AI as a multi-agent system (orchestrator + intent classifier, booking, small talk, FAQ, summarization agents) with digression, flow-switching, and clarification.\n\nResults: engagement 58%→70%, containment 48%→53%, CSAT 62%→80%. Live at cheapoair.com/chatbot."
+      keys: ['cheapoair', 'chatbot project', 'support bot'],
+      a: "CheapOair AI Chatbot — the post-booking flight support bot at cheapoair.com, owned end-to-end. Started as a rule-based Dialogflow bot, later rebuilt as a Vertex AI multi-agent system for free-form conversation. Results: CSAT 62%→80%, engagement 58%→70%. Live at cheapoair.com/chatbot.\n\nAsk me about the phases, evaluation, or rollout for more detail."
     },
     {
-      keys: ['oli', 'trip planner', 'travel', 'personas'],
-      a: "Oli — AI Trip Planner is a conversational, AI-powered trip-planning assistant embedded in the CheapOair app. Abhishek owned it from problem framing and PRD through a phased roadmap.\n\nIt serves three personas — Explorer, Planner, and Shopper — and unifies destination discovery, flight search, itinerary planning, and personalized guidance.\n\nThe mandate came from leadership; Abhishek kicked it off with competitive analysis of Trip.com and Mindtrip, then a month of UX iteration reviewed with leadership before locking the design. Execution ran across three engineering pods — Chatbot, RPA (Gen AI content backend), and App — via daily grooming syncs. Rollout was staged and metrics-gated: internal UAT → org-wide test → 5% of app traffic (auditing transcripts and A/B metrics to make sure Oli wasn't cannibalizing existing app conversion) → 20% → 50% → 100%.\n\nOutcome: +15% engagement and 65+ daily flight conversions."
+      keys: ['phase 1', 'dialogflow es', 'dialogflow', 'rule-based', 'rule based', 'rule based nlp'],
+      a: "Phase 1 of the CheapOair chatbot ran on Dialogflow ES — a rule-based, keyword-matching NLP system. It scaled to 50% automation and 62% CSAT across flows like new bookings, cancellations, exchanges, and schedule changes."
+    },
+    {
+      keys: ['phase 2', 'multi-agent', 'multi agent', 'vertex ai chatbot', 'orchestrator', 'gen ai chatbot', 'digression', 'flow switch'],
+      a: "Phase 2 rearchitected the CheapOair chatbot on Vertex AI as a multi-agent system — an orchestrator routing to specialist agents (Intent Classifier, Booking, Small Talk, FAQ, Summarization) — with digression, flow-switching, and clarification handling for natural, free-form conversation."
+    },
+    {
+      keys: ['evaluation', 'eval', 'llm as judge', 'llm-as-judge', 'groundedness', 'jailbreak'],
+      a: "The chatbot was evaluated offline (golden, adversarial, and regression test sets) and online (LLM-as-judge scoring on groundedness, faithfulness, safety, and jailbreak resistance)."
+    },
+    {
+      keys: ['compliance', 'legal', 'infosec', 'ai committee'],
+      a: "Before launch, the chatbot was cleared with Legal, InfoSec, and an internal AI committee, then rolled out to internal stakeholders, then org-wide, then 5% of production traffic."
+    },
+    {
+      keys: ['oli', 'trip planner', 'travel'],
+      a: "Oli — AI Trip Planner is a conversational assistant in the CheapOair app, unifying destination discovery, flight search, itinerary planning, and personalization. Outcome: +15% engagement, 65+ daily flight conversions.\n\nAsk me about the personas, research process, capabilities, or rollout for more."
+    },
+    {
+      keys: ['personas', 'explorer', 'planner persona', 'shopper persona', 'planning mindsets'],
+      a: "Oli serves three planning mindsets: Explorer (\"I don't know where to go\"), Planner (\"I know where I want to go\"), and Shopper (\"I want the best flight\")."
+    },
+    {
+      keys: ['research', 'competitive analysis', 'ux process', 'trip.com', 'mindtrip', 'engineering pods'],
+      a: "Oli's mandate came from leadership. Abhishek led competitive analysis of Trip.com and Mindtrip, then a month of UX iteration reviewed with leadership. Execution ran across three engineering pods — Chatbot, RPA, and App — via daily grooming syncs."
+    },
+    {
+      keys: ['staged rollout', 'uat', 'launch phases', "oli's launch"],
+      a: "Oli's launch was staged and metrics-gated: internal UAT → org-wide test → 5% of app traffic (auditing transcripts and A/B metrics to avoid cannibalizing existing app conversion) → 20% → 50% → 100%."
+    },
+    {
+      keys: ['roadmap', 'oli features', 'oli capabilities', 'destination discovery', 'itinerary'],
+      a: "Oli's capabilities: destination discovery, day-wise itinerary planning, flight discovery, hotel/car discovery, full booking-funnel assistance, and post-booking support linked to the existing chatbot — personalized via geolocation, behavioral signals, and conversation memory."
     },
     {
       keys: ['arthritis', 'companion', 'vibe', 'vibe cod', 'pwa', 'side project', 'personal project'],
       a: "Arthritis Companion is a login-free daily PWA for tracking arthritis symptoms and gentle exercises — designed around one real person's arthritic hands. Abhishek vibe-coded it solo: as the PM he owned the problem, design constraints, and product calls, and AI coding tools turned those into shipped code. It's a local-first, offline-capable app (React, TypeScript, IndexedDB). There's a live demo and source linked on the site."
     },
     {
-      keys: ['skill', 'skills', 'stack', 'tech', 'technologies', 'tools', 'good at', 'expertise'],
+      keys: ['skill', 'skills', 'stack', 'tech', 'technologies', 'good at', 'expertise'],
       a: "Abhishek's skills:\n\n• Gen AI / Tech: Conversational AI, Evals, Vibe Coding, RAG, Prompt Engineering, Error Analysis, Prototyping, ML\n• Analytics: Excel, SQL, Python, R, Power BI, Google Analytics, FullStory, Tableau\n• Product: 0→1 Roadmap, Agile/Scrum, A/B Testing, User Research, Wireframing, GTM\n• Platform: Cursor, Azure, Google Cloud, Figma, NICE CX One, App Insights, WhatsApp Cloud"
+    },
+    {
+      keys: ['tools', 'ai tools', 'daily tools', 'workflow', 'copilot', 'claude code', 'what tools', 'personal ai'],
+      a: "Abhishek's daily AI toolkit: Claude Code for vibe coding, Cursor for prototypes, ChatGPT/Claude chat for daily search, Ghostty (terminal), Obsidian (notes), Whisperflow (voice), Nanobanana (images) — plus Microsoft Copilot for PRDs, competitive analysis, and two personal AI agents he built: one that sentiment-analyzes weekly chat transcripts, another that auto-triages negative feedback into Azure Board tickets."
     },
     {
       keys: ['ai', 'gen ai', 'genai', 'llm', 'rag', 'prompt', 'conversational'],
