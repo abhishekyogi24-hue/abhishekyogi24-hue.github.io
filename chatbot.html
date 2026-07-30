@@ -304,8 +304,32 @@
     {
       id: 'arthritis',
       keys: ['arthritis', 'companion', 'vibe', 'vibe cod', 'pwa', 'side project', 'personal project'],
-      a: "Arthritis Companion is a login-free daily PWA for tracking arthritis symptoms and gentle exercises — designed around one real person's arthritic hands. Abhishek vibe-coded it solo: as the PM he owned the problem, design constraints, and product calls, and AI coding tools turned those into shipped code. It's local-first (React, TypeScript, IndexedDB), with a live demo and source linked on the site.",
-      next: ['His AI projects', 'His skills']
+      a: "Arthritis Companion is a login-free daily PWA for tracking arthritis symptoms and gentle exercises — designed around one real person's arthritic hands. Abhishek vibe-coded it solo: as the PM he owned the problem, design constraints, and product calls, and AI coding tools turned those into shipped code. It's local-first (React, TypeScript, IndexedDB), and has grown into a fuller health tool with a body map, medication tracking, and a doctor report — ask about any of those for more.",
+      next: ['Body map', 'Doctor report']
+    },
+    {
+      id: 'body-map',
+      keys: ['body map', 'joint map', 'silhouette', 'joint selection', 'which joints'],
+      a: "The body map is an interactive front-view silhouette with 18 tappable joints (shoulders, elbows, wrists, hands, lower back, hips, knees, ankles, feet — each left/right). It replaced a flat checkbox list for logging pain, and doubles as a heatmap on the Today dashboard showing which joints flare up most often. Tap targets stay above 44px even for tightly-spaced pairs like wrists and hands, so it stays usable with limited hand mobility.",
+      next: ['Inflammatory signal', 'Doctor report']
+    },
+    {
+      id: 'inflammatory-signal',
+      keys: ['inflammatory signal', 'inflammatory', 'ra', 'rheumatoid', 'pattern detection', 'screening', 'red flag'],
+      a: "Inflammatory signal screening is a conservative, non-diagnostic pattern check: it only flags when at least 3 days in the last 30 show both 60+ minutes of morning stiffness AND symmetric small-joint pain (e.g. both hands or both wrists), and only after at least 10 logged days — enough history to mean something. It's a nudge to see a doctor, never a diagnosis, and it's designed to stay quiet on sparse or ambiguous data rather than over-alert.",
+      next: ['Doctor report', 'Body map']
+    },
+    {
+      id: 'doctor-report',
+      keys: ['doctor report', 'doctor visit', 'printable report', 'visit summary', 'report for doctor'],
+      a: "The doctor report is a printable one-page summary of the last 30 days: average pain, good days, average and high-stiffness days, top affected joints, medication adherence, any inflammatory-signal flag, and streaks of extreme pain — built to hand to a doctor rather than make the user re-explain weeks of symptoms from memory.",
+      next: ['Medications', 'Body map']
+    },
+    {
+      id: 'medications',
+      keys: ['medication', 'medicine', 'meds', 'adherence', 'dosage', 'reminders'],
+      a: "Medication tracking covers name, dosage, and time-of-day slots, with daily dose logging and optional reminders. Doses logged each day roll up into an adherence rate, which feeds directly into the doctor report — so adherence isn't just self-reported, it's backed by actual logged doses.",
+      next: ['Doctor report', 'His AI projects']
     },
     {
       id: 'skills',
