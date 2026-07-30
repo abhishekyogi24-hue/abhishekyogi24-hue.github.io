@@ -302,7 +302,30 @@ main { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
   border: 1px solid var(--border);
 }
 
-.case-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.case-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+
+.case-details { margin-top: 4px; }
+.case-details summary.case-toggle {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  padding: 10px 0;
+  user-select: none;
+}
+.case-details summary.case-toggle::-webkit-details-marker { display: none; }
+.case-details summary.case-toggle::marker { content: ""; }
+.case-toggle-icon { transition: transform 0.2s ease; flex-shrink: 0; }
+.case-details[open] .case-toggle-icon { transform: rotate(180deg); }
+.case-toggle-open { display: none; }
+.case-details[open] .case-toggle-open { display: inline; }
+.case-details[open] .case-toggle-closed { display: none; }
+.case-details-body { padding-top: 12px; }
+.case-details-body > *:last-child { margin-bottom: 0; }
 
 .skills-grid {
   display: grid;
