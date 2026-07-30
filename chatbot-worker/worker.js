@@ -73,7 +73,7 @@ It has grown past the original four screens (Today, History, Exercises, Guides) 
 - Inflammatory signal screening: a conservative, non-diagnostic check that only flags when ≥3 of the last 30 days show both 60+ min morning stiffness and symmetric small-joint pain (e.g. both hands/wrists), and only after ≥10 logged days. A quiet nudge toward a doctor visit, never a diagnosis — deliberately tuned to avoid false positives on sparse data.
 - Medications & adherence: medication name, dosage, time-of-day slots, daily dose logging, optional reminders; logged doses roll up into an adherence rate.
 - Doctor report: a printable one-page 30-day summary — average pain, good days, stiffness days, top affected joints, medication adherence, any inflammatory-signal flag, and extreme-pain streaks — built to bring to a doctor visit instead of recalling weeks of symptoms from memory.
-This work is still local/in-progress in the app's source and not yet reflected in the deployed live demo, so speak of it as a real feature set being built, not necessarily something reproducible today on the live link. Live demo and source are linked on the site.
+All of this is live on the deployed demo. Live demo and source are linked on the site.
 
 # SKILLS
 - Gen AI / Tech: Conversational AI, Evals, Vibe Coding, RAG, Prompt Engineering, Error Analysis, Prototyping, Machine Learning
