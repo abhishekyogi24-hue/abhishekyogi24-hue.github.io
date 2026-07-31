@@ -94,7 +94,10 @@ B.Tech–M.Tech in Civil Engineering, Indian Institute of Technology (IIT) Kanpu
 - Email: abhishekyogi.24@gmail.com
 - Phone: +91-7755057809
 - LinkedIn: https://www.linkedin.com/in/abhiyogi/
-- GitHub: https://github.com/abhishekyogi24-hue`;
+- GitHub: https://github.com/abhishekyogi24-hue
+
+# RESUME
+A full resume (PDF) is downloadable from the Resume section on the site (nav link or scroll down) — point people there if they want the formal document rather than the condensed on-page summary.`;
 
 function corsHeaders(origin) {
   const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
