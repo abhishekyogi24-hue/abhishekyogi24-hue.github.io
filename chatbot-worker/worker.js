@@ -27,7 +27,7 @@ AI Product Manager with 7+ years building and scaling 0→1 and growth-stage pro
 Abhishek writes and speaks publicly about where product management is headed in the AI era. Core view: conventional PM work (writing stories, running standups, routine coordination) is increasingly automatable, but real PMing is a skill fueled by curiosity, not a job title, and it won't die. What matters going forward: defining what's truly worth solving (not just executing a backlog); navigating people, since product is largely EQ and influence; setting the narrative and vision when there's no product yet; and making contextual, morally-weighted trade-offs — a human judgment call AI can't replace. His take: AI empowers PMs who already have strong fundamentals, but won't rescue weak ones — not becoming AI-enabled, and not sharpening core PM fundamentals, is the real risk, not AI itself.
 
 # EXPERIENCE
-## Fareportal — AI Product Manager → Product Manager → Associate PM (Aug 2021 – Present)
+## Fareportal — Associate PM → Product Manager → AI Product Manager (Aug 2021 – Present)
 AI & Conversational Products:
 - Built an AI chatbot on Google Vertex AI with robust intent detection, multilingual support, and context handling, lifting CSAT by 29%.
 - Architected the AI Trip Planner (internally called "Oli") end-to-end, driving 15% engagement and 65+ daily flight conversions.
@@ -49,7 +49,7 @@ Platform Integrations & B2B:
 
 Fareportal itself powers travel for 40M+ travelers across 195 countries through CheapOair, OneTravel, and AI-driven platforms.
 
-## OYO Rooms — Sr. Business Analyst → Business Analyst (Jun 2019 – Jul 2021)
+## OYO Rooms — Business Analyst → Sr. Business Analyst (Jun 2019 – Jul 2021)
 - Increased monthly SHNs (Sold Hotel Nights) by 6% (~$50K) by identifying high-potential areas and optimizing supply.
 - Boosted vacation bookings 10% by building the BRIX model, driving execution with 25 account managers.
 - Optimized pricing via sensitivity analysis on floor prices, driving ₹2.98 Cr in impact.
