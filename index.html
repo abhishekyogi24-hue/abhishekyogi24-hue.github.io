@@ -423,6 +423,77 @@
         </div>
       </details>
     </article>
+
+    <article class="case-study">
+      <div class="case-head">
+        <h3>Ship Gate</h3>
+        <p class="case-tag">0→1 · PM-operable AI eval harness · Designed, built, and shipped end-to-end</p>
+      </div>
+
+      <p class="case-lede">
+        A tool that turns a product description or a batch of real production traces into a golden and
+        adversarial test suite, runs it against a live conversational AI product, and returns a ship/hold
+        verdict — including checking whether its own LLM judge can be trusted.
+      </p>
+
+      <div class="case-links">
+        <a class="btn btn-primary" href="https://ship-gate-abhishek.netlify.app" target="_blank" rel="noopener">Live demo →</a>
+      </div>
+
+      <details class="case-details">
+        <summary class="case-toggle">
+          <span class="case-toggle-closed">Show full case study</span>
+          <span class="case-toggle-open">Hide details</span>
+          <svg class="case-toggle-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div class="case-details-body">
+          <div class="case-grid">
+            <div>
+              <h4>Problem</h4>
+              <p>PMs shipping conversational AI usually eyeball a handful of replies and ship on vibes. Writing a
+              real test suite means knowing which failure classes to look for; running it means waiting on an
+              eng-built eval pipeline — so the check that matters most gets skipped.</p>
+            </div>
+            <div>
+              <h4>Approach</h4>
+              <p>Two paths into a suite: from real traces (read them, note what went wrong, cluster into failure
+              modes, generate tests that target them) or from a written brief pre-launch. Tests run against any
+              chatbot via a live endpoint, or a manual paste-the-reply mode for the hosted bots that block CORS.</p>
+            </div>
+            <div>
+              <h4>Scoring</h4>
+              <p>Deterministic assertions run first and are free; an LLM judge handles the fuzzy rubric only on
+              what assertions can't decide. A judge-alignment panel then measures the judge's own hit rate and
+              false-alarm rate against your own labels — reported separately, never averaged into one accuracy
+              figure that would hide a judge that misses real failures.</p>
+            </div>
+            <div>
+              <h4>Ask the chatbot for more</h4>
+              <p>The prompt-injection defenses, the CORS constraint that forced two connection modes, and the
+              judge-validation math are one question away — try the chat icon.</p>
+            </div>
+          </div>
+
+          <div class="case-phase">
+            <h4>How I built it — vibe-coded, PM-led</h4>
+            <p>
+              Built solo in Claude Code, iterating the way the tool itself argues PMs should work: no PRD, a
+              one-page bet written down first, then shipped and tested against real usage. Every version was
+              QA'd end-to-end in a live browser before I trusted it — including catching a data-loss bug where a
+              reload silently wiped hand-reviewed traces, and a disabled button that looked identical to an
+              enabled one. The judgment calls were mine: what counts as a fair adversarial test, when a judge
+              should be trusted, and when a "no API key" path is worth building versus a quality compromise not
+              worth shipping.
+            </p>
+          </div>
+
+          <p class="case-metrics-caption">Skills this build demonstrates</p>
+          <div class="case-stack">
+            <span>PM-Operable Evals</span><span>Error Analysis (Open/Axial Coding)</span><span>LLM-as-Judge</span><span>Judge Calibration (TPR/TNR)</span><span>Prompt Injection Defense</span><span>Vibe Coding (Claude Code)</span><span>React / TypeScript</span><span>Client-Side Architecture</span>
+          </div>
+        </div>
+      </details>
+    </article>
   </section>
 
   <section id="skills" class="section">
