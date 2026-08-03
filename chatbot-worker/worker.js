@@ -4,6 +4,8 @@
 
 // Only allow the portfolio origin(s) to call this worker.
 const ALLOWED_ORIGINS = [
+  "https://abhishekyogi.in",
+  "https://www.abhishekyogi.in",
   "https://abhishekyogi24-hue.github.io",
   "http://localhost:4321", // local dev preview
   "http://127.0.0.1:4321",
