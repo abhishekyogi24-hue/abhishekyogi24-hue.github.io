@@ -12,7 +12,13 @@
 
 <header class="nav">
   <div class="nav-inner">
-    <a href="index.html" class="brand">Abhishek Yogi</a>
+    <a href="index.html" class="brand">
+      <svg class="logo-mark" width="30" height="30" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="34" height="34" rx="9" fill="var(--accent)"/>
+        <text x="17" y="23" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="800" fill="var(--accent-fg)">AY</text>
+      </svg>
+      <span>Abhishek Yogi</span>
+    </a>
     <nav class="nav-links">
       <a href="experience.html">Experience</a>
       <a href="resume.html">Resume</a>
@@ -25,51 +31,49 @@
 
 <main>
   <section class="hero">
-    <p class="eyebrow">AI Product Manager</p>
-    <h1>Abhishek Yogi</h1>
-    <p class="hero-sub">
-      7+ years building and scaling 0→1 and growth-stage products across AI, platforms, and B2B SaaS.
-      Shipped AI chatbots driving <strong>$1M+ monthly revenue</strong>, <strong>55% automation</strong>,
-      and <strong>12% AHT reduction</strong>.
-    </p>
-    <div class="hero-links">
-      <a class="btn btn-primary" href="mailto:abhishekyogi.24@gmail.com">Email me</a>
-      <a class="btn" href="https://www.linkedin.com/in/abhiyogi/" target="_blank" rel="noopener">LinkedIn</a>
-      <a class="btn" href="https://github.com/abhishekyogi24-hue" target="_blank" rel="noopener">GitHub</a>
+    <div class="hero-layout">
+      <div class="hero-intro">
+        <p class="eyebrow">AI Product Manager</p>
+        <h1>Abhishek Yogi</h1>
+        <p class="hero-sub">
+          7+ years building and scaling 0→1 and growth-stage products across AI, platforms, and B2B SaaS.
+          Shipped AI chatbots driving <strong>$1M+ monthly revenue</strong>, <strong>55% automation</strong>,
+          and <strong>12% AHT reduction</strong>.
+        </p>
+        <div class="hero-links">
+          <a class="btn btn-primary" href="mailto:abhishekyogi.24@gmail.com">Email me</a>
+          <a class="btn" href="https://www.linkedin.com/in/abhiyogi/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn" href="https://github.com/abhishekyogi24-hue" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <img src="headshot.jpg" alt="Abhishek Yogi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="hero-photo-placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+          </svg>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="about">
-    <p>
-      Product manager with a track record of owning the full product lifecycle — strategy, GTM, and execution —
-      across Engineering, Data, Marketing, and Operations. Deep experience in conversational AI, RAG systems,
-      monetization, and API-driven platform integrations, delivering scalable products in ambiguous, fast-moving
-      environments.
-    </p>
-  </section>
-
-  <section class="highlights">
-    <div class="highlight-card">
-      <h3>Experience</h3>
-      <p>7+ years across AI product management at Fareportal and data-driven growth at OYO Rooms.</p>
-      <a class="btn" href="experience.html">See full experience →</a>
+  <div class="stat-band">
+    <div class="stat-band-inner">
+      <div class="stat">
+        <span class="stat-value">$1M+</span>
+        <span class="stat-label">Monthly Revenue Impact</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">55%</span>
+        <span class="stat-label">Automation Rate</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">12%</span>
+        <span class="stat-label">AHT Reduction</span>
+      </div>
     </div>
-    <div class="highlight-card">
-      <h3>Resume</h3>
-      <p>A quick summary on this site, or the full resume as a downloadable PDF.</p>
-      <a class="btn" href="resume.html">View resume →</a>
-    </div>
-    <div class="highlight-card">
-      <h3>Featured Projects</h3>
-      <p>AI chatbots, a Gen AI trip planner, rules-engine tools, and independent builds — from a $1M+ revenue chatbot to a vibe-coded arthritis tracker.</p>
-      <a class="btn" href="project.html">See all projects →</a>
-    </div>
-    <div class="highlight-card">
-      <h3>Skills</h3>
-      <p>Conversational AI, evals, RAG, analytics, and the AI tools used daily to ship fast.</p>
-      <a class="btn" href="skills.html">See skills &amp; awards →</a>
-    </div>
-  </section>
+  </div>
 </main>
 
 <footer class="footer">
