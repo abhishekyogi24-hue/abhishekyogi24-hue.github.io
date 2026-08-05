@@ -69,7 +69,7 @@
   var loaded = false;
 
   function openChat() {
-    if (!loaded) { frame.src = '../chatbot.html'; loaded = true; }
+    if (!loaded) { frame.src = '../chatbot.html?theme=v2'; loaded = true; }
     wrap.hidden = false;
     requestAnimationFrame(function () { widget.classList.add('open'); });
     launcher.setAttribute('aria-label', 'Close chat');

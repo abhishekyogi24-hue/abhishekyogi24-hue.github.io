@@ -32,6 +32,22 @@
       --user-fg: #2a1013;
     }
   }
+  :root.theme-v2 {
+    --bg: #0c0c0e;
+    --panel: #141416;
+    --fg: #f6f1e8;
+    --fg-muted: #9c968b;
+    --accent: #d97682;
+    --accent-fg: #1a0e10;
+    --border: #2b2b2f;
+    --bot-bubble: #18181b;
+    --user-bubble: #d97682;
+    --user-fg: #1a0e10;
+  }
+  .theme-v2 .header-text h1 { font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 700; }
+  .theme-v2 .avatar, .theme-v2 button.send { border-radius: 4px; }
+  .theme-v2 .chip { border-radius: 3px; }
+  .theme-v2 input { border-radius: 4px; }
   * { box-sizing: border-box; }
   html, body { height: 100%; margin: 0; }
   body {
@@ -156,6 +172,17 @@
   }
   button.send:hover { opacity: 0.9; }
 </style>
+<script>
+(function () {
+  if (/[?&]theme=v2\b/.test(location.search)) {
+    document.documentElement.classList.add('theme-v2');
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap';
+    document.head.appendChild(link);
+  }
+})();
+</script>
 </head>
 <body>
   <header>
