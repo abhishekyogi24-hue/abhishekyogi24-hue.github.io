@@ -102,4 +102,12 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && widget.classList.contains('open')) closeChat();
   });
+
+  var sayHelloBtn = document.getElementById('sayHelloBtn');
+  if (sayHelloBtn) {
+    sayHelloBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      openChat();
+    });
+  }
 })();
