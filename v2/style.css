@@ -224,7 +224,7 @@ a { color: inherit; }
   gap: 28px;
   white-space: nowrap;
   width: max-content;
-  animation: marquee 32s linear infinite;
+  animation: marquee 80s linear infinite;
   font-family: var(--serif);
   font-style: italic;
   font-size: 1.1rem;
