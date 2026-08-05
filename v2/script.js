@@ -53,6 +53,14 @@
     });
   }
 
+  // Click a project -> retheme the accent color
+  var workAccentItems = document.querySelectorAll('.v2-work-item[data-accent]');
+  workAccentItems.forEach(function (item) {
+    item.addEventListener('click', function () {
+      document.documentElement.style.setProperty('--accent', item.dataset.accent);
+    });
+  });
+
   // Chat widget
   var launcher = document.getElementById('chat-launcher');
   var wrap = document.getElementById('chat-frame-wrap');

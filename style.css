@@ -61,6 +61,12 @@ body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+a, .btn, .btn-primary, .eyebrow, .case-tag, .project-group-label,
+.stat-value, .metric-value .arrow, .case-details summary.case-toggle,
+.logo-mark rect {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, fill 0.3s ease;
+}
+
 .nav {
   position: sticky;
   top: 0;

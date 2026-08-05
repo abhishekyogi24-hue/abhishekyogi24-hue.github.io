@@ -38,7 +38,7 @@
       <p class="project-group-note">Products shipped in role at Fareportal.</p>
     </div>
 
-    <article class="case-study">
+    <article class="case-study" data-accent-light="#7d1f2b" data-accent-dark="#d97682">
       <div class="case-head">
         <h3>CheapOair AI Chatbot</h3>
         <p class="case-tag">0→1 → Gen AI rearchitecture · Owned end-to-end at Fareportal</p>
@@ -96,7 +96,7 @@
       </details>
     </article>
 
-    <article class="case-study">
+    <article class="case-study" data-accent-light="#1f6d6a" data-accent-dark="#7ad9d0">
       <div class="case-head">
         <h3>Oli — AI Trip Planner</h3>
         <p class="case-tag">0→1 product strategy · phased launch · CheapOair (Fareportal)</p>
@@ -175,7 +175,7 @@
       </details>
     </article>
 
-    <article class="case-study">
+    <article class="case-study" data-accent-light="#8a5a1f" data-accent-dark="#e0ab6c">
       <div class="case-head">
         <h3>Priority Leads Tool</h3>
         <p class="case-tag">0→1 · Rules engine for Ops · Fareportal</p>
@@ -223,7 +223,7 @@
       </details>
     </article>
 
-    <article class="case-study">
+    <article class="case-study" data-accent-light="#2f3f8a" data-accent-dark="#8f9fe0">
       <div class="case-head">
         <h3>Assisted Selling</h3>
         <p class="case-tag">0→1 · Chat-assisted booking · Fareportal</p>
@@ -276,7 +276,7 @@
       <p class="project-group-note">Products designed, built, and shipped end-to-end for the joy of it.</p>
     </div>
 
-    <article class="case-study">
+    <article class="case-study" data-accent-light="#6a1f6f" data-accent-dark="#d97ad6">
       <div class="case-head">
         <h3>Arthritis Companion</h3>
         <p class="case-tag">0→1 · Designed, built, and shipped end-to-end</p>
@@ -361,7 +361,7 @@
       </details>
     </article>
 
-    <article class="case-study">
+    <article class="case-study" data-accent-light="#1f7d3f" data-accent-dark="#7ad99a">
       <div class="case-head">
         <h3>Ship Gate</h3>
         <p class="case-tag">0→1 · PM-operable AI eval harness · Designed, built, and shipped end-to-end</p>
@@ -480,6 +480,20 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && widget.classList.contains('open')) close();
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var cards = document.querySelectorAll('.case-study[data-accent-light]');
+  var darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  function applyAccent(card) {
+    var color = darkQuery.matches ? card.dataset.accentDark : card.dataset.accentLight;
+    if (color) document.documentElement.style.setProperty('--accent', color);
+  }
+  cards.forEach(function (card) {
+    card.addEventListener('click', function () { applyAccent(card); });
   });
 })();
 </script>

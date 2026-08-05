@@ -112,6 +112,10 @@ a { color: inherit; }
   margin: 0 auto;
 }
 
+.v2-eyebrow, .hl-4 em, .v2-stat-value {
+  transition: color 0.3s ease;
+}
+
 .v2-eyebrow {
   font-family: var(--sans);
   text-transform: uppercase;
@@ -201,7 +205,7 @@ a { color: inherit; }
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 2px;
-  transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease, background-color 0.3s ease;
 }
 .v2-btn:hover { text-decoration: none; border-color: var(--accent); color: var(--accent); }
 .v2-btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
@@ -314,7 +318,7 @@ a { color: inherit; }
   z-index: 60;
   opacity: 0;
   transform: scale(0.5);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.3s ease;
 }
 #cursorFollow.active { opacity: 1; transform: scale(1); }
 
