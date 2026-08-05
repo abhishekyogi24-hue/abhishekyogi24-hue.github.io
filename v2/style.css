@@ -116,6 +116,15 @@ a { color: inherit; }
   transition: color 0.3s ease;
 }
 
+.v2-eyebrow-role {
+  display: inline-block;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.v2-eyebrow-role.eyebrow-fade {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
 .v2-eyebrow {
   font-family: var(--sans);
   text-transform: uppercase;

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Abhishek Yogi — AI Product Manager &amp; Platform Integrations</title>
-<meta name="description" content="Abhishek Yogi — AI Product Manager &amp; Platform Integrations. 7+ years building 0→1 and growth-stage AI products, chatbots, and B2B platforms.">
+<title>Abhishek Yogi — Product Manager &amp; Data Enthusiast</title>
+<meta name="description" content="Abhishek Yogi — Product Manager &amp; Data Enthusiast. 7+ years building 0→1 and growth-stage AI products, chatbots, and B2B platforms.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -33,7 +33,7 @@
   <section class="hero">
     <div class="hero-layout">
       <div class="hero-intro">
-        <p class="eyebrow">AI Product Manager · Platform Integrations</p>
+        <p class="eyebrow"><span class="eyebrow-role" id="eyebrowRole">Product Manager</span></p>
         <h1>Abhishek Yogi</h1>
         <p class="hero-sub">
           7+ years building and scaling 0→1 and growth-stage products across AI, platforms, and B2B SaaS.
@@ -123,6 +123,23 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && widget.classList.contains('open')) close();
   });
+})();
+</script>
+
+<script>
+(function () {
+  var el = document.getElementById('eyebrowRole');
+  if (!el) return;
+  var roles = ['Product Manager', 'Data Enthusiast'];
+  var i = 0;
+  setInterval(function () {
+    el.classList.add('eyebrow-fade');
+    setTimeout(function () {
+      i = (i + 1) % roles.length;
+      el.textContent = roles[i];
+      el.classList.remove('eyebrow-fade');
+    }, 350);
+  }, 2400);
 })();
 </script>
 

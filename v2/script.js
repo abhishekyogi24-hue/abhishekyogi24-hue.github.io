@@ -1,4 +1,19 @@
 (function () {
+  // Rotating eyebrow role label
+  var eyebrowEl = document.getElementById('v2EyebrowRole');
+  if (eyebrowEl) {
+    var roles = ['Product Manager', 'Data Enthusiast'];
+    var roleIndex = 0;
+    setInterval(function () {
+      eyebrowEl.classList.add('eyebrow-fade');
+      setTimeout(function () {
+        roleIndex = (roleIndex + 1) % roles.length;
+        eyebrowEl.textContent = roles[roleIndex];
+        eyebrowEl.classList.remove('eyebrow-fade');
+      }, 350);
+    }, 2400);
+  }
+
   // Reveal-on-scroll for below-the-fold sections
   var reveals = document.querySelectorAll('.reveal-section');
   if ('IntersectionObserver' in window) {
