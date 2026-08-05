@@ -1,7 +1,16 @@
 name = "portfolio-chatbot"
-main = "worker.js"
+main = "src/worker.js"
 compatibility_date = "2026-01-01"
 
 # The ANTHROPIC_API_KEY is NOT stored here — it is a secret.
 # Set it once after deploy with:
 #   wrangler secret put ANTHROPIC_API_KEY
+
+# Optional: per-IP daily rate limiting. Without this binding the worker still
+# works (checkRateLimit() no-ops), it just has no protection against someone
+# hammering the /chat endpoint and running up your Anthropic bill. To enable:
+#   wrangler kv:namespace create RATE_LIMIT_KV
+# then uncomment below with the id it prints.
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT_KV"
+# id = "REPLACE_WITH_ID_FROM_WRANGLER_OUTPUT"

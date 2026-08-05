@@ -1,0 +1,11 @@
+{
+  "version": "36dec800e7",
+  "builtAt": "2026-08-05T18:44:00.715079+00:00",
+  "chunkCount": 70,
+  "liteChunkCount": 35,
+  "sources": {
+    "core": 15,
+    "site": 52,
+    "resume": 3
+  }
+}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ask about Abhishek</title>
+<title>Abhi AI — Abhishek Yogi's AI Assistant</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -171,6 +171,14 @@
     display: flex; align-items: center; justify-content: center;
   }
   button.send:hover { opacity: 0.9; }
+
+  .degraded-note {
+    font-size: 0.7rem;
+    color: var(--fg-muted);
+    opacity: 0.75;
+    align-self: flex-start;
+    margin: -4px 0 2px 4px;
+  }
 </style>
 <script>
 (function () {
@@ -186,10 +194,10 @@
 </head>
 <body>
   <header>
-    <div class="avatar">AY</div>
+    <div class="avatar">AI</div>
     <div class="header-text">
-      <h1>Ask about Abhishek</h1>
-      <p>Product Manager &amp; Data Enthusiast</p>
+      <h1>Abhi AI</h1>
+      <p>Abhishek's AI assistant</p>
     </div>
   </header>
 
@@ -206,10 +214,12 @@
   var form = document.getElementById('form');
   var input = document.getElementById('input');
 
-  // Set this to your deployed Cloudflare Worker URL to get real Opus answers.
-  // Leave empty to use the built-in scripted knowledge base (works offline, no key).
-  // See chatbot-worker/README.md for deploy steps.
+  // Set this to your deployed Cloudflare Worker URL (see chatbot-worker/README.md)
+  // to get real RAG-backed Abhi AI answers. Leave empty (or if the Worker is ever
+  // unreachable) and the widget degrades gracefully through the fallback ladder
+  // below — it never breaks the chat entirely.
   var WORKER_URL = "";
+  var WORKER_TIMEOUT_MS = 12000;
 
   // Rolling conversation history sent to the worker for multi-turn context.
   var history = [];
@@ -218,263 +228,83 @@
     '<a href="tel:+917755057809">+91-7755057809</a>, or on ' +
     '<a href="https://www.linkedin.com/in/abhiyogi/" target="_blank" rel="noopener">LinkedIn</a>.';
 
-  // Knowledge corpus: small, atomic fact-chunks (id, retrieval keys, next-step
-  // suggestions). findAnswer() retrieves the chunk(s) relevant to the specific
-  // question and composes the reply from just those — not one fixed essay
-  // per topic. This is a lightweight, offline stand-in for RAG; the real
-  // thing (retrieval + LLM generation) runs when WORKER_URL is set.
   var STARTERS = ['Who is Abhishek?', 'His AI projects', 'Key metrics & impact', 'Skills', 'How to contact'];
-
-  var KB = [
-    {
-      id: 'bio',
-      keys: ['who', 'abhishek', 'yourself', 'introduce', 'summary', 'background', 'bio'],
-      a: "Abhishek Yogi is a Product Manager and data enthusiast with 7+ years shipping 0→1 and growth-stage products across AI and platform integrations. He's built chatbots driving $1M+ monthly revenue, 55% automation, and a 12% AHT reduction, owned integrations from Vertex AI to WhatsApp Cloud and NICE CX, and led the data ecosystem behind the decisions.",
-      next: ['His experience', 'Featured projects', 'His skills']
-    },
-    {
-      id: 'experience',
-      keys: ['experience', 'work history', 'career', 'jobs', 'worked', 'companies', 'roles'],
-      a: "Abhishek's experience:\n\n• Fareportal (Aug 2021–Present) — AI Product Manager ← Product Manager ← Associate PM.\n• OYO Rooms (Jun 2019–Jul 2021) — Sr. Business Analyst ← Business Analyst.",
-      next: ['Fareportal role', 'OYO role', 'Featured projects']
-    },
-    {
-      id: 'fareportal',
-      keys: ['fareportal', 'current', 'current job', 'current role', 'now', 'present'],
-      a: "At Fareportal (Aug 2021–Present), Abhishek built an AI chatbot on Vertex AI (lifting CSAT 29%), architected the AI Trip Planner (Oli), launched a RAG Agent Co-Pilot (−12% AHT), and led 12 SDEs, 3 QAs, and 2 designers as single POC across Sales, Support, Revenue, and Payments. Fareportal itself powers travel for 40M+ travelers across 195 countries through CheapOair, OneTravel, and AI-driven platforms.",
-      next: ['CheapOair chatbot', 'Oli trip planner', 'Priority Leads Tool', 'AI tools he uses']
-    },
-    {
-      id: 'priority-leads',
-      keys: ['priority leads', 'priority leads tool', 'lead prioritization', 'leads tool', 'sql rules'],
-      a: "The Priority Leads Tool was a rules-based lead-prioritization system Abhishek built earlier in his Fareportal PM tenure. Rules — defined with Ops leaders from real support patterns (e.g. flagging users who'd contacted support 3+ times across call/email/chat) — were codified as SQL queries controlling lead generation in the CRM, each with its own SLA tracked via dashboards. Goal: predict and resolve complaints before they snowballed. Result: complaints down 8%, and the system still runs today, fully automated.",
-      next: ['Assisted Selling', 'Key metrics & impact']
-    },
-    {
-      id: 'assisted-selling',
-      keys: ['assisted selling', 'flight listing', 'listing page', 'search explorer', 'chat trigger', 'obe', 'flight listings page'],
-      a: "Assisted Selling launched a chat option directly on the flight listing page so travel experts could help users mid-booking-funnel. Abhishek identified and tested triggers (low conversion, idle customers, senior travelers, multi-city trips, sold-out/no-results cases), built rule-based routing to send high-quality leads to top-performing agents, and ran UX experiments on the chat icon (tooltips, unread counters, animation) to lift CTR. It integrated with the agent booking engine (OBE) so a single click carried the customer's exact search and selected flight over to the agent, cutting AHT. A companion feature, Search Explorer, used predictive filtering and value-focused UI tiles (e.g. \"faster by 3hrs for $20 more\") to guide users to better flights — driving 40% higher conversion on flights selected through it. All validated via A/B testing to confirm it added incremental bookings rather than cannibalizing online conversion.",
-      next: ['Priority Leads Tool', 'Key metrics & impact']
-    },
-    {
-      id: 'oyo',
-      keys: ['oyo', 'business analyst', 'analyst', 'previous', 'before fareportal'],
-      a: "At OYO Rooms (Jun 2019–Jul 2021), Abhishek increased monthly SHNs 6% (~$50K), boosted vacation bookings 10% via the BRIX model, drove ₹2.98 Cr in pricing impact, and automated 30+ dashboards/100+ reports using Excel, SQL, and Power BI.",
-      next: ['His current role', 'Skills']
-    },
-    {
-      id: 'projects',
-      keys: ['project', 'projects', 'built', 'portfolio', 'products'],
-      a: "Abhishek's featured projects: CheapOair AI Chatbot (production conversational support), Oli — AI Trip Planner (in-app trip planning assistant), and Arthritis Companion (a curiosity-build PWA he vibe-coded solo).",
-      next: ['CheapOair chatbot', 'Oli trip planner', 'Arthritis Companion']
-    },
-    {
-      id: 'cheapoair',
-      keys: ['cheapoair', 'chatbot project', 'support bot'],
-      a: "CheapOair AI Chatbot — the post-booking flight support bot at cheapoair.com, owned end-to-end. Started as a rule-based Dialogflow bot, later rebuilt as a Vertex AI multi-agent system for free-form conversation. Results: CSAT 62%→80%, engagement 58%→70%. Live at cheapoair.com/chatbot.",
-      next: ['Phase 1 details', 'Phase 2 architecture', 'How was it evaluated?']
-    },
-    {
-      id: 'phase1',
-      keys: ['phase 1', 'dialogflow es', 'dialogflow', 'rule-based', 'rule based', 'rule based nlp'],
-      a: "Phase 1 of the CheapOair chatbot ran on Dialogflow ES — a rule-based, keyword-matching NLP system. It scaled to 50% automation and 62% CSAT across flows like new bookings, cancellations, exchanges, and schedule changes.",
-      next: ['Phase 2 architecture', 'Key metrics & impact']
-    },
-    {
-      id: 'phase2',
-      keys: ['phase 2', 'multi-agent', 'multi agent', 'vertex ai chatbot', 'orchestrator', 'gen ai chatbot', 'digression', 'flow switch'],
-      a: "Phase 2 rearchitected the CheapOair chatbot on Vertex AI as a multi-agent system — an orchestrator routing to specialist agents (Intent Classifier, Booking, Small Talk, FAQ, Summarization) — with digression, flow-switching, and clarification handling for natural, free-form conversation.",
-      next: ['How was it evaluated?', 'Compliance & rollout']
-    },
-    {
-      id: 'evaluation',
-      keys: ['evaluation', 'eval', 'llm as judge', 'llm-as-judge', 'groundedness', 'jailbreak'],
-      a: "The chatbot was evaluated offline (golden, adversarial, and regression test sets) and online (LLM-as-judge scoring on groundedness, faithfulness, safety, and jailbreak resistance).",
-      next: ['Compliance & rollout', 'Key metrics & impact']
-    },
-    {
-      id: 'compliance',
-      keys: ['compliance', 'legal', 'infosec', 'ai committee'],
-      a: "Before launch, the chatbot was cleared with Legal, InfoSec, and an internal AI committee, then rolled out to internal stakeholders, then org-wide, then 5% of production traffic.",
-      next: ['Key metrics & impact', 'His AI projects']
-    },
-    {
-      id: 'oli',
-      keys: ['oli', 'trip planner', 'travel'],
-      a: "Oli — AI Trip Planner is a conversational assistant in the CheapOair app, unifying destination discovery, flight search, itinerary planning, and personalization. Outcome: +15% engagement, 65+ daily flight conversions.",
-      next: ['Personas', 'Research process', 'Staged rollout']
-    },
-    {
-      id: 'personas',
-      keys: ['personas', 'explorer', 'planner persona', 'shopper persona', 'planning mindsets'],
-      a: "Oli serves three planning mindsets: Explorer (\"I don't know where to go\"), Planner (\"I know where I want to go\"), and Shopper (\"I want the best flight\").",
-      next: ['Research process', "Oli's capabilities"]
-    },
-    {
-      id: 'research',
-      keys: ['research', 'competitive analysis', 'ux process', 'trip.com', 'mindtrip', 'engineering pods'],
-      a: "Oli's mandate came from leadership. Abhishek led competitive analysis of Trip.com and Mindtrip, then a month of UX iteration reviewed with leadership. Execution ran across three engineering pods — Chatbot, RPA, and App — via daily grooming syncs.",
-      next: ['Staged rollout', "Oli's capabilities"]
-    },
-    {
-      id: 'rollout',
-      keys: ['staged rollout', 'uat', 'launch phases', "oli's launch"],
-      a: "Oli's launch was staged and metrics-gated: internal UAT → org-wide test → 5% of app traffic (auditing transcripts and A/B metrics to avoid cannibalizing existing app conversion) → 20% → 50% → 100%.",
-      next: ["Oli's capabilities", 'Key metrics & impact']
-    },
-    {
-      id: 'roadmap',
-      keys: ['roadmap', 'oli features', 'oli capabilities', 'destination discovery', 'itinerary'],
-      a: "Oli's capabilities: destination discovery, day-wise itinerary planning, flight discovery, hotel/car discovery, full booking-funnel assistance, and post-booking support linked to the existing chatbot — personalized via geolocation, behavioral signals, and conversation memory.",
-      next: ['Staged rollout', 'Key metrics & impact']
-    },
-    {
-      id: 'arthritis',
-      keys: ['arthritis', 'companion', 'vibe', 'vibe cod', 'pwa', 'side project', 'personal project'],
-      a: "Arthritis Companion is a login-free daily PWA for tracking arthritis symptoms and gentle exercises — designed around one real person's arthritic hands. Abhishek vibe-coded it solo: as the PM he owned the problem, design constraints, and product calls, and AI coding tools turned those into shipped code. It's local-first (React, TypeScript, IndexedDB), and has grown into a fuller health tool with a body map, medication tracking, and a doctor report — ask about any of those for more.",
-      next: ['Body map', 'Doctor report']
-    },
-    {
-      id: 'body-map',
-      keys: ['body map', 'joint map', 'silhouette', 'joint selection', 'which joints'],
-      a: "The body map is an interactive front-view silhouette with 18 tappable joints (shoulders, elbows, wrists, hands, lower back, hips, knees, ankles, feet — each left/right). It replaced a flat checkbox list for logging pain, and doubles as a heatmap on the Today dashboard showing which joints flare up most often. Tap targets stay above 44px even for tightly-spaced pairs like wrists and hands, so it stays usable with limited hand mobility.",
-      next: ['Inflammatory signal', 'Doctor report']
-    },
-    {
-      id: 'inflammatory-signal',
-      keys: ['inflammatory signal', 'inflammatory', 'ra', 'rheumatoid', 'pattern detection', 'screening', 'red flag'],
-      a: "Inflammatory signal screening is a conservative, non-diagnostic pattern check: it only flags when at least 3 days in the last 30 show both 60+ minutes of morning stiffness AND symmetric small-joint pain (e.g. both hands or both wrists), and only after at least 10 logged days — enough history to mean something. It's a nudge to see a doctor, never a diagnosis, and it's designed to stay quiet on sparse or ambiguous data rather than over-alert.",
-      next: ['Doctor report', 'Body map']
-    },
-    {
-      id: 'doctor-report',
-      keys: ['doctor report', 'doctor visit', 'printable report', 'visit summary', 'report for doctor'],
-      a: "The doctor report is a printable one-page summary of the last 30 days: average pain, good days, average and high-stiffness days, top affected joints, medication adherence, any inflammatory-signal flag, and streaks of extreme pain — built to hand to a doctor rather than make the user re-explain weeks of symptoms from memory.",
-      next: ['Medications', 'Body map']
-    },
-    {
-      id: 'medications',
-      keys: ['medication', 'medicine', 'meds', 'adherence', 'dosage', 'reminders'],
-      a: "Medication tracking covers name, dosage, and time-of-day slots, with daily dose logging and optional reminders. Doses logged each day roll up into an adherence rate, which feeds directly into the doctor report — so adherence isn't just self-reported, it's backed by actual logged doses.",
-      next: ['Doctor report', 'His AI projects']
-    },
-    {
-      id: 'skills',
-      keys: ['skill', 'skills', 'stack', 'tech', 'technologies', 'good at', 'expertise'],
-      a: "Abhishek's skills:\n\n• Gen AI / Tech: Conversational AI, Evals, Vibe Coding, RAG, Prompt Engineering, Error Analysis, Prototyping, ML\n• Analytics: Excel, SQL, Python, R, Power BI, Google Analytics, FullStory, Tableau\n• Product: 0→1 Roadmap, Agile/Scrum, A/B Testing, User Research, Wireframing, GTM\n• Platform: Cursor, Azure, Google Cloud, Figma, NICE CX One, App Insights, WhatsApp Cloud",
-      next: ['AI tools he uses', 'Education', 'Awards']
-    },
-    {
-      id: 'tools',
-      keys: ['tools', 'ai tools', 'daily tools', 'workflow', 'copilot', 'claude code', 'what tools', 'personal ai'],
-      a: "Abhishek's daily AI toolkit: Claude Code (vibe coding), Cursor (prototypes), ChatGPT/Claude chat (daily search), Ghostty (terminal), Obsidian (notes), Whisperflow (voice), Nanobanana (images) — plus Microsoft Copilot, and two personal AI agents he built: one that sentiment-analyzes weekly chat transcripts, another that auto-triages negative feedback into Azure Board tickets.",
-      next: ['His skills', 'His AI projects']
-    },
-    {
-      id: 'ai',
-      keys: ['ai', 'gen ai', 'genai', 'llm', 'rag', 'prompt', 'conversational'],
-      a: "AI is Abhishek's core focus: production conversational AI on Vertex AI and Dialogflow, multi-agent architectures, LLM-as-judge evaluations, a RAG Agent Co-Pilot, and hands-on prompt engineering and vibe coding.",
-      next: ['CheapOair chatbot', 'Oli trip planner']
-    },
-    {
-      id: 'education',
-      keys: ['education', 'study', 'college', 'university', 'degree', 'iit', 'kanpur', 'graduate'],
-      a: "Abhishek holds a B.Tech–M.Tech in Civil Engineering from the Indian Institute of Technology (IIT), Kanpur (July 2014 – May 2019), with a CPI of 8.2/10.",
-      next: ['Awards', 'His experience']
-    },
-    {
-      id: 'awards',
-      keys: ['award', 'awards', 'achievement', 'recognition', 'honors', 'prize'],
-      a: "Abhishek's recognitions:\n\n• 1st Prize ($560) — Fareportal Bug Hunt 2024\n• Top 5 Product Manager (2024) — for WhatsApp and GenAI POCs\n• Certificate of Excellence — OYO, for data-driven behavioral analysis.",
-      next: ['Education', 'Key metrics & impact']
-    },
-    {
-      id: 'contact',
-      keys: ['contact', 'reach', 'email', 'phone', 'linkedin', 'hire', 'connect', 'get in touch', 'number', 'call'],
-      a: CONTACT,
-      next: ['Who is Abhishek?']
-    },
-    {
-      id: 'github',
-      keys: ['github', 'code', 'repo', 'source'],
-      a: 'Abhishek is on GitHub at <a href="https://github.com/abhishekyogi24-hue" target="_blank" rel="noopener">github.com/abhishekyogi24-hue</a> — including the source for Arthritis Companion.',
-      next: ['His AI projects']
-    },
-    {
-      id: 'metrics',
-      keys: ['metrics', 'results', 'impact', 'numbers', 'revenue', 'achieve'],
-      a: "Some of Abhishek's impact:\n\n• $1M+ monthly revenue from AI chatbots\n• CheapOair rebuild: CSAT 62%→80%, engagement 58%→70%, containment 48%→53%\n• AI Trip Planner: +15% engagement, 65+ daily flight conversions\n• RAG Co-Pilot: −12% AHT\n• Priority Leads Tool: −8% complaints\n• Search Explorer: +40% conversion on selected flights\n• B2B subscriptions scaled to $40K MRR\n• At OYO: ₹2.98 Cr pricing impact, +6% SHNs (~$50K)",
-      next: ['CheapOair chatbot', 'Oli trip planner', 'How to contact']
-    },
-    {
-      id: 'location',
-      keys: ['location', 'where', 'based', 'city', 'country'],
-      a: "Abhishek is based in Gurugram, Haryana, India.",
-      next: ['How to contact']
-    },
-    {
-      id: 'philosophy',
-      keys: ['philosophy', 'opinion', 'view', 'perspective', 'think about pm', 'future of product', 'pm role', 'thought leadership', 'writes about', 'posts about'],
-      a: "Abhishek's view on product management in the AI era: conventional PM work is increasingly automatable, but real PMing — defining what's worth solving, navigating people, setting the narrative, and making judgment calls — won't die. AI empowers PMs with strong fundamentals; it won't rescue weak ones.",
-      next: ['His experience', 'His skills']
-    },
-    {
-      id: 'resume',
-      keys: ['resume', 'cv', 'download'],
-      a: "You can download Abhishek's full resume (PDF) from the Resume section on this page — scroll to it or check the nav link. This site itself has a condensed summary of his experience, projects, skills, and awards.",
-      next: ['How to contact']
-    }
-  ];
-
   var GREETING = ['hi', 'hello', 'hey', 'yo', 'hola', 'namaste', 'greetings', 'sup'];
   var THANKS = ['thank', 'thanks', 'thx', 'appreciate', 'great', 'awesome', 'cool', 'nice'];
 
   function normalize(s) { return ' ' + s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ') + ' '; }
 
-  // Retrieve the KB chunk(s) relevant to this specific question and compose
-  // a scoped answer from just those — not one fixed essay per topic. Returns
-  // {text, next}. If the query clearly spans two topics (e.g. "phase 1 and
-  // evaluation"), combine the top two chunks; otherwise return only the
-  // single best match, so answers stay concise and targeted.
-  function findAnswer(text) {
+  function greetingOrThanks(text) {
     var n = normalize(text);
-    if (GREETING.some(function (g) { return n.trim() === g || n.indexOf(' ' + g + ' ') !== -1 && n.trim().split(' ').length <= 2; })) {
-      return { text: "Hi! I'm Abhishek's assistant. Ask me about his experience, projects, skills, or how to get in touch. What would you like to know?", next: STARTERS };
+    if (GREETING.some(function (g) { return n.trim() === g || (n.indexOf(' ' + g + ' ') !== -1 && n.trim().split(' ').length <= 2); })) {
+      return { text: "Hi! I'm Abhi AI, Abhishek's AI assistant. Ask me about his experience, projects, skills, or how to get in touch. What would you like to know?", next: STARTERS };
     }
     if (THANKS.some(function (t) { return n.indexOf(t) !== -1; }) && n.trim().split(' ').length <= 4) {
       return { text: "You're welcome! Anything else you'd like to know about Abhishek?", next: STARTERS };
     }
+    return null;
+  }
 
-    // Retrieval: score every chunk, keep only those with a real hit.
-    var scored = [];
-    KB.forEach(function (entry) {
-      var score = 0;
-      entry.keys.forEach(function (k) {
-        if (n.indexOf(' ' + k + ' ') !== -1 || n.indexOf(' ' + k) !== -1) score += k.length;
+  // --- Fallback tier 2/3: client-side lexical search over the generated
+  // kb-lite.json (the same build artifact behind the Worker's real BM25
+  // search, just a ~35-chunk subset) — used only when the Worker itself is
+  // unreachable, so it can never silently drift from what Abhi AI "really"
+  // knows. If even that fetch fails, the no-match branch below (with a
+  // hardcoded contact line) is the final floor — always works, no network
+  // dependency beyond this document already being loaded.
+  var liteChunks = null;
+  var liteLoading = null;
+
+  function loadLiteKB() {
+    if (liteChunks) return Promise.resolve(liteChunks);
+    if (liteLoading) return liteLoading;
+    liteLoading = fetch('kb/kb-lite.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('kb-lite fetch failed');
+        return r.json();
+      })
+      .then(function (d) {
+        liteChunks = (d && d.chunks) || [];
+        return liteChunks;
+      })
+      .catch(function () {
+        liteChunks = [];
+        return liteChunks;
       });
-      if (score > 0) scored.push({ entry: entry, score: score });
+    return liteLoading;
+  }
+
+  function tokenize(text) {
+    return (text.toLowerCase().match(/[a-z0-9%$₹→+]+/g) || []).filter(function (t) { return t.length > 1; });
+  }
+
+  function scoreLiteChunks(query, chunks) {
+    var qTokens = tokenize(query);
+    if (!qTokens.length) return [];
+    return chunks
+      .map(function (c) {
+        var haystack = ((c.headingPath || '') + ' ' + c.text).toLowerCase();
+        var score = 0;
+        qTokens.forEach(function (t) { if (haystack.indexOf(t) !== -1) score += t.length; });
+        return { chunk: c, score: score * (c.weight || 1) };
+      })
+      .filter(function (s) { return s.score > 0; })
+      .sort(function (a, b) { return b.score - a.score; });
+  }
+
+  function liteAnswer(text) {
+    return loadLiteKB().then(function (chunks) {
+      var scored = scoreLiteChunks(text, chunks);
+      if (!scored.length) {
+        return {
+          text: "I'm focused on everything about Abhishek Yogi — his experience, projects, skills, education, and contact info. Try asking one of those, or reach him directly: " + CONTACT,
+          next: STARTERS,
+          degraded: true
+        };
+      }
+      var combined = scored.slice(0, 2).map(function (s) { return s.chunk.text; }).join('\n\n');
+      return { text: combined, next: STARTERS, degraded: true };
     });
-    scored.sort(function (a, b) { return b.score - a.score; });
-
-    if (scored.length === 0) {
-      return {
-        text: "I'm focused on everything about Abhishek Yogi — his experience, projects (CheapOair AI Chatbot, Oli Trip Planner, Arthritis Companion), skills, education, and contact info. Try asking one of those, or reach him directly: " + CONTACT,
-        next: STARTERS
-      };
-    }
-
-    // Compose: take the top chunk, and pull in a second only if the query
-    // genuinely hit it almost as strongly (a compound question), capped at 2
-    // chunks so the answer stays scoped and short.
-    var chosen = [scored[0].entry];
-    if (scored.length > 1 && scored[1].score >= scored[0].score * 0.7 && scored[1].entry.id !== scored[0].entry.id) {
-      chosen.push(scored[1].entry);
-    }
-
-    return {
-      text: chosen.map(function (e) { return e.a; }).join('\n\n'),
-      next: chosen[chosen.length - 1].next || STARTERS
-    };
   }
 
   function addMsg(text, who) {
@@ -484,6 +314,16 @@
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
     return div;
+  }
+
+  function addDegradedNote() {
+    var old = log.querySelector('.degraded-note');
+    if (old) old.remove();
+    var note = document.createElement('div');
+    note.className = 'degraded-note';
+    note.textContent = 'Answering from saved notes — full AI temporarily unavailable.';
+    log.appendChild(note);
+    log.scrollTop = log.scrollHeight;
   }
 
   function escapeHtml(s) {
@@ -531,27 +371,23 @@
     log.scrollTop = log.scrollHeight;
   }
 
-  // Scripted knowledge-base reply: {text, next} — HTML already trusted from KB entries.
-  function botReplyStatic(result) {
-    var typing = showTyping();
-    var delay = 350 + Math.min(result.text.length * 4, 700);
-    setTimeout(function () {
-      typing.remove();
-      addMsg(result.text, 'bot');
-      showChips(result.next);
-    }, delay);
-  }
-
-  // Real AI reply via the Cloudflare Worker proxy, with KB fallback on failure.
+  // Tier 1 (RAG) reply via the Cloudflare Worker, degrading through the
+  // ladder above on any failure (bad response, network error, or timeout).
   function askWorker(text) {
     var typing = showTyping();
     history.push({ role: 'user', content: text });
+
+    var controller = ('AbortController' in window) ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, WORKER_TIMEOUT_MS) : null;
+
     fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history })
+      body: JSON.stringify({ messages: history }),
+      signal: controller ? controller.signal : undefined
     })
       .then(function (r) {
+        if (timer) clearTimeout(timer);
         if (!r.ok) throw new Error('worker ' + r.status);
         return r.json();
       })
@@ -561,14 +397,18 @@
         if (!reply) throw new Error('empty reply');
         history.push({ role: 'assistant', content: reply });
         addMsg(formatBot(reply), 'bot');
+        if (d.mode === 'extractive' || d.degraded) addDegradedNote();
         showChips(STARTERS); // generic next-steps for the free-form AI path
       })
       .catch(function () {
+        if (timer) clearTimeout(timer);
         typing.remove();
-        history.pop(); // drop the optimistic user turn
-        var result = findAnswer(text);
-        addMsg(result.text, 'bot'); // graceful fallback to scripted KB
-        showChips(result.next);
+        history.pop(); // drop the optimistic user turn — the Worker never saw it
+        liteAnswer(text).then(function (result) {
+          addMsg(formatBot(result.text), 'bot');
+          if (result.degraded) addDegradedNote();
+          showChips(result.next);
+        });
       });
   }
 
@@ -576,11 +416,29 @@
     var old = log.querySelector('.chips');
     if (old) old.remove(); // the CTAs just acted on are no longer "next"
     addMsg(escapeHtml(text), 'user');
+
+    var quick = greetingOrThanks(text);
+    if (quick) {
+      var typing = showTyping();
+      setTimeout(function () {
+        typing.remove();
+        addMsg(quick.text, 'bot');
+        showChips(quick.next);
+      }, 350);
+      return;
+    }
+
     if (WORKER_URL) {
       askWorker(text);
-    } else {
-      botReplyStatic(findAnswer(text));
+      return;
     }
+
+    var typingLite = showTyping();
+    liteAnswer(text).then(function (result) {
+      typingLite.remove();
+      addMsg(formatBot(result.text), 'bot');
+      showChips(result.next);
+    });
   }
 
   form.addEventListener('submit', function (e) {
@@ -592,7 +450,7 @@
   });
 
   // opening message
-  addMsg("👋 Hi! I'm Abhishek's AI assistant. I can tell you about his experience, projects, skills, and more. What would you like to know?", 'bot');
+  addMsg("👋 Hi! I'm Abhi AI, Abhishek's AI assistant. I can tell you about his experience, projects, skills, and more. What would you like to know?", 'bot');
   showChips(STARTERS);
 })();
 </script>
