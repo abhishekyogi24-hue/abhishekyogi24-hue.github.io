@@ -2,7 +2,7 @@
   // Rotating eyebrow role label
   var eyebrowEl = document.getElementById('v2EyebrowRole');
   if (eyebrowEl) {
-    var roles = ['Product Manager', 'Data Enthusiast'];
+    var roles = ['AI Product Manager', 'Platform & Integrations', 'Data Enthusiast'];
     var roleIndex = 0;
     setInterval(function () {
       eyebrowEl.classList.add('eyebrow-fade');
