@@ -16,6 +16,7 @@ import { buildSystemPrompt, buildUserContextBlock } from "./prompt.js";
 
 const MODEL = "claude-sonnet-5";
 const MAX_TOKENS = 768;
+const VOICE_MAX_TOKENS = 250; // shorter cap for spoken replies — nobody wants TTS reading a monologue
 const MAX_MESSAGES = 24; // cap conversation length forwarded upstream
 const MAX_CHARS = 4000; // cap per-message length
 const RATE_LIMIT_PER_DAY = 60; // per IP, only enforced if RATE_LIMIT_KV is bound
@@ -177,7 +178,7 @@ export default {
           },
           body: JSON.stringify({
             model: MODEL,
-            max_tokens: MAX_TOKENS,
+            max_tokens: style === "voice" ? VOICE_MAX_TOKENS : MAX_TOKENS,
             system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
             messages: messagesWithContext,
           }),

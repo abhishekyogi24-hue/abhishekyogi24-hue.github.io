@@ -179,6 +179,54 @@
     align-self: flex-start;
     margin: -4px 0 2px 4px;
   }
+
+  .icon-btn {
+    border: none;
+    background: transparent;
+    color: var(--accent-fg);
+    opacity: 0.85;
+    cursor: pointer;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+  .icon-btn:hover { opacity: 1; background: rgba(0, 0, 0, 0.08); }
+
+  .mic-btn {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg-muted);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .mic-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .mic-btn.listening {
+    background: var(--accent);
+    color: var(--accent-fg);
+    border-color: var(--accent);
+    animation: mic-pulse 1.1s ease-in-out infinite;
+  }
+  .mic-btn.thinking { opacity: 0.6; animation: none; }
+  @keyframes mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(125, 31, 43, 0.35); }
+    50% { box-shadow: 0 0 0 8px rgba(125, 31, 43, 0); }
+  }
+
+  .voice-status {
+    font-size: 0.7rem;
+    color: var(--fg-muted);
+    text-align: center;
+    padding: 0 0 4px;
+    min-height: 1em;
+  }
 </style>
 <script>
 (function () {
@@ -199,11 +247,14 @@
       <h1>Abhi AI</h1>
       <p>Abhishek's AI assistant</p>
     </div>
+    <button id="speakerToggle" class="icon-btn" type="button" aria-label="Mute spoken replies" aria-pressed="true" title="Toggle spoken replies" hidden>🔊</button>
   </header>
 
   <div id="log" aria-live="polite"></div>
+  <div id="voiceStatus" class="voice-status" aria-live="polite"></div>
 
   <form id="form" autocomplete="off">
+    <button id="micBtn" class="mic-btn" type="button" aria-label="Speak your question" hidden>🎤</button>
     <input id="input" type="text" placeholder="Ask me anything about Abhishek…" aria-label="Your message">
     <button class="send" type="submit" aria-label="Send">→</button>
   </form>
@@ -243,6 +294,117 @@
       return { text: "You're welcome! Anything else you'd like to know about Abhishek?", next: STARTERS };
     }
     return null;
+  }
+
+  // --- Voice: browser-native Web Speech API (SpeechRecognition for mic input,
+  // SpeechSynthesis for spoken replies). No new API keys, no server cost —
+  // this is the v1 voice layer; ElevenLabs/Deepgram etc. are a deferred v2
+  // that needs its own credentials. Mic is strictly tap-to-talk, never
+  // always-listening. Firefox has no SpeechRecognition, so it gets a
+  // speaker-only fallback (mic button stays hidden, TTS still works).
+  var SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var hasSTT = !!SpeechRecognitionCtor;
+  var hasTTS = 'speechSynthesis' in window;
+
+  var micBtn = document.getElementById('micBtn');
+  var speakerToggle = document.getElementById('speakerToggle');
+  var voiceStatus = document.getElementById('voiceStatus');
+  var voiceState = 'idle'; // idle | listening | thinking | speaking
+  var speakerOn = hasTTS; // default on when supported; mute anytime
+  var recognizer = null;
+
+  function setVoiceState(state, statusText) {
+    voiceState = state;
+    micBtn.classList.toggle('listening', state === 'listening');
+    micBtn.classList.toggle('thinking', state === 'thinking');
+    voiceStatus.textContent = statusText || '';
+  }
+
+  // If the reply got cut off mid-sentence (e.g. hit the token cap), trim
+  // back to the last complete sentence so speech doesn't end on a
+  // dangling clause.
+  function trimToSentence(text) {
+    var m = text.match(/^[\s\S]*[.!?](?=\s|$)/);
+    return m ? m[0] : text;
+  }
+
+  // Strip markdown/HTML and make symbols speech-friendly — this runs on the
+  // raw reply text, separately from formatBot() (which prepares the HTML
+  // shown in the chat log).
+  function speakable(text) {
+    return text
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/^[-•]\s+/gm, '')
+      .replace(/https?:\/\/\S+/g, 'a link')
+      .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, 'his email')
+      .replace(/←/g, ' from ')
+      .replace(/→/g, ' to ')
+      .replace(/₹/g, 'rupees ')
+      .replace(/\$(\d)/g, 'dollars $1')
+      .replace(/\n+/g, '. ')
+      .trim();
+  }
+
+  function speak(text) {
+    if (!hasTTS || !speakerOn) return;
+    window.speechSynthesis.cancel();
+    var clean = trimToSentence(speakable(text));
+    if (!clean) return;
+    var utter = new SpeechSynthesisUtterance(clean);
+    setVoiceState('speaking', 'Speaking…');
+    utter.addEventListener('end', function () { setVoiceState('idle'); });
+    utter.addEventListener('error', function () { setVoiceState('idle'); });
+    window.speechSynthesis.speak(utter);
+  }
+
+  if (hasTTS) {
+    speakerToggle.hidden = false;
+    speakerToggle.addEventListener('click', function () {
+      speakerOn = !speakerOn;
+      speakerToggle.textContent = speakerOn ? '🔊' : '🔇';
+      speakerToggle.setAttribute('aria-pressed', String(speakerOn));
+      if (!speakerOn) window.speechSynthesis.cancel();
+    });
+  }
+
+  if (hasSTT) {
+    micBtn.hidden = false;
+    recognizer = new SpeechRecognitionCtor();
+    recognizer.lang = 'en-US';
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+
+    recognizer.addEventListener('result', function (e) {
+      var transcript = e.results[0][0].transcript;
+      setVoiceState('thinking', 'Thinking…');
+      if (transcript && transcript.trim()) ask(transcript.trim());
+      else setVoiceState('idle');
+    });
+    recognizer.addEventListener('error', function () {
+      setVoiceState('idle', "Didn't catch that — try again.");
+      setTimeout(function () { if (voiceState === 'idle') voiceStatus.textContent = ''; }, 2000);
+    });
+    recognizer.addEventListener('end', function () {
+      if (voiceState === 'listening') setVoiceState('idle');
+    });
+
+    micBtn.addEventListener('click', function () {
+      if (voiceState === 'listening') {
+        recognizer.stop();
+        setVoiceState('idle');
+        return;
+      }
+      if (hasTTS) window.speechSynthesis.cancel();
+      try {
+        recognizer.start();
+        setVoiceState('listening', 'Listening…');
+      } catch (e) {
+        setVoiceState('idle');
+      }
+    });
   }
 
   // --- Fallback tier 2/3: client-side lexical search over the generated
@@ -297,9 +459,14 @@
       var scored = scoreLiteChunks(text, chunks);
       if (!scored.length) {
         return {
+          // Pre-formatted, trusted HTML (the CONTACT links) — must NOT be
+          // passed through formatBot()'s escaping, or the <a> tags render
+          // as literal text. `html: true` tells callers to addMsg() this
+          // directly instead.
           text: "I'm focused on everything about Abhishek Yogi — his experience, projects, skills, education, and contact info. Try asking one of those, or reach him directly: " + CONTACT,
           next: STARTERS,
-          degraded: true
+          degraded: true,
+          html: true
         };
       }
       var combined = scored.slice(0, 2).map(function (s) { return s.chunk.text; }).join('\n\n');
@@ -383,7 +550,7 @@
     fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history }),
+      body: JSON.stringify({ messages: history, style: speakerOn ? 'voice' : 'text' }),
       signal: controller ? controller.signal : undefined
     })
       .then(function (r) {
@@ -399,15 +566,17 @@
         addMsg(formatBot(reply), 'bot');
         if (d.mode === 'extractive' || d.degraded) addDegradedNote();
         showChips(STARTERS); // generic next-steps for the free-form AI path
+        if (speakerOn) speak(reply);
       })
       .catch(function () {
         if (timer) clearTimeout(timer);
         typing.remove();
         history.pop(); // drop the optimistic user turn — the Worker never saw it
         liteAnswer(text).then(function (result) {
-          addMsg(formatBot(result.text), 'bot');
+          addMsg(result.html ? result.text : formatBot(result.text), 'bot');
           if (result.degraded) addDegradedNote();
           showChips(result.next);
+          if (speakerOn) speak(result.text);
         });
       });
   }
@@ -424,6 +593,7 @@
         typing.remove();
         addMsg(quick.text, 'bot');
         showChips(quick.next);
+        if (speakerOn) speak(quick.text);
       }, 350);
       return;
     }
@@ -436,8 +606,9 @@
     var typingLite = showTyping();
     liteAnswer(text).then(function (result) {
       typingLite.remove();
-      addMsg(formatBot(result.text), 'bot');
+      addMsg(result.html ? result.text : formatBot(result.text), 'bot');
       showChips(result.next);
+      if (speakerOn) speak(result.text);
     });
   }
 

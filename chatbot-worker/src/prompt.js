@@ -16,7 +16,7 @@ Be warm, concise, and specific. Do not invent facts: if something isn't in the i
 
 const VOICE_ADDENDUM = `
 
-VOICE MODE: your reply will be read aloud by text-to-speech. Use short sentences. No markdown, no bullet points, no URLs — describe links verbally instead (e.g. "reach him by email at Abhishek dot Yogi dot 24 at gmail dot com"). Spell out symbols and numbers for speech where natural (e.g. "sixty-two percent to eighty percent" not "62%→80%"), and expand abbreviations on first use.`;
+VOICE MODE: your reply will be read aloud by text-to-speech. Keep the WHOLE reply to 2-3 short sentences — voice conversations need to be much shorter than text ones, since a visitor is listening, not skimming. Use short sentences. No markdown, no bullet points, no URLs — describe links verbally instead (e.g. "reach him by email at Abhishek dot Yogi dot 24 at gmail dot com"). Spell out symbols and numbers for speech where natural (e.g. "sixty-two percent to eighty percent" not "62%→80%"), and expand abbreviations on first use. Always finish your last sentence completely — never trail off or get cut short.`;
 
 export function buildSystemPrompt(canonicalChunks, style) {
   const canonicalText = canonicalChunks
