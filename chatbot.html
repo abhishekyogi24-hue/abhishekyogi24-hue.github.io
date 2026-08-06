@@ -440,22 +440,65 @@
     return (text.toLowerCase().match(/[a-z0-9%$₹→+]+/g) || []).filter(function (t) { return t.length > 1; });
   }
 
+  // Document frequency per token across the lite chunk set — lets scoring
+  // down-weight terms that appear almost everywhere (like "abhishek", which
+  // is in nearly every chunk and carries no topical signal on its own) in
+  // favor of distinctive terms, a cheap client-side approximation of the
+  // IDF term in the Worker's real BM25 (chatbot-worker/src/retrieve.js).
+  var liteDocFreq = null;
+
+  function computeDocFreq(chunks) {
+    var df = {};
+    chunks.forEach(function (c) {
+      var seen = {};
+      tokenize((c.headingPath || '') + ' ' + c.text).forEach(function (t) {
+        if (!seen[t]) { df[t] = (df[t] || 0) + 1; seen[t] = true; }
+      });
+    });
+    return df;
+  }
+
   function scoreLiteChunks(query, chunks) {
     var qTokens = tokenize(query);
     if (!qTokens.length) return [];
+    if (!liteDocFreq) liteDocFreq = computeDocFreq(chunks);
+    var N = chunks.length;
     return chunks
       .map(function (c) {
         var haystack = ((c.headingPath || '') + ' ' + c.text).toLowerCase();
         var score = 0;
-        qTokens.forEach(function (t) { if (haystack.indexOf(t) !== -1) score += t.length; });
-        return { chunk: c, score: score * (c.weight || 1) };
+        qTokens.forEach(function (t) {
+          if (haystack.indexOf(t) === -1) return;
+          var idf = Math.log((N + 1) / ((liteDocFreq[t] || 1) + 0.5));
+          score += Math.max(idf, 0.05) * t.length;
+        });
+        // Normalize by document length so short, on-topic chunks (like
+        // CONTACT) don't lose to long chunks that merely contain the same
+        // words incidentally.
+        var norm = Math.sqrt(c.tokens || 50);
+        return { chunk: c, score: (score / norm) * (c.weight || 1) };
       })
       .filter(function (s) { return s.score > 0; })
       .sort(function (a, b) { return b.score - a.score; });
   }
 
+  // Fast path for identity/self-intro questions ("who are you", "who is
+  // Abhishek", "tell me about yourself") — these are common enough, and
+  // generic enough (every chunk mentions his name), that keyword scoring
+  // alone can land on the wrong chunk. Route straight to the bio chunk.
+  var IDENTITY_PHRASES = ['who are you', 'who is abhishek', 'about yourself', 'about abhishek', 'introduce yourself'];
+
+  function isIdentityQuestion(text) {
+    var n = normalize(text);
+    return IDENTITY_PHRASES.some(function (p) { return n.indexOf(p) !== -1; });
+  }
+
   function liteAnswer(text) {
     return loadLiteKB().then(function (chunks) {
+      if (isIdentityQuestion(text)) {
+        var bio = chunks.filter(function (c) { return c.headingPath === 'ABOUT ABHISHEK YOGI'; })[0];
+        if (bio) return { text: bio.text, next: STARTERS, degraded: true };
+      }
       var scored = scoreLiteChunks(text, chunks);
       if (!scored.length) {
         return {
