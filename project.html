@@ -431,6 +431,85 @@
         </div>
       </details>
     </article>
+
+    <article class="case-study" data-accent-light="#0e7490" data-accent-dark="#5fd0e6">
+      <div class="case-head">
+        <h3>PM Job Radar</h3>
+        <p class="case-tag">0→1 · Self-updating job-hunt system · Designed, built, and shipped end-to-end</p>
+      </div>
+
+      <p class="case-lede">
+        A personal job-hunt system that surfaces fully-remote Product Manager &amp; AI-PM roles I can actually
+        apply to. Every weekday morning it sweeps ~30 job portals plus LinkedIn, keeps only roles posted in the
+        last 48 hours and open to India-based applicants, verifies every link is a live posting, and ranks them
+        freshest-first on one dashboard — with a daily email digest so a fresh opening never slips past.
+      </p>
+
+      <p class="case-metrics-caption">How it cuts the noise</p>
+      <div class="case-metrics">
+        <div class="metric"><span class="metric-value">~30</span><span class="metric-label">Portals swept daily</span></div>
+        <div class="metric"><span class="metric-value">48h</span><span class="metric-label">Freshness window</span></div>
+        <div class="metric"><span class="metric-value">100%</span><span class="metric-label">Links verified live</span></div>
+      </div>
+
+      <div class="case-links">
+        <a class="btn btn-primary" href="https://jobraderabhii.netlify.app" target="_blank" rel="noopener">Live demo →</a>
+        <a class="btn" href="https://github.com/abhishekyogi24-hue/abhishekyogi24-hue.github.io/tree/main/job-radar" target="_blank" rel="noopener">View source</a>
+      </div>
+
+      <details class="case-details">
+        <summary class="case-toggle">
+          <span class="case-toggle-closed">Show full case study</span>
+          <span class="case-toggle-open">Hide details</span>
+          <svg class="case-toggle-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div class="case-details-body">
+          <div class="case-grid">
+            <div>
+              <h4>Problem</h4>
+              <p>Job hunting means re-running the same searches across a dozen sites every day — and most "remote"
+              listings are secretly on-site or already swamped with applicants by the time you find them.</p>
+            </div>
+            <div>
+              <h4>Approach</h4>
+              <p>One daily automation instead of five browser tabs: deep-paginate LinkedIn's guest API across
+              keyword variants, pull remote boards and Indian portals, dedupe, and rank freshest-first — because a
+              role posted an hour ago has far fewer applicants than one that's been up two weeks.</p>
+            </div>
+            <div>
+              <h4>The catch I designed around</h4>
+              <p>Job boards lie about "remote" — LinkedIn's own remote filter returned explicitly on-site roles. So
+              the system opens each posting to confirm the workplace type and that the link is live before it ever
+              shows up, and flags anything it can't confirm rather than hiding it.</p>
+            </div>
+            <div>
+              <h4>Daily delivery</h4>
+              <p>A scheduled cloud agent runs at 8am IST and a Google Apps Script emails the fresh roles straight to
+              my inbox — dashboard, morning digest, and email all kept in sync.</p>
+            </div>
+          </div>
+
+          <div class="case-phase">
+            <h4>How I built it — vibe-coded, PM-led</h4>
+            <p>
+              Built solo with Claude Code. The engineering was the easy part; the product judgment was the work —
+              deciding that freshness is the real edge, that an unverified link is worse than no link, and that an
+              honest "couldn't confirm remote" beats a confident wrong answer. I drove the scraping tactics
+              (paginate the guest API, distrust the "remote" filter, verify each posting), the ranking, and every
+              trust rule, then iterated in tight loops against real live listings.
+            </p>
+          </div>
+
+          <p class="case-challenge"><strong>Biggest challenge:</strong> trusting the data — designing the verification
+          so a dead link or a mislabeled on-site role never reaches the final list.</p>
+
+          <p class="case-metrics-caption">Skills this build demonstrates</p>
+          <div class="case-stack">
+            <span>Product Judgment</span><span>Automation (Cron / Apps Script)</span><span>Web Scraping</span><span>LinkedIn Guest API</span><span>Data Verification</span><span>Freshness Ranking</span><span>Vibe Coding (Claude Code)</span><span>Client-Side Dashboard</span>
+          </div>
+        </div>
+      </details>
+    </article>
   </section>
 </main>
 

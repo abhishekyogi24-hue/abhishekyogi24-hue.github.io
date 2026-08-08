@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PM Job Radar — Remote, India-eligible</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-2: #fbfaf8;
+    --border: #e5e2db;
+    --border-strong: #d6d2c8;
+    --ink: #1c1b18;
+    --ink-2: #4f4c45;
+    --ink-3: #86817650;
+    --muted: #78736a;
+    --accent: #0f766e;        /* deep teal — the brand signal */
+    --accent-ink: #0b5a54;
+    --accent-wash: #0f766e14;
+    --fresh: #15803d;         /* semantic: posted <24h */
+    --fresh-wash: #15803d16;
+    --verify: #b45309;        /* semantic: eligibility to confirm */
+    --verify-wash: #b4530915;
+    --stretch: #6b6f76;       /* semantic: above target seniority */
+    --shadow: 0 1px 2px rgba(28,27,24,.04), 0 4px 16px rgba(28,27,24,.05);
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14140f;
+      --surface: #1d1d18;
+      --surface-2: #201f1a;
+      --border: #302f28;
+      --border-strong: #3c3b33;
+      --ink: #f2f0ea;
+      --ink-2: #c8c4ba;
+      --muted: #918c81;
+      --accent: #4fd1c5;
+      --accent-ink: #6ee7db;
+      --accent-wash: #4fd1c518;
+      --fresh: #4ade80;
+      --fresh-wash: #4ade8018;
+      --verify: #fbbf24;
+      --verify-wash: #fbbf2416;
+      --stretch: #9a958a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14140f; --surface: #1d1d18; --surface-2: #201f1a; --border: #302f28;
+    --border-strong: #3c3b33; --ink: #f2f0ea; --ink-2: #c8c4ba; --muted: #918c81;
+    --accent: #4fd1c5; --accent-ink: #6ee7db; --accent-wash: #4fd1c518;
+    --fresh: #4ade80; --fresh-wash: #4ade8018; --verify: #fbbf24; --verify-wash: #fbbf2416;
+    --stretch: #9a958a; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f5f2; --surface: #ffffff; --surface-2: #fbfaf8; --border: #e5e2db;
+    --border-strong: #d6d2c8; --ink: #1c1b18; --ink-2: #4f4c45; --muted: #78736a;
+    --accent: #0f766e; --accent-ink: #0b5a54; --accent-wash: #0f766e14;
+    --fresh: #15803d; --fresh-wash: #15803d16; --verify: #b45309; --verify-wash: #b4530915;
+    --stretch: #6b6f76; --shadow: 0 1px 2px rgba(28,27,24,.04), 0 4px 16px rgba(28,27,24,.05);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--bg);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- Masthead ---- */
+  header.masthead { padding: 40px 0 28px; border-bottom: 1px solid var(--border); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin: 0 0 10px;
+  }
+  h1.title {
+    font-size: clamp(28px, 4.5vw, 40px); line-height: 1.05; margin: 0 0 10px;
+    letter-spacing: -.02em; font-weight: 720; text-wrap: balance;
+  }
+  .subtitle { color: var(--ink-2); font-size: 15.5px; margin: 0; max-width: 60ch; }
+  .subtitle b { color: var(--ink); font-weight: 600; }
+
+  /* ---- Stat strip ---- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0 4px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px; box-shadow: var(--shadow);
+  }
+  .stat .n { font-family: var(--mono); font-size: 26px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .stat.fresh .n { color: var(--fresh); }
+  .stat.ai .n { color: var(--accent); }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ---- Controls ---- */
+  .controls {
+    position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px); border-bottom: 1px solid var(--border);
+    padding: 14px 0; margin-top: 22px;
+  }
+  .controls-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .search {
+    flex: 1 1 220px; min-width: 180px; display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border-strong); border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .search input { border: 0; background: transparent; outline: none; font-size: 14px; color: var(--ink); width: 100%; font-family: var(--sans); }
+  .search svg { flex: 0 0 auto; color: var(--muted); }
+  .seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button {
+    font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--ink-2);
+    background: transparent; border: 0; padding: 6px 12px; border-radius: 7px; cursor: pointer;
+    white-space: nowrap;
+  }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+  .toggle {
+    font-family: var(--sans); font-size: 13px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px;
+    border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface); color: var(--ink-2);
+  }
+  .toggle[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-ink); background: var(--accent-wash); }
+  .toggle .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .5; }
+  .toggle[aria-pressed="true"] .dot { opacity: 1; }
+  .spacer { flex: 1 1 auto; }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  /* ---- Section headings ---- */
+  .sec-head { display: flex; align-items: baseline; gap: 10px; margin: 30px 0 14px; }
+  .sec-head h2 { font-size: 18px; letter-spacing: -.01em; margin: 0; font-weight: 680; }
+  .sec-head .count { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .sec-head .hint { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+  /* ---- Job cards ---- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow);
+    transition: transform .12s ease, border-color .12s ease;
+  }
+  .card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+  .card.hidden { display: none; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .card h3 { font-size: 16px; line-height: 1.25; margin: 0; letter-spacing: -.01em; font-weight: 640; text-wrap: balance; }
+  .company { font-size: 13.5px; color: var(--ink-2); margin-top: 3px; }
+  .company b { color: var(--ink); font-weight: 600; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase;
+    font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .badge.new { color: var(--fresh); background: var(--fresh-wash); border-color: color-mix(in srgb, var(--fresh) 22%, transparent); }
+  .badge.ai { color: var(--accent-ink); background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 24%, transparent); }
+  .badge.region-india { color: var(--accent-ink); background: var(--accent-wash); }
+  .badge.region-world { color: var(--ink-2); background: var(--surface-2); border-color: var(--border); }
+  .badge.verify { color: var(--verify); background: var(--verify-wash); border-color: color-mix(in srgb, var(--verify) 22%, transparent); }
+  .badge.stretch { color: var(--stretch); background: var(--surface-2); border-color: var(--border); }
+  .badge.ok { color: var(--fresh); background: transparent; border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
+  .note { font-size: 12px; color: var(--muted); line-height: 1.35; margin-top: -2px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); margin-top: auto; }
+  .meta .posted { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .meta .posted.is-new { color: var(--fresh); font-weight: 600; }
+  .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 4px; }
+  .src { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .apply {
+    font-family: var(--sans); font-size: 13px; font-weight: 600; text-decoration: none;
+    color: #fff; background: var(--accent); padding: 8px 14px; border-radius: 9px;
+    display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  }
+  :root[data-theme="dark"] .apply, @media (prefers-color-scheme: dark) { }
+  .apply:hover { background: var(--accent-ink); }
+  .apply svg { width: 13px; height: 13px; }
+
+  /* ---- Funding leads ---- */
+  .leads { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .lead {
+    background: var(--surface-2); border: 1px dashed var(--border-strong); border-radius: 12px;
+    padding: 15px 16px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .lead .amt { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent-ink); }
+  .lead h4 { margin: 0; font-size: 15px; font-weight: 640; }
+  .lead p { margin: 0; font-size: 13px; color: var(--ink-2); }
+  .lead .lead-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+  .lead a { font-size: 12.5px; color: var(--accent-ink); text-decoration: none; font-weight: 600; }
+  .lead a:hover { text-decoration: underline; }
+
+  .empty { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 14px; display: none; }
+  .empty.show { display: block; }
+
+  /* ---- Footer ---- */
+  footer { border-top: 1px solid var(--border); margin-top: 44px; padding: 26px 0 48px; color: var(--muted); font-size: 13px; }
+  footer .how { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  footer .how b { color: var(--ink); }
+  footer .how ol { margin: 8px 0 0; padding-left: 20px; color: var(--ink-2); }
+  footer .how li { margin: 3px 0; }
+  footer .stamp { font-family: var(--mono); font-size: 12px; }
+
+  .themebtn {
+    position: fixed; bottom: 18px; right: 18px; z-index: 40; width: 40px; height: 40px;
+    border-radius: 50%; border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--ink-2); cursor: pointer; box-shadow: var(--shadow); font-size: 17px;
+  }
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 0 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="container">
+    <header class="masthead">
+      <p class="eyebrow">Personal job radar · updated daily</p>
+      <h1 class="title">Remote PM &amp; AI‑PM roles you can actually apply to</h1>
+      <p class="subtitle">Product Manager &amp; AI‑PM roles for <b>India‑based or India‑eligible</b> applicants (no work visa required). <b>Only roles posted in the last 48 hours</b>, deep‑pulled from LinkedIn + remote boards and each link opened to verify it's live. <b>Remote — verify</b> = a real posting that didn't state its workplace type. The morning sweep refills this daily.</p>
+
+      <div class="stats" id="stats">
+        <div class="stat"><div class="n" id="s-total">0</div><div class="l">Live roles tracked</div></div>
+        <div class="stat fresh"><div class="n" id="s-new">0</div><div class="l">Posted in last 24h</div></div>
+        <div class="stat ai"><div class="n" id="s-ai">0</div><div class="l">AI / ML product roles</div></div>
+        <div class="stat"><div class="n" id="s-remote">0</div><div class="l">Confirmed fully remote</div></div>
+      </div>
+    </header>
+  </div>
+
+  <div class="controls">
+    <div class="container controls-row">
+      <label class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="Search title or company…" aria-label="Search roles">
+      </label>
+      <div class="seg" role="group" aria-label="Seniority">
+        <button data-sen="all" aria-pressed="true">All levels</button>
+        <button data-sen="PM" aria-pressed="false">PM</button>
+        <button data-sen="Senior" aria-pressed="false">Senior</button>
+      </div>
+      <button class="toggle" id="t-ai" aria-pressed="false"><span class="dot"></span>AI only</button>
+      <button class="toggle" id="t-fresh" aria-pressed="false"><span class="dot"></span>New ≤24h</button>
+      <button class="toggle" id="t-india" aria-pressed="false"><span class="dot"></span>India‑eligible</button>
+      <button class="toggle" id="t-remote" aria-pressed="false"><span class="dot"></span>Remote confirmed</button>
+      <div class="spacer"></div>
+      <div class="seg" role="group" aria-label="Sort">
+        <button data-sort="fresh" aria-pressed="true">Freshest</button>
+        <button data-sort="match" aria-pressed="false">Best match</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="sec-head">
+      <h2>Open roles</h2>
+      <span class="count" id="role-count">0 shown</span>
+      <span class="hint">Click a role to open the source listing — verify eligibility before applying.</span>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty">No roles match these filters. Try clearing a toggle or the search.</div>
+
+    <div class="sec-head">
+      <h2>Funding leads</h2>
+      <span class="count" id="lead-count">0</span>
+      <span class="hint">Recently‑funded startups — often hiring PMs before they post. Reach the founder directly.</span>
+    </div>
+    <div class="leads" id="leads"></div>
+  </div>
+
+  <div class="container">
+    <footer>
+      <div class="how">
+        <b>How this stays current.</b> Every weekday morning an automation sweeps ~30 job portals + Indian startup funding news for anything posted in the last 48h, keeps only fully‑remote roles open to Indian applicants at PM–Senior level, and refreshes this list.
+        <ol>
+          <li>Every link is opened and verified as a live posting before it's listed — no dead 404 links.</li>
+          <li><b>Remote — verify</b> marks a live posting that didn't state its workplace type — likely remote, but confirm on the listing before investing time. Use the <b>Remote confirmed</b> filter to see only roles that explicitly say fully remote.</li>
+          <li>Freshness wins — new postings are surfaced before the applicant crowd arrives.</li>
+          <li>Region is flagged <span style="color:var(--verify);font-weight:600">Verify</span> when a "worldwide/multi‑region" role doesn't explicitly confirm India — always confirm on the listing.</li>
+          <li>Funding leads point you to companies scaling now; find the founder on LinkedIn and reach out before the role is posted.</li>
+        </ol>
+      </div>
+      <div class="stamp">Generated <span id="gen">—</span> · <span id="foot-total">0</span> roles · <span id="foot-leads">0</span> funding leads · sources: LinkedIn (deep‑paginated guest API), Naukri (live browser · Remote work‑mode), Himalayas, +remote boards, StartupTalky</div>
+    </footer>
+  </div>
+</div>
+
+<button class="themebtn" id="theme" title="Toggle theme" aria-label="Toggle light/dark theme">◐</button>
+
+<script>
+  // ---- Data (seeded from live search on generation date) ----
+  const GENERATED = "2026-08-07";
+  // Hard rule: only roles posted within the last 48 hours. Older roles drop off automatically each morning.
+  // workplace: 'remote' = confirmed fully remote on the posting; 'unconfirmed' = live posting that didn't state workplace type (likely remote — verify).
+  const roles = [
+    // ---- Confirmed fully remote ----
+    { title:"Technical Product Manager", company:"ALX Africa", sen:"PM", ai:true, region:"world", workplace:"remote", days:0, new24:true, posted:"4h ago", verified:true, note:"AI learning platform · prefers GMT+2 hours", source:"Himalayas", url:"https://himalayas.app/companies/alx_africa/jobs/technical-product-manager" },
+    { title:"Product Manager, Biosimilars", company:"Danaher", sen:"PM", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"13h ago", verified:true, note:"Pharma product role (India only)", source:"Himalayas", url:"https://himalayas.app/companies/danaher/jobs/product-manager-biosimilars" },
+    { title:"AI Product Manager", company:"Profex Tech", sen:"Senior", ai:true, region:"india", workplace:"remote", days:0, new24:true, posted:"few hrs ago", verified:true, note:"B2B SaaS · LLM · ₹40–55 LPA · 6–7 yrs", source:"Naukri", url:"https://www.naukri.com/job-listings-ai-product-manager-remote-profex-tech-remote-6-to-7-years-070826034977" },
+    { title:"Sr. Product Manager — Lead Generation Suite", company:"HighLevel", sen:"Senior", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"few hrs ago", verified:true, note:"WFH · 6–11 yrs · listed on Naukri + Instahyre", source:"Naukri", url:"https://www.naukri.com/job-listings-sr-product-manager-lead-generation-suite-highlevel-remote-6-to-11-years-070826500626" },
+    { title:"Senior Product Manager", company:"Flexiple", sen:"Senior", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"6h ago", verified:true, note:"Remote (India)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/senior-product-manager-at-flexiple-4448756505" },
+    { title:"Product Manager", company:"Flexiple", sen:"PM", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"3h ago", verified:true, note:"Remote (India)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-flexiple-4448779858" },
+    { title:"Product Development Manager", company:"Flexiple", sen:"PM", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"8h ago", verified:true, note:"Remote (India)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-development-manager-at-flexiple-4448734760" },
+    { title:"Principal Product Manager", company:"Kantata", sen:"Lead", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"5h ago", verified:true, note:"Remote · ≈4 near-identical openings", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/principal-product-manager-at-kantata-4450300706" },
+    { title:"Product Manager — AI Products", company:"BuzzBoard", sen:"PM", ai:true, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Agent-based AI for B2B · fully remote (Hyderabad HQ)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-%E2%80%94-ai-products-at-buzzboard-4450254853" },
+    { title:"PM, Senior Staff — Data & AI", company:"Equinix", sen:"Senior", ai:true, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · US-hours shift (4pm–12am IST)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-senior-staff-data-ai-at-equinix-4448075130" },
+    { title:"Senior PM — AI Learning & Games", company:"NavGurukul", sen:"Senior", ai:true, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote (India/diaspora) · ~30% travel", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/senior-product-manager-ai-learning-games-at-navgurukul-4448409583" },
+    { title:"Technical Product Manager", company:"BJAK", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · must be India-based", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/technical-product-manager-at-bjak-4449366341" },
+    { title:"Product Manager", company:"BJAK", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · must be India-based", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-bjak-4449372129" },
+    { title:"Product Manager", company:"Kira", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · must be India-based", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-kira-4449321967" },
+    { title:"Business Analyst / Product Manager", company:"Seattle New Media", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote (India) · 7pm–4am IST shift", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/business-analyst-product-manager-at-seattle-new-media-4449367931" },
+    { title:"Product / Project Manager", company:"2am.tech", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Contractor · 5+ yrs software PM", source:"Himalayas", url:"https://himalayas.app/companies/2am-tech/jobs/product-project-manager" },
+    { title:"Head of Product", company:"Scrambly", sen:"Lead", ai:false, region:"world", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Adtech startup · open to all countries", source:"Himalayas", url:"https://himalayas.app/companies/scrambly/jobs/head-of-product" },
+    // ---- Live postings, workplace type not stated (verify remote) ----
+    { title:"PM, Unified Experience — Agentic Platform", company:"Eli Lilly", sen:"PM", ai:true, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"1h ago", verified:true, note:"Agentic AI platform", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-unified-experience-agentic-platform-at-eli-lilly-and-company-4450703822" },
+    { title:"AI Digital Product Sr Manager — AI Platforms", company:"Amgen", sen:"Lead", ai:true, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"1h ago", verified:true, note:"Senior stretch (12–17y)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/ai-digital-product-sr-manager-%E2%80%93-ai-platforms-at-amgen-4450708698" },
+    { title:"Product Manager", company:"Securin", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"1h ago", verified:true, note:"Work mode: Hybrid/Remote", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-securin-inc-4450713221" },
+    { title:"Product Manager — Voice Agentic AI", company:"L&T Finance", sen:"PM", ai:true, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"2h ago", verified:true, note:"Voice agentic AI", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-%E2%80%93-voice-agentic-ai-at-l-t-finance-4443284434" },
+    { title:"Product Manager", company:"G2", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"3h ago", verified:true, note:"", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-g2-4433521399" },
+    { title:"Product Manager", company:"CareerXperts", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"3h ago", verified:true, note:"Recruiter-posted", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-careerxperts-consulting-4448781630" },
+    { title:"Product Manager", company:"Snapmint", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"6h ago", verified:true, note:"", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-snapmint-4448771150" },
+    { title:"Product Manager (up to ₹60 LPA)", company:"CodeRound AI", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"11h ago", verified:true, note:"", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-up-to-60lpa-at-coderound-ai-4450065183" },
+    { title:"Product Manager", company:"Credaris.ai", sen:"PM", ai:true, region:"india", workplace:"unconfirmed", days:0, new24:true, posted:"14h ago", verified:true, note:"AI fintech", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-credaris-ai-4448489429" },
+    { title:"Senior AI Product Manager (w/ SWE exp)", company:"SciSpace", sen:"Senior", ai:true, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"AI research product", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/senior-ai-product-manager-with-software-engineering-experience-at-scispace-4449394418" },
+    { title:"Senior PM — Data & Solution Strategy", company:"ASAPP", sen:"Senior", ai:true, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"AI CX platform", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/senior-product-manager-data-solution-strategy-at-asapp-4440986899" },
+    { title:"Senior PM — Messaging Platform & AI Services", company:"ASAPP", sen:"Senior", ai:true, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"AI CX platform", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/senior-product-manager-messaging-platform-ai-services-at-asapp-4441201316" },
+    { title:"PM — Founding Team [RevOps]", company:"Reo.Dev", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"Founding PM", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-founding-team-revops-experience-at-reo-dev-4450262666" },
+    { title:"Technology Product Manager", company:"Halo Media", sen:"PM", ai:false, region:"world", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"India / LatAm / Europe", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/technology-product-manager-at-halo-media-4449739262" },
+    { title:"Principal Product Manager", company:"Cyware", sen:"Lead", ai:false, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"Senior stretch", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/principal-product-manager-at-cyware-4449386063" },
+    { title:"Technical Product Manager", company:"Pratilipi", sen:"PM", ai:false, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/technical-product-manager-at-pratilipi-4448400139" },
+    { title:"Product Manager", company:"SimpleO.ai", sen:"PM", ai:true, region:"india", workplace:"unconfirmed", days:1, new24:false, posted:"1d ago", verified:true, note:"AI product", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-simpleo-ai-4449335143" }
+  ];
+
+  const leads = [
+    { company:"Kily", amt:"₹30 Cr seed", note:"Bengaluru agentic enterprise‑AI startup. Funds earmarked to strengthen product & GTM — strong AI‑PM lead.", investors:"Sorin Investments, Razorpay", src:"StartupTalky", url:"https://startuptalky.com/news/daily-indian-funding-roundup-key-news-4-august-2026/" },
+    { company:"NYAI", amt:"$1.5M seed", note:"Backed by Indian family offices + strategic angels. Early enough to shape product from the ground up.", investors:"Family offices", src:"StartupTalky", url:"https://startuptalky.com/news/daily-indian-funding-roundup-key-news-4-august-2026/" },
+    { company:"Vingo", amt:"₹10 Cr seed", note:"C2C marketplace for pre‑owned goods. Post‑seed teams usually add their first dedicated PM.", investors:"IndiaQuotient, Inuka Capital", src:"StartupTalky", url:"https://startuptalky.com/news/daily-indian-funding-roundup-key-news-4-august-2026/" },
+    { company:"Superleap", amt:"₹36 Cr", note:"Fresh raise (4 Aug 2026). Worth a direct founder outreach on LinkedIn.", investors:"—", src:"StartupTalky", url:"https://startuptalky.com/news/daily-indian-funding-roundup-key-news-4-august-2026/" }
+  ];
+
+  // ---- State ----
+  const state = { q:"", sen:"all", ai:false, fresh:false, india:false, remote:false, sort:"fresh" };
+  const senLabel = { PM:"PM", Senior:"Senior", Lead:"Lead+" };
+  const regionBadge = {
+    india: ['region-india','India‑eligible'],
+    world: ['region-world','Worldwide'],
+    verify:['verify','Verify region']
+  };
+
+  function matchScore(r){
+    let s = 0;
+    if (r.new24) s += 50; else if (r.days <= 1) s += 34; else s += 10;
+    if (r.workplace === "remote") s += 20; else s -= 4;   // confirmed remote beats unconfirmed
+    if (r.region === "india") s += 22; else if (r.region === "world") s += 14;
+    if (r.sen === "PM" || r.sen === "Senior") s += 16;    // inside target band
+    if (r.ai) s += 14;
+    return s;
+  }
+
+  function passes(r){
+    if (state.sen !== "all" && r.sen !== state.sen) return false;
+    if (state.ai && !r.ai) return false;
+    if (state.fresh && !r.new24) return false;
+    if (state.india && !(r.region === "india" || r.region === "world")) return false;
+    if (state.remote && r.workplace !== "remote") return false;
+    if (state.q){
+      const hay = (r.title + " " + r.company).toLowerCase();
+      if (!hay.includes(state.q.toLowerCase())) return false;
+    }
+    return true;
+  }
+
+  function esc(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  function cardHTML(r){
+    const isNew = r.new24;
+    const [rcls, rlabel] = regionBadge[r.region];
+    const stretch = r.sen === "Lead";
+    return `<article class="card">
+      <div class="card-top">
+        <div>
+          <h3>${esc(r.title)}</h3>
+          <div class="company"><b>${esc(r.company)}</b></div>
+        </div>
+      </div>
+      <div class="badges">
+        ${isNew ? '<span class="badge new">New · 24h</span>' : ''}
+        ${r.ai ? '<span class="badge ai">AI product</span>' : ''}
+        <span class="badge ${rcls}">${rlabel}</span>
+        ${stretch ? '<span class="badge stretch">Senior stretch</span>' : ''}
+        ${r.workplace !== 'remote' ? '<span class="badge verify">Remote — verify</span>' : ''}
+        ${r.verified ? '<span class="badge ok">✓ Link checked</span>' : ''}
+      </div>
+      ${r.note ? `<div class="note">${esc(r.note)}</div>` : ''}
+      <div class="meta">
+        <span class="posted ${isNew?'is-new':''}">◷ ${esc(r.posted)}</span>
+        <span>${senLabel[r.sen]||r.sen} level</span>
+        <span>${r.workplace === 'remote' ? 'Fully remote' : 'Remote — verify'}</span>
+      </div>
+      <div class="card-foot">
+        <span class="src">${esc(r.source)}</span>
+        <a class="apply" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View &amp; apply
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+    </article>`;
+  }
+
+  function render(){
+    let list = roles.filter(passes);
+    list.sort((a,b) => state.sort === "match" ? matchScore(b)-matchScore(a) : a.days-b.days);
+    document.getElementById("grid").innerHTML = list.map(cardHTML).join("");
+    document.getElementById("role-count").textContent = list.length + " shown";
+    document.getElementById("empty").classList.toggle("show", list.length === 0);
+  }
+
+  function renderLeads(){
+    document.getElementById("leads").innerHTML = leads.map(l => `<div class="lead">
+      <span class="amt">${esc(l.amt)}</span>
+      <h4>${esc(l.company)}</h4>
+      <p>${esc(l.note)}</p>
+      <div class="lead-foot">
+        <span class="src" style="font-family:var(--mono);font-size:11px;color:var(--muted)">${esc(l.investors)}</span>
+        <a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">Find founder →</a>
+      </div>
+    </div>`).join("");
+  }
+
+  function renderStats(){
+    document.getElementById("s-total").textContent = roles.length;
+    document.getElementById("s-new").textContent = roles.filter(r=>r.new24).length;
+    document.getElementById("s-ai").textContent = roles.filter(r=>r.ai).length;
+    document.getElementById("s-remote").textContent = roles.filter(r=>r.workplace==="remote").length;
+    document.getElementById("gen").textContent = GENERATED;
+    document.getElementById("foot-total").textContent = roles.length;
+    document.getElementById("foot-leads").textContent = leads.length;
+    document.getElementById("lead-count").textContent = leads.length;
+  }
+
+  // ---- Wiring ----
+  document.getElementById("q").addEventListener("input", e => { state.q = e.target.value; render(); });
+  document.querySelectorAll('.seg [data-sen]').forEach(b => b.addEventListener("click", () => {
+    state.sen = b.dataset.sen;
+    b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x===b));
+    render();
+  }));
+  document.querySelectorAll('.seg [data-sort]').forEach(b => b.addEventListener("click", () => {
+    state.sort = b.dataset.sort;
+    b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x===b));
+    render();
+  }));
+  function toggle(id, key){
+    const el = document.getElementById(id);
+    el.addEventListener("click", () => { state[key] = !state[key]; el.setAttribute("aria-pressed", state[key]); render(); });
+  }
+  toggle("t-ai","ai"); toggle("t-fresh","fresh"); toggle("t-india","india"); toggle("t-remote","remote");
+
+  // Theme
+  const tb = document.getElementById("theme");
+  tb.addEventListener("click", () => {
+    const cur = document.documentElement.getAttribute("data-theme")
+      || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  });
+
+  renderStats(); renderLeads(); render();
+</script>
+</body>
+</html>
