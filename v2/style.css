@@ -314,6 +314,27 @@ a { color: inherit; }
 .v2-work-item:hover::before { transform: scaleX(1); }
 .v2-work-title { font-family: var(--serif); font-size: clamp(1.3rem, 3.5vw, 2rem); font-weight: 700; }
 .v2-work-meta { font-family: var(--sans); font-size: 0.82rem; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: right; white-space: nowrap; }
+.v2-work-group {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 48px 4px 12px;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+.v2-work-group:first-child { padding-top: 4px; }
+.v2-work-group span {
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  color: var(--fg-muted);
+}
 
 @media (hover: hover) and (pointer: fine) {
   .v2-work-item { cursor: none; }

@@ -54,27 +54,75 @@
     if (e.key === 'Escape') closeMenu();
   });
 
-  // Cursor-follow "View" label on work items (pointer devices only)
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    var follow = document.getElementById('cursorFollow');
-    var workItems = document.querySelectorAll('.v2-work-item');
-    workItems.forEach(function (item) {
-      item.addEventListener('mouseenter', function () { follow.classList.add('active'); });
-      item.addEventListener('mouseleave', function () { follow.classList.remove('active'); });
-      item.addEventListener('mousemove', function (e) {
-        follow.style.left = e.clientX + 'px';
-        follow.style.top = e.clientY + 'px';
-      });
+  // ---- Selected Work: rendered from ../project.html so v2 always mirrors the classic site ----
+  function escHtml(s) {
+    return (s || '').replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
 
-  // Click a project -> retheme the accent color
-  var workAccentItems = document.querySelectorAll('.v2-work-item[data-accent]');
-  workAccentItems.forEach(function (item) {
-    item.addEventListener('click', function () {
-      document.documentElement.style.setProperty('--accent', item.dataset.accent);
+  // Attach the cursor-follow label + accent-retheme behaviors to whatever work items exist now.
+  function wireWorkItems() {
+    var follow = document.getElementById('cursorFollow');
+    var isHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    document.querySelectorAll('.v2-work-item[data-accent]').forEach(function (item) {
+      item.addEventListener('click', function () {
+        document.documentElement.style.setProperty('--accent', item.dataset.accent);
+      });
+      if (isHover && follow) {
+        item.addEventListener('mouseenter', function () { follow.classList.add('active'); });
+        item.addEventListener('mouseleave', function () { follow.classList.remove('active'); });
+        item.addEventListener('mousemove', function (e) {
+          follow.style.left = e.clientX + 'px';
+          follow.style.top = e.clientY + 'px';
+        });
+      }
     });
-  });
+  }
+
+  function renderWork() {
+    var list = document.getElementById('v2WorkList');
+    if (!list) { wireWorkItems(); return; }
+    var src = list.getAttribute('data-source') || '../project.html';
+    fetch(src).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var section = doc.querySelector('.section.project');
+      if (!section) throw new Error('no project section');
+      var out = '';
+      Array.prototype.forEach.call(section.children, function (node) {
+        if (node.classList && node.classList.contains('project-group')) {
+          var label = node.querySelector('.project-group-label');
+          var note = node.querySelector('.project-group-note');
+          out += '<div class="v2-work-group">' + escHtml(label ? label.textContent.trim() : '')
+            + (note ? ' <span>' + escHtml(note.textContent.trim().replace(/^Products\s+/i, '')) + '</span>' : '')
+            + '</div>';
+        } else if (node.tagName === 'ARTICLE' && node.classList.contains('case-study')) {
+          var h3 = node.querySelector('h3');
+          var title = h3 ? h3.textContent.trim() : '';
+          var accent = node.getAttribute('data-accent-dark') || node.getAttribute('data-accent-light') || 'var(--accent)';
+          var meta = node.getAttribute('data-v2-meta');
+          if (!meta) { var tag = node.querySelector('.case-tag'); meta = tag ? tag.textContent.trim() : ''; }
+          if (!title) return;
+          out += '<a class="v2-work-item" data-accent="' + escHtml(accent) + '" href="' + escHtml(src) + '">'
+            + '<span class="v2-work-title">' + escHtml(title) + '</span>'
+            + '<span class="v2-work-meta">' + escHtml(meta) + '</span></a>';
+        }
+      });
+      list.innerHTML = out;
+      wireWorkItems();
+    }).catch(function () {
+      // Graceful fallback if the source can't be fetched (e.g. opened via file://).
+      list.innerHTML = '<a class="v2-work-item" href="../project.html">'
+        + '<span class="v2-work-title">See all projects →</span>'
+        + '<span class="v2-work-meta">Full case studies</span></a>';
+      wireWorkItems();
+    });
+  }
+
+  renderWork();
 
   // Chat widget
   var launcher = document.getElementById('chat-launcher');
