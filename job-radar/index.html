@@ -164,6 +164,28 @@
   .badge.stretch { color: var(--stretch); background: var(--surface-2); border-color: var(--border); }
   .badge.ok { color: var(--fresh); background: transparent; border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
   .note { font-size: 12px; color: var(--muted); line-height: 1.35; margin-top: -2px; }
+  .tabs { display: inline-flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 4px; }
+  .tab {
+    font-family: var(--sans); font-size: 13.5px; font-weight: 600; color: var(--ink-2);
+    background: transparent; border: 0; padding: 7px 13px; border-radius: 8px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  }
+  .tab[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+  .tab .tab-n {
+    font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; font-weight: 600;
+    background: var(--accent-wash); color: var(--accent-ink); padding: 1px 7px; border-radius: 999px;
+  }
+  .tab[data-tab="applied"] .tab-n { background: var(--fresh-wash); color: var(--fresh); }
+  .card.card-applied { opacity: .62; }
+  .card.card-applied:hover { opacity: 1; }
+  .foot-actions { display: inline-flex; align-items: center; gap: 8px; }
+  .applied-btn {
+    font-family: var(--sans); font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border-strong);
+    padding: 7px 11px; border-radius: 9px;
+  }
+  .applied-btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .applied-btn.is-applied { background: var(--fresh-wash); color: var(--fresh); border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
   .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); margin-top: auto; }
   .meta .posted { font-family: var(--mono); font-variant-numeric: tabular-nums; }
   .meta .posted.is-new { color: var(--fresh); font-weight: 600; }
@@ -257,9 +279,13 @@
 
   <div class="container">
     <div class="sec-head">
-      <h2>Open roles</h2>
+      <div class="tabs" role="tablist" aria-label="Application status">
+        <button class="tab" data-tab="toapply" aria-selected="true">To apply <span class="tab-n" id="n-toapply">0</span></button>
+        <button class="tab" data-tab="applied" aria-selected="false">Applied <span class="tab-n" id="n-applied">0</span></button>
+        <button class="tab" data-tab="all" aria-selected="false">All <span class="tab-n" id="n-all">0</span></button>
+      </div>
       <span class="count" id="role-count">0 shown</span>
-      <span class="hint">Click a role to open the source listing — verify eligibility before applying.</span>
+      <span class="hint">Mark a role <b>Applied</b> to move it to that tab — progress is saved on this device.</span>
     </div>
     <div class="grid" id="grid"></div>
     <div class="empty" id="empty">No roles match these filters. Try clearing a toggle or the search.</div>
@@ -343,7 +369,14 @@
   ];
 
   // ---- State ----
-  const state = { q:"", sen:"all", ai:false, fresh:false, india:false, remote:false, sort:"fresh" };
+  const state = { q:"", sen:"all", ai:false, fresh:false, india:false, remote:false, sort:"fresh", tab:"toapply" };
+
+  // ---- Applied tracking (saved on this device via localStorage) ----
+  const APPLIED_KEY = "pmradar_applied_v1";
+  let applied = new Set(JSON.parse(localStorage.getItem(APPLIED_KEY) || "[]"));
+  function saveApplied(){ try { localStorage.setItem(APPLIED_KEY, JSON.stringify([...applied])); } catch (e) {} }
+  function isApplied(r){ return applied.has(typeof r === "string" ? r : r.url); }
+  function toggleApplied(url){ applied.has(url) ? applied.delete(url) : applied.add(url); saveApplied(); render(); }
   const senLabel = { PM:"PM", Senior:"Senior", Lead:"Lead+" };
   const regionBadge = {
     india: ['region-india','India‑eligible'],
@@ -362,6 +395,8 @@
   }
 
   function passes(r){
+    if (state.tab === "toapply" && isApplied(r)) return false;
+    if (state.tab === "applied" && !isApplied(r)) return false;
     if (state.sen !== "all" && r.sen !== state.sen) return false;
     if (state.ai && !r.ai) return false;
     if (state.fresh && !r.new24) return false;
@@ -380,7 +415,7 @@
     const isNew = r.new24;
     const [rcls, rlabel] = regionBadge[r.region];
     const stretch = r.sen === "Lead";
-    return `<article class="card">
+    return `<article class="card${isApplied(r) ? ' card-applied' : ''}">
       <div class="card-top">
         <div>
           <h3>${esc(r.title)}</h3>
@@ -403,11 +438,21 @@
       </div>
       <div class="card-foot">
         <span class="src">${esc(r.source)}</span>
-        <a class="apply" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View &amp; apply
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M9 7h8v8"/></svg>
-        </a>
+        <div class="foot-actions">
+          <button class="applied-btn${isApplied(r) ? ' is-applied' : ''}" data-url="${esc(r.url)}">${isApplied(r) ? '✓ Applied' : 'Mark applied'}</button>
+          <a class="apply" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View &amp; apply
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
       </div>
     </article>`;
+  }
+
+  function updateTabCounts(){
+    const ap = roles.filter(r => applied.has(r.url)).length;
+    document.getElementById("n-applied").textContent = ap;
+    document.getElementById("n-toapply").textContent = roles.length - ap;
+    document.getElementById("n-all").textContent = roles.length;
   }
 
   function render(){
@@ -415,7 +460,12 @@
     list.sort((a,b) => state.sort === "match" ? matchScore(b)-matchScore(a) : a.days-b.days);
     document.getElementById("grid").innerHTML = list.map(cardHTML).join("");
     document.getElementById("role-count").textContent = list.length + " shown";
-    document.getElementById("empty").classList.toggle("show", list.length === 0);
+    const emptyEl = document.getElementById("empty");
+    emptyEl.textContent = state.tab === "applied"
+      ? "No roles marked applied yet. Tap “Mark applied” on a role to track it here."
+      : "No roles match these filters. Try clearing a toggle or the search.";
+    emptyEl.classList.toggle("show", list.length === 0);
+    updateTabCounts();
   }
 
   function renderLeads(){
@@ -458,6 +508,18 @@
     el.addEventListener("click", () => { state[key] = !state[key]; el.setAttribute("aria-pressed", state[key]); render(); });
   }
   toggle("t-ai","ai"); toggle("t-fresh","fresh"); toggle("t-india","india"); toggle("t-remote","remote");
+
+  // Tabs (To apply / Applied / All)
+  document.querySelectorAll('.tabs [data-tab]').forEach(b => b.addEventListener("click", () => {
+    state.tab = b.dataset.tab;
+    b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", String(x===b)));
+    render();
+  }));
+  // Mark applied / undo (event-delegated since cards re-render)
+  document.getElementById("grid").addEventListener("click", e => {
+    const btn = e.target.closest(".applied-btn");
+    if (btn){ e.preventDefault(); toggleApplied(btn.dataset.url); }
+  });
 
   // Theme
   const tb = document.getElementById("theme");
