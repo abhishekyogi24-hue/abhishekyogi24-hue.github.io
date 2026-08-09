@@ -310,7 +310,7 @@
           <li>Funding leads point you to companies scaling now; find the founder on LinkedIn and reach out before the role is posted.</li>
         </ol>
       </div>
-      <div class="stamp">Generated <span id="gen">—</span> · <span id="foot-total">0</span> roles · <span id="foot-leads">0</span> funding leads · sources: LinkedIn (deep‑paginated guest API), Naukri (live browser · Remote work‑mode), Himalayas, +remote boards, StartupTalky</div>
+      <div class="stamp">Generated <span id="gen">—</span> · <span id="foot-total">0</span> roles · <span id="foot-leads">0</span> funding leads · sources: LinkedIn (deep‑paginated guest API), Naukri (live browser · Remote work‑mode), +remote boards, StartupTalky</div>
       <div class="stamp" style="margin-top:8px"><button id="feed-connect" type="button" style="font-family:var(--mono);font-size:12px;background:none;border:0;color:var(--accent-ink);cursor:pointer;padding:0;text-decoration:underline">⚡ Connect live feed</button> — auto-refresh daily from your own Apps Script.</div>
     </footer>
   </div>
@@ -330,8 +330,6 @@
   // workplace: 'remote' = confirmed fully remote on the posting; 'unconfirmed' = live posting that didn't state workplace type (likely remote — verify).
   let roles = [
     // ---- Confirmed fully remote ----
-    { title:"Technical Product Manager", company:"ALX Africa", sen:"PM", ai:true, region:"world", workplace:"remote", days:0, new24:true, posted:"4h ago", verified:true, note:"AI learning platform · prefers GMT+2 hours", source:"Himalayas", url:"https://himalayas.app/companies/alx_africa/jobs/technical-product-manager" },
-    { title:"Product Manager, Biosimilars", company:"Danaher", sen:"PM", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"13h ago", verified:true, note:"Pharma product role (India only)", source:"Himalayas", url:"https://himalayas.app/companies/danaher/jobs/product-manager-biosimilars" },
     { title:"AI Product Manager", company:"Profex Tech", sen:"Senior", ai:true, region:"india", workplace:"remote", days:0, new24:true, posted:"few hrs ago", verified:true, note:"B2B SaaS · LLM · ₹40–55 LPA · 6–7 yrs", source:"Naukri", url:"https://www.naukri.com/job-listings-ai-product-manager-remote-profex-tech-remote-6-to-7-years-070826034977" },
     { title:"Sr. Product Manager — Lead Generation Suite", company:"HighLevel", sen:"Senior", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"few hrs ago", verified:true, note:"WFH · 6–11 yrs · listed on Naukri + Instahyre", source:"Naukri", url:"https://www.naukri.com/job-listings-sr-product-manager-lead-generation-suite-highlevel-remote-6-to-11-years-070826500626" },
     { title:"Senior Product Manager", company:"Flexiple", sen:"Senior", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"6h ago", verified:true, note:"Remote (India)", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/senior-product-manager-at-flexiple-4448756505" },
@@ -344,9 +342,7 @@
     { title:"Technical Product Manager", company:"BJAK", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · must be India-based", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/technical-product-manager-at-bjak-4449366341" },
     { title:"Product Manager", company:"BJAK", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · must be India-based", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-bjak-4449372129" },
     { title:"Product Manager", company:"Kira", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote · must be India-based", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/product-manager-at-kira-4449321967" },
-    { title:"Business Analyst / Product Manager", company:"Seattle New Media", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote (India) · 7pm–4am IST shift", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/business-analyst-product-manager-at-seattle-new-media-4449367931" },
-    { title:"Product / Project Manager", company:"2am.tech", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Contractor · 5+ yrs software PM", source:"Himalayas", url:"https://himalayas.app/companies/2am-tech/jobs/product-project-manager" },
-    { title:"Head of Product", company:"Scrambly", sen:"Lead", ai:false, region:"world", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Adtech startup · open to all countries", source:"Himalayas", url:"https://himalayas.app/companies/scrambly/jobs/head-of-product" }
+    { title:"Business Analyst / Product Manager", company:"Seattle New Media", sen:"PM", ai:false, region:"india", workplace:"remote", days:1, new24:false, posted:"1d ago", verified:true, note:"Remote (India) · 7pm–4am IST shift", source:"LinkedIn", url:"https://in.linkedin.com/jobs/view/business-analyst-product-manager-at-seattle-new-media-4449367931" }
   ];
 
   const leads = [
