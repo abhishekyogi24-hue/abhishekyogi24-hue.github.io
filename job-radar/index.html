@@ -241,7 +241,7 @@
 <div class="wrap">
   <div class="container">
     <header class="masthead">
-      <p class="eyebrow">Personal job radar · updated daily</p>
+      <p class="eyebrow">Personal job radar · <span id="feed-status">snapshot</span></p>
       <h1 class="title">Remote PM &amp; AI‑PM roles you can actually apply to</h1>
       <p class="subtitle">Product Manager &amp; AI‑PM roles for <b>India‑based or India‑eligible</b> applicants (no work visa required). <b>Only roles posted in the last 48 hours</b>, deep‑pulled from LinkedIn + remote boards and each link opened to verify it's live. <b>Remote — verify</b> = a real posting that didn't state its workplace type. The morning sweep refills this daily.</p>
 
@@ -311,6 +311,7 @@
         </ol>
       </div>
       <div class="stamp">Generated <span id="gen">—</span> · <span id="foot-total">0</span> roles · <span id="foot-leads">0</span> funding leads · sources: LinkedIn (deep‑paginated guest API), Naukri (live browser · Remote work‑mode), Himalayas, +remote boards, StartupTalky</div>
+      <div class="stamp" style="margin-top:8px"><button id="feed-connect" type="button" style="font-family:var(--mono);font-size:12px;background:none;border:0;color:var(--accent-ink);cursor:pointer;padding:0;text-decoration:underline">⚡ Connect live feed</button> — auto-refresh daily from your own Apps Script.</div>
     </footer>
   </div>
 </div>
@@ -318,11 +319,16 @@
 <button class="themebtn" id="theme" title="Toggle theme" aria-label="Toggle light/dark theme">◐</button>
 
 <script>
-  // ---- Data (seeded from live search on generation date) ----
-  const GENERATED = "2026-08-07";
+  // ---- Data (seeded snapshot; replaced by your live feed once connected) ----
+  let GENERATED = "2026-08-07";
+
+  // Optional live feed: your Apps Script web-app URL. Connect via the footer link (saved on this device),
+  // or open the page once with ?feed=<url>. Until set, the seeded snapshot below is shown.
+  (function(){ const p = new URLSearchParams(location.search).get('feed'); if (p) localStorage.setItem('pmradar_feed_url', p.trim()); })();
+  let FEED_URL = localStorage.getItem('pmradar_feed_url') || '';
   // Hard rule: only roles posted within the last 48 hours. Older roles drop off automatically each morning.
   // workplace: 'remote' = confirmed fully remote on the posting; 'unconfirmed' = live posting that didn't state workplace type (likely remote — verify).
-  const roles = [
+  let roles = [
     // ---- Confirmed fully remote ----
     { title:"Technical Product Manager", company:"ALX Africa", sen:"PM", ai:true, region:"world", workplace:"remote", days:0, new24:true, posted:"4h ago", verified:true, note:"AI learning platform · prefers GMT+2 hours", source:"Himalayas", url:"https://himalayas.app/companies/alx_africa/jobs/technical-product-manager" },
     { title:"Product Manager, Biosimilars", company:"Danaher", sen:"PM", ai:false, region:"india", workplace:"remote", days:0, new24:true, posted:"13h ago", verified:true, note:"Pharma product role (India only)", source:"Himalayas", url:"https://himalayas.app/companies/danaher/jobs/product-manager-biosimilars" },
@@ -529,7 +535,55 @@
     document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
   });
 
-  renderStats(); renderLeads(); render();
+  // ---- Live feed (optional): pull today's roles from your Apps Script web app ----
+  function setFeedStatus(mode, ts){
+    const el = document.getElementById("feed-status"); if (!el) return;
+    if (mode === "live"){
+      let t = ""; try { t = new Date(ts).toLocaleString("en-IN", { hour:"2-digit", minute:"2-digit", day:"numeric", month:"short" }); } catch(e){}
+      el.textContent = "live · refreshed " + (t || "just now"); el.style.color = "var(--fresh)";
+    } else if (mode === "loading"){ el.textContent = "refreshing…"; el.style.color = "var(--accent-ink)"; }
+    else { el.textContent = "snapshot"; el.style.color = ""; }
+  }
+  function mapFeedRole(f){
+    const title = (f.title || "").trim(), t = title.toLowerCase();
+    const ai = /\bai\b|\bml\b|agentic|\bllm\b|machine learning|generative/i.test(title);
+    let sen = "PM";
+    if (/principal|staff|\blead\b|\bhead\b|group|director|vp/i.test(t)) sen = "Lead";
+    else if (/senior|\bsr[\.\s]/i.test(t)) sen = "Senior";
+    const when = (f.when || "").trim();
+    const isNew = /minute|hour|just/i.test(when);
+    const loc = (f.loc || "").trim();
+    const region = (/india/i.test(loc) || loc === "") ? "india" : (/worldwide/i.test(loc) ? "world" : "verify");
+    return { title, company: (f.company || "—").trim(), sen, ai, region, workplace: "unconfirmed",
+      days: isNew ? 0 : 1, new24: isNew, posted: when || "recent", verified: false, note: "",
+      source: "LinkedIn (live)", url: f.url || "#" };
+  }
+  async function loadFeed(){
+    if (!FEED_URL){ setFeedStatus("snapshot"); return; }
+    setFeedStatus("loading");
+    try {
+      const res = await fetch(FEED_URL, { redirect: "follow" });
+      const data = await res.json();
+      if (data && Array.isArray(data.jobs) && data.jobs.length){
+        roles = data.jobs.map(mapFeedRole);
+        if (data.generatedAt) GENERATED = String(data.generatedAt).slice(0, 10);
+        setFeedStatus("live", data.generatedAt);
+        renderStats(); render();
+      } else { setFeedStatus("snapshot"); }
+    } catch (e){ setFeedStatus("snapshot"); }
+  }
+  function connectFeed(){
+    const cur = localStorage.getItem("pmradar_feed_url") || "";
+    const u = prompt("Paste your Apps Script Web App URL (ends in /exec) to auto-refresh daily.\nLeave blank to disconnect.", cur);
+    if (u === null) return;
+    const v = u.trim();
+    if (v) localStorage.setItem("pmradar_feed_url", v); else localStorage.removeItem("pmradar_feed_url");
+    location.reload();
+  }
+  const fc = document.getElementById("feed-connect");
+  if (fc){ fc.textContent = FEED_URL ? "⚡ Live feed connected · change" : "⚡ Connect live feed"; fc.addEventListener("click", connectFeed); }
+
+  renderStats(); renderLeads(); render(); loadFeed();
 </script>
 </body>
 </html>
