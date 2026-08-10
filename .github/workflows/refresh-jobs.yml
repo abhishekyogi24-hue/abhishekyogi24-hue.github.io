@@ -1,0 +1,39 @@
+name: Refresh Job Radar
+
+on:
+  schedule:
+    - cron: "30 2 * * 1-5"   # 08:00 IST, weekdays (02:30 UTC)
+  workflow_dispatch: {}        # allow manual runs from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-jobs
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch + verify remote roles, write jobs.json
+        run: node .github/scripts/refresh-jobs.mjs
+
+      - name: Commit jobs.json if it changed
+        run: |
+          if [[ -n "$(git status --porcelain job-radar/jobs.json)" ]]; then
+            git config user.name "job-radar-bot"
+            git config user.email "job-radar-bot@users.noreply.github.com"
+            git add job-radar/jobs.json
+            git commit -m "Daily refresh: jobs.json ($(date -u +%Y-%m-%d))"
+            git push
+            echo "Committed refreshed jobs.json"
+          else
+            echo "No change to jobs.json — board unchanged"
+          fi
