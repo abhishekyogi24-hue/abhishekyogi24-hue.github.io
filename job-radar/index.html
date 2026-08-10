@@ -537,13 +537,18 @@
       source: "LinkedIn (live)", url: f.url || "#" };
   }
   async function loadFeed(){
-    if (!FEED_URL){ setFeedStatus("snapshot"); return; }
+    // Default source: jobs.json published each morning by the verified 8am routine (same origin, no CORS).
+    // FEED_URL (optional Apps Script override) wins if the user set one.
+    const src = FEED_URL || "./jobs.json";
     setFeedStatus("loading");
     try {
-      const res = await fetch(FEED_URL, { redirect: "follow" });
+      const res = await fetch(src, { cache: "no-store" });
+      if (!res.ok) throw 0;
       const data = await res.json();
-      if (data && Array.isArray(data.jobs) && data.jobs.length){
-        roles = data.jobs.map(mapFeedRole);
+      const arr = Array.isArray(data) ? data : (data && data.jobs);
+      if (arr && arr.length){
+        // Rich objects (from the verified routine) pass through; raw LinkedIn cards get mapped.
+        roles = arr.map(j => (j && j.workplace) ? j : mapFeedRole(j));
         if (data.generatedAt) GENERATED = String(data.generatedAt).slice(0, 10);
         setFeedStatus("live", data.generatedAt);
         renderStats(); render();
