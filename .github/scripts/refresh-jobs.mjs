@@ -4,7 +4,7 @@
 // only (LinkedIn direct). Never overwrites with an empty/tiny list, so a bad LinkedIn day
 // keeps yesterday's board instead of emptying it.
 
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
 
 const OUT = "job-radar/jobs.json";
 const KEYWORDS = [
@@ -12,14 +12,22 @@ const KEYWORDS = [
   "technical product manager", "growth product manager", "product owner",
 ];
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; JobRadarBot/1.0; +https://abhishekyogi.in)" };
-const MIN_ROLES = 3;        // don't publish a near-empty board
 const MAX_VERIFY = 45;      // cap posting fetches to stay polite / avoid rate limits
+const STALE_H = 48;         // if the current board is older than this, let even a smaller fresh set replace it
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const clean = (s) =>
   (s || "").replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'")
     .replace(/&quot;/g, '"').replace(/&#x2013;|&#8211;/g, "–").replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
+
+// Lowercased plain text of the job-description block only (scoped so page nav/footer
+// "remote jobs" links don't cause false positives).
+function descText(html) {
+  const i = html.indexOf("show-more-less-html__markup");
+  if (i < 0) return "";
+  return html.slice(i, i + 6000).replace(/<[^>]*>/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").toLowerCase();
+}
 
 const senOf = (t) => /principal|staff|\blead\b|group|head/i.test(t) ? "Lead"
   : /senior|\bsr[.\s]/i.test(t) ? "Senior" : "PM";
@@ -66,11 +74,16 @@ async function verify(job) {
   if (Array.isArray(ld)) ld = ld.find((x) => x["@type"] === "JobPosting") || ld[0];
   if (!ld || ld["@type"] !== "JobPosting") return null;
 
-  const remote = ld.jobLocationType === "TELECOMMUTE";
-  if (!remote) return null; // on-site/hybrid or unstated -> drop
-
   const { posted, hrs } = relTime(ld.datePosted);
   if (hrs > 48) return null; // freshness guard
+
+  // Remote check: structured TELECOMMUTE flag OR explicit remote phrasing in the description
+  // (and no hybrid/on-site wording). Calibrated against known remote & on-site postings.
+  const d = descText(html);
+  const strong = /\bfully remote\b|100%\s*remote|work from home|\bwfh\b|remote[- ]first|work from anywhere|remote\s*\(?\s*(india|anywhere|global|worldwide)|this (is|role is)[^.]{0,40}remote|position is remote|is a remote/i.test(d);
+  const bad = /\bhybrid\b|on[- ]?site|in[- ]?office|in office|work from office/i.test(d);
+  const remote = ld.jobLocationType === "TELECOMMUTE" || (strong && !bad);
+  if (!remote) return null; // not confirmably remote -> drop
 
   const title = clean(ld.title || job.title);
   const company = clean(ld.hiringOrganization?.name || "");
@@ -121,14 +134,21 @@ async function main() {
     if (!key.has(k)) { key.add(k); uniq.push(j); }
   }
   console.log("verified fully-remote:", uniq.length);
+  if (uniq.length === 0) { console.log("0 verified this run — keeping existing board."); return; }
 
-  if (uniq.length < MIN_ROLES) {
-    console.log(`Only ${uniq.length} verified roles (< ${MIN_ROLES}) — keeping existing jobs.json to avoid an empty board.`);
+  // Don't shrink a still-fresh board on a sparse day: only overwrite if we found at least as many
+  // roles as are currently shown, OR the current board has gone stale (> STALE_H old).
+  let existing = null;
+  try { existing = JSON.parse(readFileSync(OUT, "utf8")); } catch { /* no existing board */ }
+  const existingCount = existing?.jobs?.length || 0;
+  const existingAgeH = existing?.generatedAt ? (Date.now() - new Date(existing.generatedAt).getTime()) / 3.6e6 : 1e9;
+  if (uniq.length < existingCount && existingAgeH < STALE_H) {
+    console.log(`Found ${uniq.length} < current ${existingCount} and board is fresh (${existingAgeH.toFixed(0)}h old) — keeping current board.`);
     return;
   }
   const payload = { generatedAt: new Date().toISOString(), source: "github-action", jobs: uniq };
   writeFileSync(OUT, JSON.stringify(payload, null, 2));
-  console.log(`wrote ${uniq.length} roles to ${OUT}`);
+  console.log(`wrote ${uniq.length} roles (was ${existingCount}, ${existingAgeH.toFixed(0)}h old)`);
 }
 
 // Exit 0 even on error so the workflow doesn't fail loudly; no write => no commit => yesterday's board stays.
