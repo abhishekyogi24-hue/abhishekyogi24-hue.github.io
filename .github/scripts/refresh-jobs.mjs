@@ -136,14 +136,19 @@ async function main() {
   for (const j of fresh) byUrl.set(j.url, j);
   const now = Date.now();
   const merged = [];
-  for (const j of byUrl.values()) {
-    if (!j.dt || j.note !== "Remote confirmed in description") continue; // only keep confirmed entries
+  const seenKey = new Set();
+  // Keep any dated, verified role in-window — LinkedIn description-confirmed AND Naukri browser sweeps.
+  const all = [...byUrl.values()].sort((a, b) => new Date(b.dt || 0) - new Date(a.dt || 0));
+  for (const j of all) {
+    if (!j.dt || !j.verified) continue;
     const hrs = (now - new Date(j.dt).getTime()) / 3.6e6;
-    if (hrs > WINDOW_H) continue;
+    if (hrs > WINDOW_H) continue;                                   // age out beyond 7 days
+    const key = (j.company + "|" + j.title).toLowerCase().replace(/\s+/g, " ").trim();
+    if (seenKey.has(key)) continue;                                 // dedupe same role from Naukri + LinkedIn
+    seenKey.add(key);
     const posted = hrs < 1 ? "just now" : hrs < 24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs / 24)}d ago`;
     merged.push({ ...j, posted, new24: hrs < 24, days: hrs < 24 ? 0 : 1 });
   }
-  merged.sort((a, b) => new Date(b.dt) - new Date(a.dt));
   const board = merged.slice(0, 60);
   if (!board.length) { console.log("nothing confirmed within window — leaving jobs.json untouched."); return; }
   const payload = { generatedAt: new Date().toISOString(), source: "github-action", jobs: board };
