@@ -164,6 +164,20 @@
   .badge.stretch { color: var(--stretch); background: var(--surface-2); border-color: var(--border); }
   .badge.ok { color: var(--fresh); background: transparent; border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
   .note { font-size: 12px; color: var(--muted); line-height: 1.35; margin-top: -2px; }
+  .date-group {
+    grid-column: 1 / -1; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px;
+    margin: 18px 0 -2px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .grid > .date-group:first-child { margin-top: 0; }
+  .dg-label {
+    font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent-ink);
+  }
+  .dg-n {
+    font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; font-weight: 600;
+    background: var(--accent-wash); color: var(--accent-ink); padding: 1px 7px; border-radius: 999px;
+  }
+  .dg-hint { font-size: 12px; color: var(--muted); margin-left: auto; }
   .tabs { display: inline-flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 4px; }
   .tab {
     font-family: var(--sans); font-size: 13.5px; font-weight: 600; color: var(--ink-2);
@@ -439,10 +453,42 @@
     document.getElementById("n-all").textContent = roles.length;
   }
 
+  // Bucket a role by when it was posted. Uses the absolute date when available,
+  // else falls back to parsing the relative label ("6h ago", "4d ago").
+  function ageHours(r){
+    if (r.dt){ const h = (Date.now() - new Date(r.dt).getTime())/3.6e6; if (!isNaN(h)) return h; }
+    const p = String(r.posted || "");
+    const m = p.match(/(\d+)\s*([hd])/i);
+    if (m) return m[2].toLowerCase() === "h" ? +m[1] : +m[1] * 24;
+    if (/just now|few hrs|minute/i.test(p)) return 1;
+    return r.new24 ? 12 : 48;
+  }
+  const DATE_GROUPS = [
+    { key:"today",    label:"Today",              hint:"Posted in the last 24 hours — fewest applicants", max:24 },
+    { key:"yesterday",label:"Yesterday",          hint:"24–48 hours old",                                 max:48 },
+    { key:"week",     label:"Earlier this week",  hint:"Still open, posted in the last 7 days",           max:Infinity }
+  ];
+
   function render(){
     let list = roles.filter(passes);
-    list.sort((a,b) => state.sort === "match" ? matchScore(b)-matchScore(a) : a.days-b.days);
-    document.getElementById("grid").innerHTML = list.map(cardHTML).join("");
+    list.sort((a,b) => state.sort === "match" ? matchScore(b)-matchScore(a) : ageHours(a)-ageHours(b));
+    let html;
+    if (state.sort === "match"){
+      html = list.map(cardHTML).join("");                    // best-match: one ranked list, no date buckets
+    } else {
+      html = "";
+      let prev = -1;
+      for (const g of DATE_GROUPS){
+        const bucket = list.filter(r => { const h = ageHours(r); return h <= g.max && h > prev; });
+        prev = g.max;
+        if (!bucket.length) continue;
+        html += `<div class="date-group"><span class="dg-label">${g.label}</span>`
+             +  `<span class="dg-n">${bucket.length}</span>`
+             +  `<span class="dg-hint">${g.hint}</span></div>`
+             +  bucket.map(cardHTML).join("");
+      }
+    }
+    document.getElementById("grid").innerHTML = html;
     document.getElementById("role-count").textContent = list.length + " shown";
     const emptyEl = document.getElementById("empty");
     emptyEl.textContent = state.tab === "applied"
