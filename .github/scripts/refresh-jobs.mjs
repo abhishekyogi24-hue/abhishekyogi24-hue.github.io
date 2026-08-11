@@ -12,7 +12,10 @@ const OUT = "job-radar/jobs.json";
 const KEYWORDS = [
   "AI product manager", "product manager", "senior product manager",
   "technical product manager", "growth product manager", "product owner",
+  "product manager voice", "gohighlevel product",
 ];
+// Card location that means "remote for India": country-level "India" (no city) or an explicit Remote tag.
+const isRemoteLoc = (loc) => /\(remote\)|\bremote\b/i.test(loc || "") || /^india$/i.test((loc || "").trim());
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; JobRadarBot/1.0; +https://abhishekyogi.in)" };
 const F_TPR = "r604800";  // last 7 days
 const WINDOW_H = 168;     // rolling 7-day window
@@ -68,7 +71,10 @@ async function search(kw, start, wt) {
     const u = (c.match(/href="(https:\/\/[a-z]+\.linkedin\.com\/jobs\/view\/[^"?]+)/) || [])[1];
     const title = clean((c.match(/base-search-card__title[^>]*>([\s\S]*?)<\/h3>/) || [])[1]);
     if (!u || !title) continue;
-    out.push({ id: (u.match(/(\d+)$/) || [])[1] || u, url: u, title });
+    const company = clean((c.match(/base-search-card__subtitle[\s\S]*?>([\s\S]*?)<\/h4>/) || [])[1]);
+    const loc = clean((c.match(/job-search-card__location[^>]*>([\s\S]*?)<\/span>/) || [])[1]);
+    const dt = (c.match(/datetime="([^"]+)"/) || [])[1] || "";
+    out.push({ id: (u.match(/(\d+)$/) || [])[1] || u, url: u, title, company, loc, dt });
   }
   return out;
 }
@@ -121,12 +127,25 @@ async function main() {
   console.log("PM candidates:", cands.length);
 
   const fresh = [];
-  for (const j of cands.slice(0, MAX_VERIFY)) {
-    const v = await verify(j);
-    if (v) fresh.push(v);
-    await sleep(300);
+  let fetches = 0;
+  for (const j of cands) {
+    if (isRemoteLoc(j.loc) && j.dt) {
+      // Card location is country-level "India" or an explicit Remote tag -> trust as remote (no page fetch).
+      const { posted, hrs } = relTime(j.dt);
+      if (hrs > WINDOW_H) continue;
+      fresh.push({
+        title: j.title, company: j.company || "—", sen: senOf(j.title), ai: aiOf(j.title),
+        region: "india", workplace: "remote", days: hrs < 24 ? 0 : 1, new24: hrs < 24, posted,
+        dt: j.dt, verified: true, note: "India (Remote)", source: "LinkedIn", url: j.url,
+      });
+    } else if (fetches < MAX_VERIFY) {
+      fetches++;
+      const v = await verify(j);   // city-located: fall back to reading the description
+      if (v) fresh.push(v);
+      await sleep(300);
+    }
   }
-  console.log("description-confirmed remote:", fresh.length);
+  console.log("remote (by location or description):", fresh.length);
 
   // Rolling merge: combine with existing, age out > window, recompute labels from dt.
   let existing = [];
