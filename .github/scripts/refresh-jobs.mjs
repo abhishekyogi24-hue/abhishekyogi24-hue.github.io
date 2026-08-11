@@ -12,8 +12,9 @@ const KEYWORDS = [
   "technical product manager", "growth product manager", "product owner",
 ];
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; JobRadarBot/1.0; +https://abhishekyogi.in)" };
-const MAX_VERIFY = 45;      // cap posting fetches to stay polite / avoid rate limits
-const STALE_H = 48;         // if the current board is older than this, let even a smaller fresh set replace it
+const MAX_VERIFY = 60;      // cap posting fetches to stay polite / avoid rate limits
+const WINDOW_H = 168;       // rolling board window: keep verified-remote roles from the last 7 days
+const F_TPR = "r604800";    // LinkedIn "posted in last 7 days" filter
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const clean = (s) =>
@@ -45,7 +46,7 @@ function relTime(iso) {
 }
 
 async function search(kw, start) {
-  const url = `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=${encodeURIComponent(kw)}&location=India&f_TPR=r172800&start=${start}`;
+  const url = `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=${encodeURIComponent(kw)}&location=India&f_TPR=${F_TPR}&start=${start}`;
   const res = await fetch(url, { headers: UA });
   if (!res.ok) return [];
   const html = await res.text();
@@ -75,7 +76,7 @@ async function verify(job) {
   if (!ld || ld["@type"] !== "JobPosting") return null;
 
   const { posted, hrs } = relTime(ld.datePosted);
-  if (hrs > 48) return null; // freshness guard
+  if (hrs > WINDOW_H) return null; // window guard (7 days)
 
   // Remote check: structured TELECOMMUTE flag OR explicit remote phrasing in the description
   // (and no hybrid/on-site wording). Calibrated against known remote & on-site postings.
@@ -97,7 +98,7 @@ async function verify(job) {
   return {
     title, company: company || "—", sen: senOf(title), ai: aiOf(title),
     region, workplace: "remote", days: hrs < 24 ? 0 : 1, new24: hrs < 24,
-    posted, verified: true, note: "", source: "LinkedIn", url: job.url,
+    posted, dt: ld.datePosted, verified: true, note: "", source: "LinkedIn", url: job.url,
   };
 }
 
@@ -133,22 +134,31 @@ async function main() {
     const k = (j.company + "|" + j.title).toLowerCase();
     if (!key.has(k)) { key.add(k); uniq.push(j); }
   }
-  console.log("verified fully-remote:", uniq.length);
-  if (uniq.length === 0) { console.log("0 verified this run — keeping existing board."); return; }
+  console.log("verified fully-remote (this run):", uniq.length);
 
-  // Don't shrink a still-fresh board on a sparse day: only overwrite if we found at least as many
-  // roles as are currently shown, OR the current board has gone stale (> STALE_H old).
-  let existing = null;
-  try { existing = JSON.parse(readFileSync(OUT, "utf8")); } catch { /* no existing board */ }
-  const existingCount = existing?.jobs?.length || 0;
-  const existingAgeH = existing?.generatedAt ? (Date.now() - new Date(existing.generatedAt).getTime()) / 3.6e6 : 1e9;
-  if (uniq.length < existingCount && existingAgeH < STALE_H) {
-    console.log(`Found ${uniq.length} < current ${existingCount} and board is fresh (${existingAgeH.toFixed(0)}h old) — keeping current board.`);
-    return;
+  // Rolling board: merge with the existing file, age out anything older than the window, and
+  // recompute the relative "posted" label from the absolute date so labels never go stale.
+  // Fresh data wins on duplicate URLs.
+  let existing = [];
+  try { existing = JSON.parse(readFileSync(OUT, "utf8")).jobs || []; } catch { /* none */ }
+  const byUrl = new Map();
+  for (const j of existing) if (j.url) byUrl.set(j.url, j);
+  for (const j of uniq) byUrl.set(j.url, j);
+  const now = Date.now();
+  const merged = [];
+  for (const j of byUrl.values()) {
+    if (!j.dt) continue;                                 // drop legacy entries with no timestamp
+    const hrs = (now - new Date(j.dt).getTime()) / 3.6e6;
+    if (hrs > WINDOW_H) continue;                         // age out beyond the 7-day window
+    const posted = hrs < 1 ? "just now" : hrs < 24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs / 24)}d ago`;
+    merged.push({ ...j, posted, new24: hrs < 24, days: hrs < 24 ? 0 : 1 });
   }
-  const payload = { generatedAt: new Date().toISOString(), source: "github-action", jobs: uniq };
+  merged.sort((a, b) => new Date(b.dt) - new Date(a.dt));
+  const board = merged.slice(0, 40);
+  if (!board.length) { console.log("nothing within window — leaving jobs.json untouched."); return; }
+  const payload = { generatedAt: new Date().toISOString(), source: "github-action", jobs: board };
   writeFileSync(OUT, JSON.stringify(payload, null, 2));
-  console.log(`wrote ${uniq.length} roles (was ${existingCount}, ${existingAgeH.toFixed(0)}h old)`);
+  console.log(`published ${board.length} roles (${uniq.length} newly verified this run)`);
 }
 
 // Exit 0 even on error so the workflow doesn't fail loudly; no write => no commit => yesterday's board stays.
