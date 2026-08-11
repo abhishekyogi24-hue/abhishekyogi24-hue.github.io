@@ -1,8 +1,10 @@
-// Refreshes job-radar/jobs.json with fresh, verified fully-remote PM/AI-PM roles.
-// Source: LinkedIn's unauthenticated guest API. Each candidate posting is opened and only
-// kept if its structured data marks it remote (jobLocationType: TELECOMMUTE). Free-to-apply
-// only (LinkedIn direct). Never overwrites with an empty/tiny list, so a bad LinkedIn day
-// keeps yesterday's board instead of emptying it.
+// Refreshes job-radar/jobs.json with fresh, remote PM/AI-PM roles for India.
+//
+// Remote signal: LinkedIn's own remote filter (f_WT=2) on the search. LinkedIn's guest DETAIL
+// pages do not expose a workplace-type field, so we trust the search-level remote classification
+// and additionally DROP a role only if its description explicitly says hybrid / on-site / in-person
+// / non-remote (catches the occasional mis-tag). Date comes from the card's <time datetime>.
+// Rolling 7-day window; never publishes an empty board.
 
 import { writeFileSync, readFileSync } from "node:fs";
 
@@ -12,23 +14,15 @@ const KEYWORDS = [
   "technical product manager", "growth product manager", "product owner",
 ];
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; JobRadarBot/1.0; +https://abhishekyogi.in)" };
-const MAX_VERIFY = 60;      // cap posting fetches to stay polite / avoid rate limits
-const WINDOW_H = 168;       // rolling board window: keep verified-remote roles from the last 7 days
-const F_TPR = "r604800";    // LinkedIn "posted in last 7 days" filter
+const F_TPR = "r604800";  // posted in last 7 days
+const WINDOW_H = 168;     // rolling window (7 days)
+const MAX_CHECK = 80;     // cap description-contradiction fetches
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const clean = (s) =>
   (s || "").replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'")
     .replace(/&quot;/g, '"').replace(/&#x2013;|&#8211;/g, "–").replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
-
-// Lowercased plain text of the job-description block only (scoped so page nav/footer
-// "remote jobs" links don't cause false positives).
-function descText(html) {
-  const i = html.indexOf("show-more-less-html__markup");
-  if (i < 0) return "";
-  return html.slice(i, i + 6000).replace(/<[^>]*>/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").toLowerCase();
-}
 
 const senOf = (t) => /principal|staff|\blead\b|group|head/i.test(t) ? "Lead"
   : /senior|\bsr[.\s]/i.test(t) ? "Senior" : "PM";
@@ -39,67 +33,44 @@ const TITLE_BAD = /intern|internship|director|vice president|\bVP\b|head of/i;
 
 function relTime(iso) {
   const then = new Date(iso).getTime();
-  if (isNaN(then)) return { posted: "recent", hrs: 99 };
+  if (isNaN(then)) return { posted: "recent", hrs: 24 };
   const hrs = (Date.now() - then) / 3.6e6;
   const posted = hrs < 1 ? "just now" : hrs < 24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs / 24)}d ago`;
-  return { posted, hrs };
+  return { posted, hrs: hrs < 0 ? 0 : hrs };
 }
 
+// Parse the remote-filtered (f_WT=2) search cards into candidates with date + company.
 async function search(kw, start) {
-  const url = `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords=${encodeURIComponent(kw)}&location=India&f_TPR=${F_TPR}&start=${start}`;
+  const url = `https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search`
+    + `?keywords=${encodeURIComponent(kw)}&location=India&f_WT=2&f_TPR=${F_TPR}&start=${start}`;
   const res = await fetch(url, { headers: UA });
   if (!res.ok) return [];
-  const html = await res.text();
-  const cards = html.split("<li>").slice(1);
+  const cards = (await res.text()).split("<li>").slice(1);
   const out = [];
   for (const c of cards) {
     const u = (c.match(/href="(https:\/\/[a-z]+\.linkedin\.com\/jobs\/view\/[^"?]+)/) || [])[1];
     const title = clean((c.match(/base-search-card__title[^>]*>([\s\S]*?)<\/h3>/) || [])[1]);
     if (!u || !title) continue;
+    const company = clean((c.match(/base-search-card__subtitle[\s\S]*?>([\s\S]*?)<\/h4>/) || [])[1]);
+    const dt = (c.match(/datetime="([^"]+)"/) || [])[1] || "";
     const id = (u.match(/(\d+)$/) || [])[1] || u;
-    out.push({ id, url: u, title });
+    out.push({ id, url: u, title, company, dt });
   }
   return out;
 }
 
-// Open a posting and keep it only if its JSON-LD marks it remote (TELECOMMUTE) and it's <48h old.
-async function verify(job) {
+// Fetch the posting and return false only if the description explicitly contradicts remote.
+// If the page can't be read, trust the f_WT=2 remote classification and keep it.
+async function notContradicted(u) {
   let res;
-  try { res = await fetch(job.url, { headers: UA }); } catch { return null; }
-  if (!res.ok) return null;
+  try { res = await fetch(u, { headers: UA }); } catch { return true; }
+  if (!res.ok) return true;
   const html = await res.text();
-  const m = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-  if (!m) return null;
-  let ld;
-  try { ld = JSON.parse(m[1]); } catch { return null; }
-  if (Array.isArray(ld)) ld = ld.find((x) => x["@type"] === "JobPosting") || ld[0];
-  if (!ld || ld["@type"] !== "JobPosting") return null;
-
-  const { posted, hrs } = relTime(ld.datePosted);
-  if (hrs > WINDOW_H) return null; // window guard (7 days)
-
-  // Remote check: structured TELECOMMUTE flag OR explicit remote phrasing in the description
-  // (and no hybrid/on-site wording). Calibrated against known remote & on-site postings.
-  const d = descText(html);
-  const strong = /\bfully remote\b|100%\s*remote|work from home|\bwfh\b|remote[- ]first|work from anywhere|remote\s*\(?\s*(india|anywhere|global|worldwide)|this (is|role is)[^.]{0,40}remote|position is remote|is a remote/i.test(d);
-  const bad = /\bhybrid\b|on[- ]?site|in[- ]?office|in office|work from office/i.test(d);
-  const remote = ld.jobLocationType === "TELECOMMUTE" || (strong && !bad);
-  if (!remote) return null; // not confirmably remote -> drop
-
-  const title = clean(ld.title || job.title);
-  const company = clean(ld.hiringOrganization?.name || "");
-  // Region: if the posting states applicant-location requirements, respect them; else assume India-eligible
-  // (the search is India-scoped). Worldwide-remote -> "world".
-  let region = "india";
-  const alr = ld.applicantLocationRequirements;
-  const alrName = Array.isArray(alr) ? alr.map((a) => a?.name).join(", ") : alr?.name;
-  if (alrName && !/india/i.test(alrName)) region = /worldwide|anywhere/i.test(alrName) ? "world" : "india";
-
-  return {
-    title, company: company || "—", sen: senOf(title), ai: aiOf(title),
-    region, workplace: "remote", days: hrs < 24 ? 0 : 1, new24: hrs < 24,
-    posted, dt: ld.datePosted, verified: true, note: "", source: "LinkedIn", url: job.url,
-  };
+  const i = html.indexOf("show-more-less-html__markup");
+  if (i < 0) return true;
+  const d = html.slice(i, i + 6000).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").toLowerCase();
+  const contradicts = /\bhybrid\b|on[- ]?site|in[- ]?office|in office|work from office|in[- ]person|non[- ]remote/i.test(d);
+  return !contradicts;
 }
 
 async function main() {
@@ -115,51 +86,49 @@ async function main() {
           seen.add(j.id); cands.push(j);
         }
       }
-      await sleep(800);
+      await sleep(500);
     }
   }
-  console.log("candidates:", cands.length);
+  console.log("remote-tagged candidates:", cands.length);
 
-  const jobs = [];
-  for (const j of cands.slice(0, MAX_VERIFY)) {
-    const v = await verify(j);
-    if (v) jobs.push(v);
-    await sleep(700);
+  const fresh = [];
+  let checked = 0;
+  for (const j of cands) {
+    const { posted, hrs } = relTime(j.dt);
+    if (hrs > WINDOW_H) continue; // outside 7-day window
+    let keep = true;
+    if (checked < MAX_CHECK) { keep = await notContradicted(j.url); checked++; await sleep(400); }
+    if (!keep) continue;
+    const title = j.title;
+    fresh.push({
+      title, company: j.company || "—", sen: senOf(title), ai: aiOf(title),
+      region: "india", workplace: "remote", days: hrs < 24 ? 0 : 1, new24: hrs < 24,
+      posted, dt: j.dt, verified: true, note: "", source: "LinkedIn", url: j.url,
+    });
   }
-  // Dedupe by company+title, freshest first.
-  const uniq = [];
-  const key = new Set();
-  jobs.sort((a, b) => (a.days - b.days));
-  for (const j of jobs) {
-    const k = (j.company + "|" + j.title).toLowerCase();
-    if (!key.has(k)) { key.add(k); uniq.push(j); }
-  }
-  console.log("verified fully-remote (this run):", uniq.length);
+  console.log("kept (remote, in-window, not contradicted):", fresh.length);
 
-  // Rolling board: merge with the existing file, age out anything older than the window, and
-  // recompute the relative "posted" label from the absolute date so labels never go stale.
-  // Fresh data wins on duplicate URLs.
+  // Rolling merge: combine with existing, age out > window, recompute labels from dt.
   let existing = [];
   try { existing = JSON.parse(readFileSync(OUT, "utf8")).jobs || []; } catch { /* none */ }
   const byUrl = new Map();
   for (const j of existing) if (j.url) byUrl.set(j.url, j);
-  for (const j of uniq) byUrl.set(j.url, j);
+  for (const j of fresh) byUrl.set(j.url, j);
   const now = Date.now();
   const merged = [];
   for (const j of byUrl.values()) {
-    if (!j.dt) continue;                                 // drop legacy entries with no timestamp
+    if (!j.dt) continue;
     const hrs = (now - new Date(j.dt).getTime()) / 3.6e6;
-    if (hrs > WINDOW_H) continue;                         // age out beyond the 7-day window
+    if (hrs > WINDOW_H) continue;
     const posted = hrs < 1 ? "just now" : hrs < 24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs / 24)}d ago`;
     merged.push({ ...j, posted, new24: hrs < 24, days: hrs < 24 ? 0 : 1 });
   }
   merged.sort((a, b) => new Date(b.dt) - new Date(a.dt));
-  const board = merged.slice(0, 40);
+  const board = merged.slice(0, 60);
   if (!board.length) { console.log("nothing within window — leaving jobs.json untouched."); return; }
   const payload = { generatedAt: new Date().toISOString(), source: "github-action", jobs: board };
   writeFileSync(OUT, JSON.stringify(payload, null, 2));
-  console.log(`published ${board.length} roles (${uniq.length} newly verified this run)`);
+  console.log(`published ${board.length} roles (${fresh.length} from this run)`);
 }
 
-// Exit 0 even on error so the workflow doesn't fail loudly; no write => no commit => yesterday's board stays.
 main().catch((e) => { console.error("refresh failed:", e); });
