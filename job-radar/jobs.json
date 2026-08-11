@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T15:57:19.407Z",
+  "generatedAt": "2026-08-11T16:08:01.483Z",
   "source": "github-action",
   "jobs": [
     {
@@ -161,6 +161,22 @@
       "note": "6–7 yrs · ₹40–55 LPA · B2B SaaS / LLM",
       "source": "Naukri",
       "url": "https://www.naukri.com/job-listings-ai-product-manager-remote-profex-tech-remote-6-to-7-years-070826034977"
+    },
+    {
+      "title": "Senior Product Manager (Integrations)",
+      "company": "Eltropy",
+      "sen": "Senior",
+      "ai": false,
+      "region": "india",
+      "workplace": "remote",
+      "days": 1,
+      "new24": false,
+      "posted": "4d ago",
+      "dt": "2026-08-07T13:04:25.000Z",
+      "verified": true,
+      "note": "Remote confirmed in description",
+      "source": "LinkedIn",
+      "url": "https://in.linkedin.com/jobs/view/senior-product-manager-integrations-at-eltropy-4424001120"
     },
     {
       "title": "Sr. Product Manager - Phone Platform",

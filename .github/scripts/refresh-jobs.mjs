@@ -12,7 +12,7 @@ const OUT = "job-radar/jobs.json";
 const KEYWORDS = [
   "AI product manager", "product manager", "senior product manager",
   "technical product manager", "growth product manager", "product owner",
-  "product manager voice", "gohighlevel product",
+  "product manager voice", "principal product manager", "lead product manager",
 ];
 // Card location that means "remote for India": country-level "India" (no city) or an explicit Remote tag.
 const isRemoteLoc = (loc) => /\(remote\)|\bremote\b/i.test(loc || "") || /^india$/i.test((loc || "").trim());
@@ -113,7 +113,7 @@ async function main() {
   const cands = [];
   for (const kw of KEYWORDS) {
     for (const wt of ["&f_WT=2", ""]) {         // remote-tagged + all, so filter false-negatives are caught too
-      for (const start of [0, 25]) {
+      for (const start of [0, 25, 50]) {
         let list = [];
         try { list = await search(kw, start, wt); } catch { /* ignore */ }
         if (!list.length) break;
