@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plant Protector &amp; Guide — Bina, MP</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-2: #fbfaf8;
+    --border: #e5e2db;
+    --border-strong: #d6d2c8;
+    --ink: #1c1b18;
+    --ink-2: #4f4c45;
+    --muted: #78736a;
+    --accent: #0f766e;
+    --accent-ink: #0b5a54;
+    --accent-wash: #0f766e14;
+    --fresh: #15803d;
+    --fresh-wash: #15803d16;
+    --verify: #b45309;
+    --verify-wash: #b4530915;
+    --stretch: #6b6f76;
+    --danger: #b91c1c;
+    --danger-wash: #b91c1c14;
+    --shadow: 0 1px 2px rgba(28,27,24,.04), 0 4px 16px rgba(28,27,24,.05);
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14140f; --surface: #1d1d18; --surface-2: #201f1a; --border: #302f28;
+      --border-strong: #3c3b33; --ink: #f2f0ea; --ink-2: #c8c4ba; --muted: #918c81;
+      --accent: #4fd1c5; --accent-ink: #6ee7db; --accent-wash: #4fd1c518;
+      --fresh: #4ade80; --fresh-wash: #4ade8018; --verify: #fbbf24; --verify-wash: #fbbf2416;
+      --stretch: #9a958a; --danger: #f87171; --danger-wash: #f8717118;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14140f; --surface: #1d1d18; --surface-2: #201f1a; --border: #302f28;
+    --border-strong: #3c3b33; --ink: #f2f0ea; --ink-2: #c8c4ba; --muted: #918c81;
+    --accent: #4fd1c5; --accent-ink: #6ee7db; --accent-wash: #4fd1c518;
+    --fresh: #4ade80; --fresh-wash: #4ade8018; --verify: #fbbf24; --verify-wash: #fbbf2416;
+    --stretch: #9a958a; --danger: #f87171; --danger-wash: #f8717118;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f5f2; --surface: #ffffff; --surface-2: #fbfaf8; --border: #e5e2db;
+    --border-strong: #d6d2c8; --ink: #1c1b18; --ink-2: #4f4c45; --muted: #78736a;
+    --accent: #0f766e; --accent-ink: #0b5a54; --accent-wash: #0f766e14;
+    --fresh: #15803d; --fresh-wash: #15803d16; --verify: #b45309; --verify-wash: #b4530915;
+    --stretch: #6b6f76; --danger: #b91c1c; --danger-wash: #b91c1c14;
+    --shadow: 0 1px 2px rgba(28,27,24,.04), 0 4px 16px rgba(28,27,24,.05);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wrap { font-family: var(--sans); color: var(--ink); background: var(--bg); min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  header.masthead { padding: 40px 0 28px; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0 0 10px; }
+  h1.title { font-size: clamp(26px, 4.2vw, 38px); line-height: 1.08; margin: 0 0 10px; letter-spacing: -.02em; font-weight: 720; text-wrap: balance; }
+  .subtitle { color: var(--ink-2); font-size: 15px; margin: 0; max-width: 64ch; }
+  .subtitle b { color: var(--ink); font-weight: 600; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0 4px; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat .n { font-family: var(--mono); font-size: 26px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .stat.fresh .n { color: var(--fresh); }
+  .stat.ai .n { color: var(--accent); }
+  .stat.verify .n { color: var(--verify); }
+  .stat.text .n { font-size: 18px; line-height: 1.3; font-variant-numeric: normal; }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .controls { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); padding: 12px 0; margin-top: 22px; }
+  .controls-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .tabs { display: inline-flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 4px; }
+  .tabs button { font-family: var(--sans); font-size: 13.5px; font-weight: 600; color: var(--ink-2); background: transparent; border: 0; padding: 8px 14px; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+  .tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  .sec-head { display: flex; align-items: baseline; gap: 10px; margin: 26px 0 14px; }
+  .sec-head h2 { font-size: 18px; letter-spacing: -.01em; margin: 0; font-weight: 680; }
+  .sec-head .count { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; margin-left: auto; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  .badge { font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase; font-weight: 600; padding: 3px 8px; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; display: inline-block; }
+  .badge.new { color: var(--fresh); background: var(--fresh-wash); border-color: color-mix(in srgb, var(--fresh) 22%, transparent); }
+  .badge.ok { color: var(--fresh); background: transparent; border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
+  .badge.verify { color: var(--verify); background: var(--verify-wash); border-color: color-mix(in srgb, var(--verify) 22%, transparent); }
+  .badge.serious { color: var(--danger); background: var(--danger-wash); border-color: color-mix(in srgb, var(--danger) 24%, transparent); }
+  .badge.health-healthy { color: var(--fresh); background: var(--fresh-wash); border-color: color-mix(in srgb, var(--fresh) 22%, transparent); }
+  .badge.health-minor { color: var(--accent-ink); background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 24%, transparent); }
+  .badge.health-attention { color: var(--verify); background: var(--verify-wash); border-color: color-mix(in srgb, var(--verify) 22%, transparent); }
+  .badge.health-serious { color: var(--danger); background: var(--danger-wash); border-color: color-mix(in srgb, var(--danger) 24%, transparent); }
+  .badge.confidence-high { color: var(--fresh); background: transparent; border-color: color-mix(in srgb, var(--fresh) 30%, transparent); }
+  .badge.confidence-medium { color: var(--verify); background: transparent; border-color: color-mix(in srgb, var(--verify) 30%, transparent); }
+  .badge.confidence-low { color: var(--muted); background: transparent; border-color: var(--border-strong); }
+  .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; display: none; }
+  .empty.show { display: block; }
+
+  /* ---- Screens ---- */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ---- Buttons & fields ---- */
+  .btn { font-family: var(--sans); font-size: 13.5px; font-weight: 600; cursor: pointer; background: var(--surface); color: var(--ink-2); border: 1px solid var(--border-strong); padding: 9px 14px; border-radius: 9px; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); color: #fff; }
+  .btn.big { padding: 12px 20px; font-size: 14.5px; width: 100%; justify-content: center; }
+  .btn.small { padding: 6px 10px; font-size: 12.5px; }
+  .btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 34%, transparent); }
+  .btn.danger:hover { background: var(--danger-wash); border-color: var(--danger); color: var(--danger); }
+  .btn[disabled] { opacity: .6; cursor: default; }
+  label.btn { cursor: pointer; }
+  .field-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-2); margin: 12px 0 6px; }
+  .field-label.small { font-size: 11.5px; margin: 10px 0 4px; }
+  .field-label .muted { font-weight: 400; color: var(--muted); }
+  #scan-note, #set-apikey, .je-remedy, .key-row input { width: 100%; font-family: var(--sans); font-size: 14px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; margin-bottom: 12px; }
+  .je-notes { width: 100%; font-family: var(--sans); font-size: 13.5px; color: var(--ink); background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; resize: vertical; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12.5px; }
+
+  /* ---- Banners ---- */
+  .banner { border-radius: 12px; padding: 12px 16px; font-size: 13.5px; margin-bottom: 14px; }
+  .banner.verify { background: var(--verify-wash); color: var(--verify); border: 1px solid color-mix(in srgb, var(--verify) 28%, transparent); }
+
+  /* ---- Scan screen ---- */
+  .dropzone { text-align: center; padding: 40px 20px; border: 1.5px dashed var(--border-strong); transition: border-color .15s ease, background .15s ease; }
+  .dropzone.drag-over { border-color: var(--accent); background: var(--accent-wash); }
+  .scan-icon { font-size: 40px; margin-bottom: 6px; }
+  .scan-hint { color: var(--muted); margin: 0 0 14px; }
+  .scan-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .scan-preview img { max-width: 100%; max-height: 360px; border-radius: 12px; display: block; margin: 0 auto 14px; }
+
+  /* ---- Loading ---- */
+  .loading-card { text-align: center; padding: 48px 20px; }
+  .spinner { width: 34px; height: 34px; margin: 0 auto 18px; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--accent); animation: spin .9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-status { font-weight: 600; margin: 0 0 4px; }
+  .loading-model { margin: 0 0 18px; font-size: 12.5px; }
+
+  /* ---- Result ---- */
+  .result-top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; }
+  .result-thumb { width: 84px; height: 84px; object-fit: cover; border-radius: 10px; flex: 0 0 auto; background: var(--surface-2); }
+  .result-top h3 { margin: 0 0 2px; font-size: 19px; }
+  .botanical { font-style: italic; margin: 0 0 8px; }
+  .hi { font-weight: 400; color: var(--muted); }
+  .result-summary { font-size: 14.5px; color: var(--ink-2); }
+  #result-card h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 20px 0 8px; font-weight: 700; }
+  .issue { padding: 12px 14px; margin-bottom: 8px; }
+  .issue-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .remedy { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+  .remedy-title { font-weight: 600; margin-bottom: 3px; }
+  .remedy p { margin: 0 0 6px; font-size: 13.5px; }
+  .remedy-meta { font-size: 11.5px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; }
+  .chemical-details { margin: 10px 0; }
+  .chemical-details summary { cursor: pointer; font-size: 13px; color: var(--muted); padding: 8px 0; }
+  .care-tips { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--ink-2); }
+  .care-tips li { margin: 4px 0; }
+  .season-note { margin-top: 16px; }
+  .result-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .not-plant { text-align: center; padding: 30px 10px; }
+
+  /* ---- Journal ---- */
+  .journal-group { margin-bottom: 22px; }
+  .journal-group-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .journal-group-head h3 { margin: 0; font-size: 15px; }
+  .journal-group-head .count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .journal-entry-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; }
+  .journal-thumb { width: 52px; height: 52px; object-fit: cover; border-radius: 8px; flex: 0 0 auto; background: var(--surface-2); }
+  .journal-entry-info { flex: 1 1 auto; min-width: 0; }
+  .journal-date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .journal-headline { font-size: 13.5px; margin: 2px 0 6px; }
+
+  /* ---- Season ---- */
+  .season-banner h3 { margin: 6px 0 6px; font-size: 18px; }
+  .season-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; margin-top: 14px; }
+  .season-card.current { border-color: var(--accent); }
+  .season-card-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+  .season-card h4 { margin: 0; font-size: 15px; }
+  .crop-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { font-size: 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
+
+  /* ---- Settings ---- */
+  .key-row { display: flex; gap: 8px; }
+  .key-row input { flex: 1 1 auto; margin-bottom: 0; }
+  .key-status { font-size: 12.5px; margin-top: 8px; min-height: 1.2em; }
+  .key-status.fresh { color: var(--fresh); }
+  .key-status.verify { color: var(--verify); }
+  .model-seg { display: flex; gap: 4px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 3px; }
+  .model-seg button { flex: 1 1 auto; font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--ink-2); background: transparent; border: 0; padding: 8px 10px; border-radius: 7px; cursor: pointer; }
+  .model-seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+  .settings-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+  footer { border-top: 1px solid var(--border); margin-top: 40px; padding: 26px 0 48px; color: var(--muted); font-size: 13px; }
+  footer .how { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  footer .how b { color: var(--ink); }
+  footer .how ol { margin: 8px 0 0; padding-left: 20px; color: var(--ink-2); }
+  footer .how li { margin: 3px 0; }
+  footer .how a { color: var(--accent-ink); }
+  footer .stamp { font-family: var(--mono); font-size: 11.5px; line-height: 1.6; }
+
+  .themebtn { position: fixed; bottom: 18px; right: 18px; z-index: 40; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; box-shadow: var(--shadow); font-size: 17px; }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 0 16px; }
+    .result-actions .btn { flex: 1 1 auto; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="container">
+    <header class="masthead">
+      <p class="eyebrow">Home garden helper · Bina, Sagar district, MP</p>
+      <h1 class="title">Know what's wrong with your plant — and how to fix it</h1>
+      <p class="subtitle">Photograph a leaf or your whole plant and get a diagnosis with <b>home remedies suited to Bina's climate and season</b> — not a farm tool, not a subscription. Your own Anthropic API key; everything stays on this device.</p>
+      <div class="stats" id="stats">
+        <div class="stat"><div class="n" id="s-plants">0</div><div class="l">Plants tracked</div></div>
+        <div class="stat"><div class="n" id="s-scans">0</div><div class="l">Scans this month</div></div>
+        <div class="stat verify"><div class="n" id="s-attention">0</div><div class="l">Need attention now</div></div>
+        <div class="stat ai text"><div class="n" id="s-season">–</div><div class="l">Current season</div></div>
+      </div>
+    </header>
+  </div>
+
+  <div class="controls">
+    <div class="container controls-row">
+      <div class="tabs" role="tablist" aria-label="Sections">
+        <button data-screen="scan" aria-selected="true">🔍 Scan</button>
+        <button data-screen="journal" aria-selected="false">📔 Journal</button>
+        <button data-screen="season" aria-selected="false">🌦 Season</button>
+        <button data-screen="settings" aria-selected="false">⚙️ Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:22px">
+
+    <section class="screen active" id="screen-scan">
+      <div class="banner verify" id="scan-error" style="display:none"></div>
+      <div class="sec-head"><h2>Scan a plant</h2></div>
+      <div class="card dropzone" id="dropzone">
+        <div id="scan-empty">
+          <div class="scan-icon">🌿</div>
+          <p class="scan-hint">Drag a photo here, paste one, or</p>
+          <div class="scan-btns">
+            <label class="btn primary" for="file-camera">📷 Take photo</label>
+            <input type="file" id="file-camera" accept="image/*" capture="environment" hidden>
+            <label class="btn" for="file-picker">🖼️ Choose photo</label>
+            <input type="file" id="file-picker" accept="image/*" hidden>
+          </div>
+        </div>
+        <div class="scan-preview" id="scan-preview" style="display:none">
+          <img id="preview-img" alt="Selected plant photo">
+          <button class="btn small" id="btn-clear-photo" type="button">Choose a different photo</button>
+        </div>
+      </div>
+      <div class="card" id="scan-note-card" style="display:none">
+        <label class="field-label" for="scan-note">What's worrying you? <span class="muted">(optional)</span></label>
+        <input type="text" id="scan-note" placeholder="e.g. leaves turning yellow, white spots underneath...">
+        <button class="btn primary big" id="btn-analyse" type="button">Analyse this plant</button>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-loading">
+      <div class="card loading-card">
+        <div class="spinner" aria-hidden="true"></div>
+        <p class="loading-status" id="loading-status">Resizing photo…</p>
+        <p class="loading-model muted" id="loading-model"></p>
+        <button class="btn" id="btn-cancel-analyse" type="button">Cancel</button>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-result">
+      <div class="card" id="result-card"></div>
+    </section>
+
+    <section class="screen" id="screen-journal">
+      <div class="sec-head">
+        <h2>Plant journal</h2>
+        <span class="count" id="journal-count">0 entries</span>
+      </div>
+      <div id="journal-list"></div>
+      <div class="empty" id="journal-empty">No scans saved yet. Analyse a plant and tap "Save to journal" to start tracking it.</div>
+    </section>
+
+    <section class="screen" id="screen-season">
+      <div class="sec-head"><h2>Seasonal guide</h2></div>
+      <div class="card season-banner" id="season-banner"></div>
+      <div class="season-grid" id="season-grid"></div>
+    </section>
+
+    <section class="screen" id="screen-settings">
+      <div class="banner verify" id="settings-banner" style="display:none">Add your Anthropic API key below to start scanning. Pay-as-you-go, no subscription.</div>
+      <div class="sec-head"><h2>Settings</h2></div>
+      <div class="card">
+        <label class="field-label" for="set-apikey">Anthropic API key</label>
+        <div class="key-row">
+          <input type="password" id="set-apikey" placeholder="sk-ant-...">
+          <button class="btn small" id="btn-toggle-key" type="button">Show</button>
+        </div>
+        <p class="muted small">Stored only on this device. Sent only to api.anthropic.com when you scan a photo — never anywhere else. Get a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">console.anthropic.com</a>.</p>
+        <button class="btn primary" id="btn-test-key" type="button">Test connection</button>
+        <p class="key-status" id="key-status"></p>
+      </div>
+      <div class="card">
+        <label class="field-label">Analysis model</label>
+        <div class="model-seg" id="model-seg" role="group" aria-label="Model"></div>
+        <p class="muted small" id="model-detail"></p>
+      </div>
+      <div class="card">
+        <label class="field-label">Your journal</label>
+        <p class="muted small" id="storage-usage"></p>
+        <div class="settings-btns">
+          <button class="btn" id="btn-export" type="button">Export journal (.json)</button>
+          <button class="btn" id="btn-import" type="button">Import journal</button>
+          <input type="file" id="import-file" accept="application/json" hidden>
+          <button class="btn danger" id="btn-clear-all" type="button">Clear all data</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="container">
+    <footer>
+      <div class="how">
+        <b>How this works.</b> You bring your own Anthropic API key (from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener noreferrer">console.anthropic.com</a>) — this page calls Claude directly from your browser, no server in between, no account to create. Your key and your plant journal live only in this browser, on this device.
+        <ol>
+          <li>Photograph or upload a photo of your plant.</li>
+          <li>Claude identifies the plant, its health, and anything wrong with it.</li>
+          <li>You get remedies — home items first, nursery items next, chemicals only as a last resort.</li>
+          <li>Save it to your journal to track how the plant responds over time.</li>
+        </ol>
+      </div>
+      <div class="stamp">This is a helpful guess from a photo, not a plant doctor — double check before spraying anything on food you'll eat. Tuned for home gardens in Bina, Sagar district, Madhya Pradesh.</div>
+    </footer>
+  </div>
+</div>
+
+<button class="themebtn" id="theme" title="Toggle theme" aria-label="Toggle light/dark theme">◐</button>
+
+<script>
+  // ---- Constants ----
+  const LS = { apikey: 'plantpro_apikey_v1', model: 'plantpro_model_v1', journal: 'plantpro_journal_v1' };
+  const MAX_JOURNAL = 120;
+
+  const MODELS = [
+    { id: 'claude-haiku-4-5', label: 'Quick & cheap', price: '$1 in / $5 out per MTok', est: '~₹0.5–1 per scan', supportsEffort: false, maxTokens: 3000 },
+    { id: 'claude-sonnet-5', label: 'Balanced', price: '$3 in / $15 out per MTok (intro $2/$10 to 31 Aug 2026)', est: '~₹1–2 per scan', supportsEffort: true, effort: 'medium', maxTokens: 4000 },
+    { id: 'claude-opus-5', label: 'Thorough', price: '$5 in / $25 out per MTok', est: '~₹3–4 per scan', supportsEffort: true, effort: 'high', maxTokens: 6000 }
+  ];
+
+  const SEASONS = [
+    {
+      key: 'kharif', label: 'Kharif · Monsoon', months: [5, 6, 7, 8], window: 'June – September',
+      blurb: "High humidity and waterlogging — fungal disease, root rot and leaf spot are the common problems now.",
+      crops: [{ en: 'Tomato', hi: 'टमाटर' }, { en: 'Okra (Bhindi)', hi: 'भिंडी' }, { en: 'Brinjal', hi: 'बैंगन' }, { en: 'Cucumber', hi: 'खीरा' }, { en: 'Bottle gourd', hi: 'लौकी' }]
+    },
+    {
+      key: 'rabi_sow', label: 'Rabi · Sowing', months: [9, 10, 11], window: 'October – December',
+      blurb: "Cooling down, drier air. Aphids and powdery mildew are common on tender new growth.",
+      crops: [{ en: 'Peas', hi: 'मटर' }, { en: 'Spinach', hi: 'पालक' }, { en: 'Cauliflower', hi: 'फूलगोभी' }, { en: 'Carrot', hi: 'गाजर' }, { en: 'Fenugreek', hi: 'मेथी' }, { en: 'Mustard', hi: 'सरसों' }, { en: 'Radish', hi: 'मूली' }]
+    },
+    {
+      key: 'rabi_grow', label: 'Rabi · Growing', months: [0, 1], window: 'January – February',
+      blurb: "Mild days, cold nights, occasional frost. Watch for frost damage and aphids on tender growth.",
+      crops: [{ en: 'Peas', hi: 'मटर' }, { en: 'Spinach', hi: 'पालक' }, { en: 'Cauliflower', hi: 'फूलगोभी' }, { en: 'Carrot', hi: 'गाजर' }]
+    },
+    {
+      key: 'zaid', label: 'Zaid · Summer', months: [2, 3, 4], window: 'March – May',
+      blurb: "Very hot and dry, often above 42°C. Heat stress, sunscald, spider mites and drying out are the usual problems, not fungus.",
+      crops: [{ en: 'Watermelon', hi: 'तरबूज़' }, { en: 'Muskmelon', hi: 'खरबूजा' }, { en: 'Cucumber', hi: 'खीरा' }]
+    }
+  ];
+
+  const DIAGNOSIS_SCHEMA = {
+    type: 'object', additionalProperties: false,
+    required: ['is_plant', 'plant', 'health_status', 'confidence', 'summary', 'issues', 'remedies', 'care_tips', 'season_note'],
+    properties: {
+      is_plant: { type: 'boolean' },
+      plant: {
+        type: 'object', additionalProperties: false,
+        required: ['common_name', 'hindi_name', 'botanical_name', 'category'],
+        properties: {
+          common_name: { type: 'string' }, hindi_name: { type: 'string' }, botanical_name: { type: 'string' },
+          category: { type: 'string', enum: ['houseplant', 'kitchen_vegetable', 'herb', 'fruit', 'flowering', 'succulent', 'other'] }
+        }
+      },
+      health_status: { type: 'string', enum: ['healthy', 'minor_issue', 'needs_attention', 'serious'] },
+      confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
+      summary: { type: 'string' },
+      issues: {
+        type: 'array',
+        items: {
+          type: 'object', additionalProperties: false,
+          required: ['name', 'hindi_name', 'type', 'evidence', 'likely_cause', 'severity'],
+          properties: {
+            name: { type: 'string' }, hindi_name: { type: 'string' },
+            type: { type: 'string', enum: ['fungal', 'bacterial', 'viral', 'pest', 'nutrient_deficiency', 'watering', 'light', 'soil', 'heat_stress', 'cold_stress', 'unknown'] },
+            evidence: { type: 'string' }, likely_cause: { type: 'string' },
+            severity: { type: 'string', enum: ['low', 'medium', 'high'] }
+          }
+        }
+      },
+      remedies: {
+        type: 'array',
+        items: {
+          type: 'object', additionalProperties: false,
+          required: ['title', 'hindi_name', 'kind', 'steps', 'how_often', 'where_to_get'],
+          properties: {
+            title: { type: 'string' }, hindi_name: { type: 'string' },
+            kind: { type: 'string', enum: ['home', 'cultural', 'shop_organic', 'shop_chemical'] },
+            steps: { type: 'string' }, how_often: { type: 'string' }, where_to_get: { type: 'string' }
+          }
+        }
+      },
+      care_tips: { type: 'array', items: { type: 'string' } },
+      season_note: { type: 'string' }
+    }
+  };
+
+  // ---- State ----
+  const state = { screen: 'scan', pendingImage: null, lastResult: null, lastModel: null, abortCtrl: null, loadingTimer: null };
+
+  // ---- Small helpers ----
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+  function debounce(fn, ms) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
+
+  // ---- Settings persistence ----
+  function getKey() { try { return localStorage.getItem(LS.apikey) || ''; } catch (e) { return ''; } }
+  function setKey(v) { try { if (v) localStorage.setItem(LS.apikey, v); else localStorage.removeItem(LS.apikey); } catch (e) {} }
+  function getModel() { try { return localStorage.getItem(LS.model) || 'claude-sonnet-5'; } catch (e) { return 'claude-sonnet-5'; } }
+  function setModel(v) { try { localStorage.setItem(LS.model, v); } catch (e) {} }
+
+  // ---- Journal persistence ----
+  function loadJournal() { try { return JSON.parse(localStorage.getItem(LS.journal) || '[]'); } catch (e) { return []; } }
+  function saveJournal(journal) {
+    if (journal.length > MAX_JOURNAL) journal = journal.slice(0, MAX_JOURNAL);
+    try { localStorage.setItem(LS.journal, JSON.stringify(journal)); return true; }
+    catch (e) {
+      const trimmed = journal.map((entry, i) => {
+        if (i >= journal.length - 20) { const { full, ...rest } = entry; return rest; }
+        return entry;
+      });
+      try { localStorage.setItem(LS.journal, JSON.stringify(trimmed)); return true; }
+      catch (e2) {
+        const evicted = journal.slice(0, Math.max(0, journal.length - 40));
+        try { localStorage.setItem(LS.journal, JSON.stringify(evicted)); return 'evicted'; }
+        catch (e3) { return false; }
+      }
+    }
+  }
+
+  // ---- Season ----
+  function currentSeason() { const m = new Date().getMonth(); return SEASONS.find(s => s.months.includes(m)) || SEASONS[0]; }
+
+  // ---- Health/severity label helpers ----
+  function healthSlug(h) { return { healthy: 'healthy', minor_issue: 'minor', needs_attention: 'attention', serious: 'serious' }[h] || 'attention'; }
+  function healthLabel(h) { return { healthy: 'Healthy', minor_issue: 'Minor issue', needs_attention: 'Needs attention', serious: 'Serious' }[h] || h; }
+  function sevBadge(sev) { return { low: 'ok', medium: 'verify', high: 'serious' }[sev] || 'verify'; }
+
+  // ---- Screen switching ----
+  function showScreen(name) {
+    state.screen = name;
+    document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + name));
+    const tabName = (name === 'result' || name === 'loading') ? 'scan' : name;
+    document.querySelectorAll('.tabs [data-screen]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.screen === tabName)));
+    if (name === 'journal') renderJournal();
+    else if (name === 'season') renderSeason();
+    else if (name === 'settings') renderSettings();
+    window.scrollTo(0, 0);
+  }
+
+  // ---- Image pipeline ----
+  async function prepImage(file) {
+    if (!file || !file.type || !file.type.startsWith('image/')) throw new Error('NOT_IMAGE');
+    if (file.size > 25 * 1024 * 1024) throw new Error('TOO_LARGE');
+    let bitmap;
+    try { bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+    catch (e) {
+      try { bitmap = await createImageBitmap(file); }
+      catch (e2) { bitmap = await loadImageFallback(file); }
+    }
+    const full = resizeToDataURL(bitmap, 1568, 0.85);
+    const thumb = resizeToDataURL(bitmap, 256, 0.6);
+    return { full, thumb };
+  }
+  function resizeToDataURL(bitmap, maxEdge, quality) {
+    const w = bitmap.width, h = bitmap.height;
+    const scale = Math.min(1, maxEdge / Math.max(w, h));
+    const tw = Math.max(1, Math.round(w * scale)), th = Math.max(1, Math.round(h * scale));
+    const canvas = document.createElement('canvas');
+    canvas.width = tw; canvas.height = th;
+    canvas.getContext('2d').drawImage(bitmap, 0, 0, tw, th);
+    return canvas.toDataURL('image/jpeg', quality);
+  }
+  function loadImageFallback(file) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('DECODE_FAILED')); };
+      img.src = url;
+    });
+  }
+
+  async function handleFile(file) {
+    clearScanError();
+    try {
+      const prepped = await prepImage(file);
+      state.pendingImage = prepped;
+      showPreview(prepped.full);
+    } catch (err) {
+      if (err.message === 'NOT_IMAGE') showScanError("That doesn't look like an image file. Please choose a photo.");
+      else if (err.message === 'TOO_LARGE') showScanError("That photo is very large. Please pick a smaller one.");
+      else showScanError("Couldn't read that photo. Try a different one.");
+    }
+  }
+  function showPreview(src) {
+    document.getElementById('preview-img').src = src;
+    document.getElementById('scan-empty').style.display = 'none';
+    document.getElementById('scan-preview').style.display = '';
+    document.getElementById('scan-note-card').style.display = '';
+  }
+  function resetToScan() {
+    state.pendingImage = null; state.lastResult = null;
+    document.getElementById('preview-img').src = '';
+    document.getElementById('scan-preview').style.display = 'none';
+    document.getElementById('scan-empty').style.display = '';
+    document.getElementById('scan-note-card').style.display = 'none';
+    document.getElementById('scan-note').value = '';
+    clearScanError();
+    showScreen('scan');
+  }
+  function showScanError(msg) { const el = document.getElementById('scan-error'); el.textContent = msg; el.style.display = 'block'; }
+  function clearScanError() { const el = document.getElementById('scan-error'); el.style.display = 'none'; el.textContent = ''; }
+
+  // ---- Prompt building ----
+  function buildSystemPrompt() {
+    const season = currentSeason();
+    const todayISO = new Date().toISOString().slice(0, 10);
+    const cropList = season.crops.map(c => `${c.en} (${c.hi})`).join(', ');
+    return `You are a practical kitchen-garden helper for a home gardener in Bina, Sagar district, Madhya Pradesh, India. You are looking at a photo of one of their plants.
+
+WHERE THEY ARE
+Bina, Sagar district, MP — Vindhyan Plateau agro-climatic zone, hot semi-arid. Roughly 1160mm rain a year, almost all of it in the monsoon (June–September). Summers (March–June) are very hot and dry, often above 42°C. Winters (November–February) are mild with cool nights and occasional light frost.
+
+TODAY
+Date: ${todayISO}. Season right now: ${season.label} (${season.window}).
+${season.blurb} Growing/sowing now: ${cropList}.
+Factor this in. A yellowing leaf in waterlogged August monsoon soil is a different problem from a yellowing leaf in dry May heat — say which one you think it is and why.
+
+WHO YOU ARE TALKING TO
+Someone growing a few plants in pots, on a terrace, or in a small kitchen garden. NOT a commercial farmer. Never suggest tractors, sprayers, per-hectare doses, or soil lab tests. Quantities must be in mugs, spoons, litres and buckets — things they have at home.
+
+REMEDIES — this order, always
+1. Things already in the house: neem oil (नीम का तेल), neem khali / neem cake (नीम खली), cow dung compost (गोबर की खाद), buttermilk spray (छाछ), turmeric paste (हल्दी), wood ash (राख), soapy water, garlic-chilli spray, Epsom salt, banana peel, rice water.
+2. Free changes to how they care for the plant: move the pot, change watering, prune, improve drainage, mulch, remove infected leaves.
+3. Things from a local nursery or kirana: Trichoderma, neem-based sprays, vermicompost, bone meal.
+4. Only if the above will genuinely not work: a named chemical, marked clearly as a last resort with its safety warning and how many days before the vegetable can be eaten.
+
+HOW TO WRITE
+Plain simple English, short sentences, no jargon. When you name a plant, a disease, or a remedy, put the common Hindi name in brackets right after it — "neem oil (नीम का तेल)", "early blight (अगेती झुलसा)". If you don't know a real Hindi name, leave hindi_name as an empty string rather than inventing one or transliterating the English.
+
+HONESTY
+Say what you can actually see in the photo, in the "evidence" field. If the photo is blurry, too dark, too far away, or shows only part of the plant, set confidence to "low" and say in "summary" what a better photo would show. Do not guess a specific disease when several are possible — name the most likely one and mention the alternative in likely_cause. If the image is not a plant at all, set is_plant to false, leave issues and remedies empty, and put one line in summary telling them what to photograph instead.`;
+  }
+  function buildUserText(note) {
+    let t = 'Here is a photo of my plant.';
+    if (note && note.trim()) t += `\nWhat I've noticed: ${note.trim()}`;
+    t += '\nTell me what plant this is, whether it is healthy, what is wrong with it if anything, and exactly what I should do about it.';
+    return t;
+  }
+  function buildRequestBody(modelCfg, systemPrompt, imageB64, note) {
+    const outputConfig = { format: { type: 'json_schema', schema: DIAGNOSIS_SCHEMA } };
+    if (modelCfg.supportsEffort) outputConfig.effort = modelCfg.effort;
+    return {
+      model: modelCfg.id, max_tokens: modelCfg.maxTokens, system: systemPrompt, output_config: outputConfig,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: imageB64 } },
+        { type: 'text', text: buildUserText(note) }
+      ] }]
+    };
+  }
+  async function callClaude(body, signal) {
+    return fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': getKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true', 'content-type': 'application/json' },
+      body: JSON.stringify(body), signal
+    });
+  }
+
+  // ---- Analyse flow ----
+  function startLoadingCycle() {
+    const msgs = ['Resizing photo…', 'Sending to Claude…', 'Reading the diagnosis…'];
+    let i = 0; document.getElementById('loading-status').textContent = msgs[0];
+    state.loadingTimer = setInterval(() => { i = (i + 1) % msgs.length; document.getElementById('loading-status').textContent = msgs[i]; }, 1600);
+  }
+  function stopLoadingCycle() { if (state.loadingTimer) clearInterval(state.loadingTimer); state.loadingTimer = null; }
+
+  function httpErrorCode(status) {
+    if (status === 401) return 'invalid_key';
+    if (status === 403 || status === 404) return 'no_access';
+    if (status === 413) return 'too_large';
+    if (status === 429) return 'rate_limited';
+    if (status >= 500) return 'server_error';
+    return 'generic';
+  }
+  function handleAnalyseError(err) {
+    const messages = {
+      invalid_key: "That API key wasn't accepted. Check it in Settings — it should start with sk-ant-.",
+      no_access: `Your key can't use ${state.lastModel || 'this model'}. Try the Quick & cheap option in Settings.`,
+      too_large: 'That photo was too big even after shrinking. Try a photo taken at a lower quality setting.',
+      rate_limited: `Too many scans just now. Try again in ${err.retryAfter ? err.retryAfter + 's' : 'a minute'}.`,
+      server_error: 'Claude is busy right now. Please try again in a moment.',
+      refusal: "Claude couldn't analyse this photo. Try a different one.",
+      truncated: 'The answer got cut off. Try the Thorough model in Settings.',
+      malformed: 'Got an unexpected response. Please try again.',
+      network: "Couldn't reach Claude. Check your internet connection. If you opened this file directly by double-clicking it, run it from a local server instead.",
+      generic: `Something went wrong (${err.apiMessage || ('HTTP ' + err.status)}). Please try again.`
+    };
+    showScanError(messages[err.code] || messages.generic);
+    showScreen('scan');
+  }
+
+  async function analyse() {
+    if (!state.pendingImage) return;
+    if (!getKey()) { showScreen('settings'); return; }
+    clearScanError();
+    const modelId = getModel();
+    const modelCfg = MODELS.find(m => m.id === modelId) || MODELS[1];
+    state.lastModel = modelCfg.id;
+    document.getElementById('loading-model').textContent = 'Using ' + modelCfg.label + ' (' + modelCfg.id + ')';
+    showScreen('loading');
+    startLoadingCycle();
+    state.abortCtrl = new AbortController();
+    const note = document.getElementById('scan-note').value.trim();
+    try {
+      const imageB64 = state.pendingImage.full.split(',')[1];
+      const body = buildRequestBody(modelCfg, buildSystemPrompt(), imageB64, note);
+      let res = await callClaude(body, state.abortCtrl.signal);
+      if (!res.ok && res.status >= 500) {
+        await sleep(3000 + Math.random() * 1000);
+        res = await callClaude(body, state.abortCtrl.signal);
+      }
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => ({}));
+        throw { code: httpErrorCode(res.status), status: res.status, retryAfter: res.headers.get('retry-after'), apiMessage: errBody && errBody.error && errBody.error.message };
+      }
+      const json = await res.json();
+      if (json.stop_reason === 'refusal') throw { code: 'refusal' };
+      if (json.stop_reason === 'max_tokens') throw { code: 'truncated' };
+      const textBlock = (json.content || []).find(b => b.type === 'text');
+      if (!textBlock) throw { code: 'malformed' };
+      let parsed;
+      try { parsed = JSON.parse(textBlock.text); } catch (e) { throw { code: 'malformed' }; }
+      stopLoadingCycle();
+      state.lastResult = parsed;
+      if (parsed.is_plant === false) renderNotAPlant(parsed);
+      else renderResult(parsed);
+    } catch (err) {
+      stopLoadingCycle();
+      if (err && err.name === 'AbortError') { showScreen('scan'); return; }
+      if (err && err.code) handleAnalyseError(err);
+      else handleAnalyseError({ code: 'network' });
+    }
+  }
+
+  // ---- Result rendering ----
+  function renderResult(parsed) {
+    const p = parsed.plant || {};
+    const healthCls = healthSlug(parsed.health_status);
+    const remedyGroups = { home: [], cultural: [], shop_organic: [], shop_chemical: [] };
+    (parsed.remedies || []).forEach(r => { (remedyGroups[r.kind] || remedyGroups.home).push(r); });
+    const remedyHTML = list => list.map(r => `
+      <div class="remedy">
+        <div class="remedy-title">${esc(r.title)}${r.hindi_name ? ` <span class="hi">(${esc(r.hindi_name)})</span>` : ''}</div>
+        <p>${esc(r.steps)}</p>
+        <div class="remedy-meta"><span>${esc(r.how_often)}</span><span>·</span><span>${esc(r.where_to_get)}</span></div>
+      </div>`).join('');
+    const chemicalHTML = remedyGroups.shop_chemical.length ? `
+      <details class="chemical-details">
+        <summary>If home remedies don't work — shop products</summary>
+        ${remedyHTML(remedyGroups.shop_chemical)}
+      </details>` : '';
+    document.getElementById('result-card').innerHTML = `
+      <div class="result-top">
+        <img src="${state.pendingImage.thumb}" alt="" class="result-thumb">
+        <div>
+          <h3>${esc(p.common_name || 'Unknown plant')}${p.hindi_name ? ` <span class="hi">(${esc(p.hindi_name)})</span>` : ''}</h3>
+          ${p.botanical_name ? `<p class="botanical muted small">${esc(p.botanical_name)}</p>` : ''}
+          <span class="badge health-${healthCls}">${esc(healthLabel(parsed.health_status))}</span>
+          <span class="badge confidence-${esc(parsed.confidence)}">${esc(parsed.confidence)} confidence</span>
+        </div>
+      </div>
+      <p class="result-summary">${esc(parsed.summary)}</p>
+      ${(parsed.issues || []).length ? `<h4>What's wrong</h4>${parsed.issues.map(i => `
+        <div class="card issue">
+          <div class="issue-top"><b>${esc(i.name)}</b>${i.hindi_name ? ` <span class="hi">(${esc(i.hindi_name)})</span>` : ''}<span class="badge ${sevBadge(i.severity)}">${esc(i.severity)}</span></div>
+          <p class="muted small">${esc(i.evidence)}</p>
+          <p>${esc(i.likely_cause)}</p>
+        </div>`).join('')}` : ''}
+      <h4>What to do</h4>
+      ${remedyHTML(remedyGroups.home)}
+      ${remedyHTML(remedyGroups.cultural)}
+      ${remedyHTML(remedyGroups.shop_organic)}
+      ${chemicalHTML}
+      ${(parsed.care_tips || []).length ? `<h4>Ongoing care</h4><ul class="care-tips">${parsed.care_tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${parsed.season_note ? `<p class="season-note muted small">🌤 ${esc(parsed.season_note)}</p>` : ''}
+      <div class="result-actions">
+        <button class="btn primary" data-action="save-journal" id="btn-save-journal">Save to journal</button>
+        <button class="btn" data-action="scan-another">Scan another</button>
+      </div>`;
+    showScreen('result');
+  }
+  function renderNotAPlant(parsed) {
+    document.getElementById('result-card').innerHTML = `
+      <div class="not-plant">
+        <div class="scan-icon">🤔</div>
+        <p>${esc(parsed.summary || "That doesn't look like a plant. Try photographing a leaf, stem, or the whole plant.")}</p>
+        <button class="btn primary" data-action="scan-another">Try another photo</button>
+      </div>`;
+    showScreen('result');
+  }
+  document.getElementById('result-card').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    if (btn.dataset.action === 'save-journal') saveCurrentToJournal();
+    else if (btn.dataset.action === 'scan-another') resetToScan();
+  });
+
+  function saveCurrentToJournal() {
+    const parsed = state.lastResult;
+    if (!parsed || !state.pendingImage) return;
+    const p = parsed.plant || {};
+    const key = (p.common_name || 'plant').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'plant';
+    const entry = {
+      id: String(Date.now()), ts: new Date().toISOString(), plantKey: key,
+      plantName: p.common_name || 'Unknown plant', plantNameHi: p.hindi_name || '',
+      thumb: state.pendingImage.thumb, health: parsed.health_status, headline: parsed.summary,
+      issues: (parsed.issues || []).map(i => i.hindi_name ? `${i.name} (${i.hindi_name})` : i.name),
+      remedyTaken: '', notes: '', season: currentSeason().key, model: state.lastModel, full: parsed
+    };
+    const journal = loadJournal();
+    journal.unshift(entry);
+    saveJournal(journal);
+    renderStats();
+    const btn = document.getElementById('btn-save-journal');
+    if (btn) { btn.textContent = 'Saved ✓'; btn.disabled = true; }
+  }
+
+  // ---- Journal screen ----
+  function renderJournal() {
+    const journal = loadJournal();
+    document.getElementById('journal-count').textContent = journal.length + (journal.length === 1 ? ' entry' : ' entries');
+    document.getElementById('journal-empty').classList.toggle('show', journal.length === 0);
+    const groups = []; const seen = new Map();
+    for (const e of journal) {
+      if (!seen.has(e.plantKey)) { const g = { plantKey: e.plantKey, plantName: e.plantName, plantNameHi: e.plantNameHi, entries: [] }; seen.set(e.plantKey, g); groups.push(g); }
+      seen.get(e.plantKey).entries.push(e);
+    }
+    document.getElementById('journal-list').innerHTML = groups.map(g => `
+      <div class="journal-group">
+        <div class="journal-group-head"><h3>${esc(g.plantName)}${g.plantNameHi ? ` <span class="hi">(${esc(g.plantNameHi)})</span>` : ''}</h3><span class="count">${g.entries.length}</span></div>
+        ${g.entries.map(journalEntryHTML).join('')}
+      </div>`).join('');
+  }
+  function journalEntryHTML(e) {
+    const date = new Date(e.ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `<div class="card journal-entry" data-id="${esc(e.id)}">
+      <div class="journal-entry-top">
+        <img src="${e.thumb}" alt="" class="journal-thumb">
+        <div class="journal-entry-info">
+          <div class="journal-date">${date}</div>
+          <div class="journal-headline">${esc(e.headline)}</div>
+          <span class="badge health-${healthSlug(e.health)}">${esc(healthLabel(e.health))}</span>
+        </div>
+        <button class="btn small danger" data-action="delete-entry">Delete</button>
+      </div>
+      <label class="field-label small">Remedy taken</label>
+      <input type="text" class="je-remedy" data-field="remedyTaken" placeholder="e.g. sprayed neem oil, moved to shade..." value="${esc(e.remedyTaken || '')}">
+      <label class="field-label small">Follow-up notes</label>
+      <textarea class="je-notes" data-field="notes" rows="2" placeholder="How did it respond?">${esc(e.notes || '')}</textarea>
+    </div>`;
+  }
+  const saveJournalFieldDebounced = debounce((id, field, value) => {
+    const journal = loadJournal();
+    const entry = journal.find(e => e.id === id);
+    if (entry) { entry[field] = value; saveJournal(journal); }
+  }, 400);
+  document.getElementById('journal-list').addEventListener('click', e => {
+    const btn = e.target.closest('[data-action="delete-entry"]');
+    if (!btn) return;
+    const card = btn.closest('.journal-entry');
+    if (confirm('Delete this entry?')) {
+      const journal = loadJournal().filter(x => x.id !== card.dataset.id);
+      saveJournal(journal);
+      renderJournal(); renderStats();
+    }
+  });
+  document.getElementById('journal-list').addEventListener('input', e => {
+    const card = e.target.closest('.journal-entry');
+    if (!card || !e.target.dataset.field) return;
+    saveJournalFieldDebounced(card.dataset.id, e.target.dataset.field, e.target.value);
+  });
+
+  // ---- Season screen ----
+  function renderSeason() {
+    const season = currentSeason();
+    document.getElementById('season-banner').innerHTML = `
+      <span class="eyebrow">Right now in Bina</span>
+      <h3>${esc(season.label)} <span class="muted">· ${esc(season.window)}</span></h3>
+      <p>${esc(season.blurb)}</p>`;
+    document.getElementById('season-grid').innerHTML = SEASONS.map(s => `
+      <div class="card season-card${s.key === season.key ? ' current' : ''}">
+        <div class="season-card-head"><h4>${esc(s.label)}</h4>${s.key === season.key ? '<span class="badge new">Now</span>' : ''}</div>
+        <p class="muted small">${esc(s.window)}</p>
+        <p>${esc(s.blurb)}</p>
+        <div class="crop-chips">${s.crops.map(c => `<span class="chip">${esc(c.en)} <span class="hi">(${esc(c.hi)})</span></span>`).join('')}</div>
+      </div>`).join('');
+  }
+
+  // ---- Settings screen ----
+  function renderSettings() {
+    document.getElementById('settings-banner').style.display = getKey() ? 'none' : 'block';
+    document.getElementById('set-apikey').value = getKey();
+    const currentModel = getModel();
+    const seg = document.getElementById('model-seg');
+    seg.innerHTML = MODELS.map(m => `<button data-model="${m.id}" aria-pressed="${m.id === currentModel}">${esc(m.label)}</button>`).join('');
+    updateModelDetail(currentModel);
+    renderStorageUsage();
+    document.getElementById('key-status').textContent = '';
+    document.getElementById('key-status').className = 'key-status';
+  }
+  function updateModelDetail(id) {
+    const m = MODELS.find(x => x.id === id) || MODELS[1];
+    document.getElementById('model-detail').textContent = `${m.price} · ${m.est}, roughly — varies by photo`;
+  }
+  function renderStorageUsage() {
+    const journal = loadJournal();
+    const bytes = new Blob([JSON.stringify(journal)]).size;
+    document.getElementById('storage-usage').textContent = `${journal.length} scans saved · ${(bytes / 1024 / 1024).toFixed(2)} MB of ~5 MB on this device`;
+  }
+  document.getElementById('btn-toggle-key').addEventListener('click', () => {
+    const input = document.getElementById('set-apikey'); const btn = document.getElementById('btn-toggle-key');
+    if (input.type === 'password') { input.type = 'text'; btn.textContent = 'Hide'; }
+    else { input.type = 'password'; btn.textContent = 'Show'; }
+  });
+  document.getElementById('set-apikey').addEventListener('change', e => setKey(e.target.value.trim()));
+  document.getElementById('model-seg').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-model]');
+    if (!btn) return;
+    setModel(btn.dataset.model);
+    document.getElementById('model-seg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    updateModelDetail(btn.dataset.model);
+  });
+  document.getElementById('btn-test-key').addEventListener('click', async () => {
+    const key = document.getElementById('set-apikey').value.trim();
+    const statusEl = document.getElementById('key-status');
+    if (!key) { statusEl.textContent = 'Enter a key first.'; statusEl.className = 'key-status verify'; return; }
+    statusEl.textContent = 'Checking…'; statusEl.className = 'key-status';
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true', 'content-type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5', max_tokens: 8, messages: [{ role: 'user', content: 'Say OK.' }] })
+      });
+      if (res.ok) { statusEl.textContent = '✓ Key works.'; statusEl.className = 'key-status fresh'; setKey(key); document.getElementById('settings-banner').style.display = 'none'; }
+      else if (res.status === 401) { statusEl.textContent = "That key wasn't accepted."; statusEl.className = 'key-status verify'; }
+      else { statusEl.textContent = `Something went wrong (HTTP ${res.status}).`; statusEl.className = 'key-status verify'; }
+    } catch (e) { statusEl.textContent = "Couldn't reach Claude — check your connection."; statusEl.className = 'key-status verify'; }
+  });
+  document.getElementById('btn-export').addEventListener('click', () => {
+    const journal = loadJournal();
+    const blob = new Blob([JSON.stringify(journal, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `plant-protector-journal-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+  document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-file').click());
+  document.getElementById('import-file').addEventListener('change', async e => {
+    const file = e.target.files[0]; if (!file) return;
+    try {
+      const imported = JSON.parse(await file.text());
+      if (!Array.isArray(imported)) throw new Error('bad');
+      const existing = loadJournal();
+      const merged = [...imported, ...existing].filter((entry, i, arr) => arr.findIndex(x => x.id === entry.id) === i);
+      merged.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+      saveJournal(merged);
+      renderStorageUsage();
+      alert('Journal imported.');
+    } catch (err) { alert("Couldn't read that file — is it a journal export from this app?"); }
+    e.target.value = '';
+  });
+  document.getElementById('btn-clear-all').addEventListener('click', () => {
+    if (!confirm('This deletes your API key and your entire plant journal from this device. This cannot be undone. Continue?')) return;
+    localStorage.removeItem(LS.apikey); localStorage.removeItem(LS.model); localStorage.removeItem(LS.journal);
+    location.reload();
+  });
+
+  // ---- Stats ----
+  function renderStats() {
+    const journal = loadJournal();
+    const plantKeys = new Set(journal.map(e => e.plantKey));
+    const now = new Date();
+    const scansThisMonth = journal.filter(e => { const d = new Date(e.ts); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length;
+    const latestByPlant = new Map();
+    for (const e of journal) if (!latestByPlant.has(e.plantKey)) latestByPlant.set(e.plantKey, e);
+    let needsAttention = 0;
+    for (const e of latestByPlant.values()) if (e.health === 'needs_attention' || e.health === 'serious') needsAttention++;
+    document.getElementById('s-plants').textContent = plantKeys.size;
+    document.getElementById('s-scans').textContent = scansThisMonth;
+    document.getElementById('s-attention').textContent = needsAttention;
+    document.getElementById('s-season').textContent = currentSeason().label.split(' · ')[0];
+  }
+
+  // ---- Scan input wiring ----
+  const dz = document.getElementById('dropzone');
+  ['dragover', 'dragenter'].forEach(evt => dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.add('drag-over'); }));
+  ['dragleave', 'drop'].forEach(evt => dz.addEventListener(evt, e => { e.preventDefault(); dz.classList.remove('drag-over'); }));
+  dz.addEventListener('drop', e => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) handleFile(f); });
+  document.getElementById('file-camera').addEventListener('change', e => { const f = e.target.files[0]; if (f) handleFile(f); e.target.value = ''; });
+  document.getElementById('file-picker').addEventListener('change', e => { const f = e.target.files[0]; if (f) handleFile(f); e.target.value = ''; });
+  document.getElementById('btn-clear-photo').addEventListener('click', resetToScan);
+  document.getElementById('btn-analyse').addEventListener('click', analyse);
+  document.getElementById('btn-cancel-analyse').addEventListener('click', () => { if (state.abortCtrl) state.abortCtrl.abort(); });
+  document.addEventListener('paste', e => {
+    if (state.screen !== 'scan') return;
+    const items = (e.clipboardData && e.clipboardData.items) || [];
+    const item = [...items].find(i => i.type && i.type.startsWith('image/'));
+    if (item) { e.preventDefault(); handleFile(item.getAsFile()); }
+  });
+
+  // ---- Nav & theme ----
+  document.querySelectorAll('.tabs [data-screen]').forEach(b => b.addEventListener('click', () => showScreen(b.dataset.screen)));
+  document.getElementById('theme').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  });
+
+  // ---- Init ----
+  renderStats();
+  if (!getKey()) showScreen('settings'); else showScreen('scan');
+</script>
+</body>
+</html>
