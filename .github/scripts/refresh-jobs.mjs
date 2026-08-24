@@ -16,6 +16,15 @@ const KEYWORDS = [
 ];
 // Card location that means "remote for India": country-level "India" (no city) or an explicit Remote tag.
 const isRemoteLoc = (loc) => /\(remote\)|\bremote\b/i.test(loc || "") || /^india$/i.test((loc || "").trim());
+// Some listings append "(Hybrid in <city>)" etc. straight onto the TITLE even when the location field
+// says remote — the title wins. If it contradicts, don't trust the fast path; fall back to full verify().
+const titleContradicts = (title) => /\bhybrid\b|on-?site|in[- ]office|in[- ]person/i.test(title || "");
+// Remote-first companies worth checking by name (from a widely-shared remote-job-search guide).
+// Same search+verify pipeline as everyone else — no special-casing, just an extra query per company.
+const TARGET_COMPANIES = [
+  "GitLab", "Automattic", "Zapier", "Deel", "Remote.com", "Canonical", "Buffer", "Doist",
+  "Atlassian", "Shopify", "HubSpot", "Toptal", "Andela", "Elastic", "Wikimedia Foundation",
+];
 const UA = { "User-Agent": "Mozilla/5.0 (compatible; JobRadarBot/1.0; +https://abhishekyogi.in)" };
 const F_TPR = "r604800";  // last 7 days
 const WINDOW_H = 168;     // rolling 7-day window
@@ -92,6 +101,7 @@ async function verify(job) {
 
   const { posted, hrs } = relTime(ld.datePosted);
   if (hrs > WINDOW_H) return null;                    // window guard
+  if (titleContradicts(ld.title || job.title)) return null;             // title itself says hybrid/on-site
   if (classify(descText(ld.description), ld) !== "remote") return null; // keep only confirmed-remote
 
   const title = clean(ld.title || job.title);
@@ -106,6 +116,69 @@ async function verify(job) {
     days: hrs < 24 ? 0 : 1, new24: hrs < 24, posted, dt: ld.datePosted,
     verified: true, note: "Remote confirmed in description", source: "LinkedIn", url: job.url,
   };
+}
+
+// RemoteOK: inherently remote-first board, structured JSON API. No India-specific geo field, so
+// these are marked region "world" (open worldwide-remote, verify India eligibility on the listing).
+async function fetchRemoteOK() {
+  let arr;
+  try {
+    const res = await fetch("https://remoteok.com/api?tags=product-manager", { headers: UA });
+    if (!res.ok) return [];
+    arr = JSON.parse(await res.text());
+  } catch { return []; }
+  const out = [];
+  for (const x of arr) {
+    if (!x.position || !TITLE_OK.test(x.position) || TITLE_BAD.test(x.position) || titleContradicts(x.position) || !x.date) continue;
+    const { posted, hrs } = relTime(x.date);
+    if (hrs > WINDOW_H) continue;
+    const title = clean(x.position);
+    out.push({
+      title, company: clean(x.company) || "—", sen: senOf(title), ai: aiOf(title),
+      region: "world", workplace: "remote", days: hrs < 24 ? 0 : 1, new24: hrs < 24, posted,
+      dt: new Date(x.date).toISOString(), verified: true,
+      note: "RemoteOK · worldwide remote, verify India eligibility",
+      source: "RemoteOK", url: x.url || (x.slug ? `https://remoteok.com/remote-jobs/${x.slug}` : "https://remoteok.com"),
+    });
+  }
+  return out;
+}
+
+// We Work Remotely: remote-only board with structured region/country fields — no location guesswork.
+// "Anywhere in the World" + no restrictive country = genuinely open to India.
+async function fetchWWR() {
+  let text;
+  try {
+    const res = await fetch("https://weworkremotely.com/categories/remote-product-jobs.rss", { headers: UA });
+    if (!res.ok) return [];
+    text = await res.text();
+  } catch { return []; }
+  const items = text.split("<item>").slice(1);
+  const out = [];
+  for (const it of items) {
+    const g = (tag) => (it.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`)) || [])[1];
+    const rawTitle = clean(g("title"));
+    if (!rawTitle || !TITLE_OK.test(rawTitle) || TITLE_BAD.test(rawTitle) || titleContradicts(rawTitle)) continue;
+    const pubDate = g("pubDate");
+    if (!pubDate) continue;
+    const { posted, hrs } = relTime(pubDate);
+    if (hrs > WINDOW_H) continue;
+    const region = g("region") || "";
+    const country = clean(g("country") || "");
+    if (country && !/india/i.test(country)) continue;          // locked to a specific non-India country -> drop
+    if (!/anywhere/i.test(region) && !/india/i.test(country)) continue; // require worldwide or explicit India
+    const link = g("link");
+    const sep = rawTitle.indexOf(":");
+    const company = sep > -1 ? rawTitle.slice(0, sep) : "—";
+    const roleTitle = sep > -1 ? rawTitle.slice(sep + 1).trim() : rawTitle;
+    out.push({
+      title: roleTitle, company: company || "—", sen: senOf(roleTitle), ai: aiOf(roleTitle),
+      region: country ? "india" : "world", workplace: "remote", days: hrs < 24 ? 0 : 1, new24: hrs < 24, posted,
+      dt: new Date(pubDate).toISOString(), verified: true, note: "We Work Remotely · worldwide remote",
+      source: "We Work Remotely", url: link,
+    });
+  }
+  return out;
 }
 
 async function main() {
@@ -124,12 +197,26 @@ async function main() {
       }
     }
   }
-  console.log("PM candidates:", cands.length);
+  // Also check named remote-first companies directly — same search+verify pipeline, same rules,
+  // just an extra query per company (not a special case for any one of them).
+  for (const company of TARGET_COMPANIES) {
+    let list = [];
+    try { list = await search(`${company} product manager`, 0, ""); } catch { /* ignore */ }
+    const key = company.toLowerCase().split(/[.\s]/)[0];
+    for (const j of list) {
+      const nameMatch = j.company && j.company.toLowerCase().includes(key);
+      if (nameMatch && !seen.has(j.id) && TITLE_OK.test(j.title) && !TITLE_BAD.test(j.title)) {
+        seen.add(j.id); cands.push(j);
+      }
+    }
+    await sleep(250);
+  }
+  console.log("PM candidates (keywords + target companies):", cands.length);
 
   const fresh = [];
   let fetches = 0;
   for (const j of cands) {
-    if (isRemoteLoc(j.loc) && j.dt) {
+    if (isRemoteLoc(j.loc) && j.dt && !titleContradicts(j.title)) {
       // Card location is country-level "India" or an explicit Remote tag -> trust as remote (no page fetch).
       const { posted, hrs } = relTime(j.dt);
       if (hrs > WINDOW_H) continue;
@@ -145,7 +232,12 @@ async function main() {
       await sleep(300);
     }
   }
-  console.log("remote (by location or description):", fresh.length);
+  console.log("LinkedIn remote (by location or description):", fresh.length);
+
+  // Other free-to-apply, remote-only boards with structured data (no location guesswork needed).
+  const [remoteok, wwr] = await Promise.all([fetchRemoteOK().catch(() => []), fetchWWR().catch(() => [])]);
+  console.log("RemoteOK:", remoteok.length, "| We Work Remotely:", wwr.length);
+  fresh.push(...remoteok, ...wwr);
 
   // Rolling merge: combine with existing, age out > window, recompute labels from dt.
   let existing = [];
@@ -160,6 +252,7 @@ async function main() {
   const all = [...byUrl.values()].sort((a, b) => new Date(b.dt || 0) - new Date(a.dt || 0));
   for (const j of all) {
     if (!j.dt || !j.verified) continue;
+    if (titleContradicts(j.title)) continue; // self-heal: purge any legacy entry a title now flags as onsite/hybrid
     const hrs = (now - new Date(j.dt).getTime()) / 3.6e6;
     if (hrs > WINDOW_H) continue;                                   // age out beyond 7 days
     const key = (j.company + "|" + j.title).toLowerCase().replace(/\s+/g, " ").trim();
