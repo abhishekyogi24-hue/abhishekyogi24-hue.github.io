@@ -310,21 +310,59 @@
       <span class="hint">Recently‑funded startups — often hiring PMs before they post. Reach the founder directly.</span>
     </div>
     <div class="leads" id="leads"></div>
+
+    <div class="sec-head">
+      <h2>More portals to check yourself</h2>
+      <span class="hint">These don't auto-scrape cleanly (bot-blocked or a broken search API) — bookmark and check regularly.</span>
+    </div>
+    <div class="leads">
+      <div class="lead">
+        <span class="amt">India-focused</span>
+        <h4>Surely Remote</h4>
+        <p>India's WFH-focused job board — verified remote listings.</p>
+        <div class="lead-foot">
+          <span class="src" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Manual check</span>
+          <a href="https://surelyremote.com" target="_blank" rel="noopener noreferrer">Open →</a>
+        </div>
+      </div>
+      <div class="lead">
+        <span class="amt">Startup roles</span>
+        <h4>Wellfound</h4>
+        <p>Startup-focused board; many roles are remote-friendly. Blocks automated fetches, so browse it directly.</p>
+        <div class="lead-foot">
+          <span class="src" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Manual check</span>
+          <a href="https://wellfound.com" target="_blank" rel="noopener noreferrer">Open →</a>
+        </div>
+      </div>
+      <div class="lead">
+        <span class="amt">Global remote</span>
+        <h4>Remotive</h4>
+        <p>Remote-jobs board — its public search API isn't filtering right now, so browse manually.</p>
+        <div class="lead-foot">
+          <span class="src" style="font-family:var(--mono);font-size:11px;color:var(--muted)">Manual check</span>
+          <a href="https://remotive.com" target="_blank" rel="noopener noreferrer">Open →</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="container">
     <footer>
       <div class="how">
-        <b>How this stays current.</b> Roles come from two accurate sources: <b>Naukri's Remote work‑mode filter</b> (reliable, refreshed via periodic sweeps) and <b>LinkedIn listings whose description explicitly confirms remote</b> (a daily GitHub Action — LinkedIn's own remote tag is unreliable, so each is description‑verified). On‑site/hybrid are dropped; timestamps recompute each run. Genuinely fully‑remote India PM roles are scarce, so the list stays honest, not padded.
+        <b>How this stays current.</b> Roles come from verified sources: <b>Naukri's Remote work‑mode filter</b> (periodic browser sweeps), <b>LinkedIn</b> whose location or description explicitly confirms remote (LinkedIn's own remote tag is unreliable, so it's cross‑checked — including a direct check against 15 known remote‑first companies), and remote‑only boards <b>We Work Remotely</b> and <b>RemoteOK</b> (structured region data, no guesswork). On‑site/hybrid are dropped, including a title that contradicts its own location field (e.g. “Hybrid in Bangalore”); timestamps recompute each run. Genuinely fully‑remote India PM roles are scarce, so the list stays honest, not padded.
         <ol>
           <li>Every link is opened and verified as a live posting before it's listed — no dead 404 links.</li>
           <li>Every listed role is opened and confirmed <b>fully remote</b> — on‑site and hybrid postings are removed, not just flagged. (A role only shows “Remote — verify” if it comes from the optional live feed, which can't open each posting.)</li>
           <li>Freshness wins — new postings are surfaced before the applicant crowd arrives.</li>
           <li>Region is flagged <span style="color:var(--verify);font-weight:600">Verify</span> when a "worldwide/multi‑region" role doesn't explicitly confirm India — always confirm on the listing.</li>
           <li>Funding leads point you to companies scaling now; find the founder on LinkedIn and reach out before the role is posted.</li>
+          <li><b>Himalayas and FlexJobs are deliberately not sourced</b> — both require a paid subscription to apply.</li>
         </ol>
       </div>
-      <div class="stamp">Generated <span id="gen">—</span> · <span id="foot-total">0</span> roles · <span id="foot-leads">0</span> funding leads · sources: LinkedIn (deep‑paginated guest API), Naukri (live browser · Remote work‑mode), +remote boards, StartupTalky</div>
+      <div class="how" style="margin-top:14px">
+        <b>⚠ Stay safe from remote-job scams.</b> If a "recruiter" asks you to comment "interested" on a post, fill personal details into a random Google form, pay money to apply, buy equipment from them, share an OTP/password, transfer money, or emails from a personal/suspicious domain — stop. Verify the role on the company's official careers page before sharing anything.
+      </div>
+      <div class="stamp">Generated <span id="gen">—</span> · <span id="foot-total">0</span> roles · <span id="foot-leads">0</span> funding leads · sources: LinkedIn (guest API + 15 target companies), Naukri (live browser · Remote work‑mode), We Work Remotely, RemoteOK, StartupTalky</div>
       <div class="stamp" style="margin-top:8px"><button id="feed-connect" type="button" style="font-family:var(--mono);font-size:12px;background:none;border:0;color:var(--accent-ink);cursor:pointer;padding:0;text-decoration:underline">⚡ Connect live feed</button> — auto-refresh daily from your own Apps Script.</div>
     </footer>
   </div>
