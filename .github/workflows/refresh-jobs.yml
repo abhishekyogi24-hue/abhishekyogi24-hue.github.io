@@ -2,7 +2,7 @@ name: Refresh Job Radar
 
 on:
   schedule:
-    - cron: "30 2 * * 1-5"   # 08:00 IST, weekdays (02:30 UTC)
+    - cron: "37 2 * * 1-5"   # ~08:07 IST, weekdays (02:37 UTC) - off the crowded :30 slot to dodge scheduler queue delays
   workflow_dispatch: {}        # allow manual runs from the Actions tab
 
 permissions:
