@@ -146,6 +146,11 @@
   }
   .card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
   .card.hidden { display: none; }
+  .card.archive-card { border-style: dashed; opacity: .82; }
+  .card.archive-card:hover { opacity: 1; transform: none; }
+  .archive-delete-btn { color: var(--verify); border-color: color-mix(in srgb, var(--verify) 30%, transparent); }
+  .archive-delete-btn:hover { background: var(--verify-wash); border-color: var(--verify); }
+  .archive-ignore-btn.is-ignored { background: var(--fresh-wash); color: var(--fresh); border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
   .card h3 { font-size: 16px; line-height: 1.25; margin: 0; letter-spacing: -.01em; font-weight: 640; text-wrap: balance; }
   .company { font-size: 13.5px; color: var(--ink-2); margin-top: 3px; }
@@ -305,6 +310,17 @@
     <div class="empty" id="empty">No roles match these filters. Try clearing a toggle or the search.</div>
 
     <div class="sec-head">
+      <h2>Archive — roles you missed</h2>
+      <span class="count" id="archive-count">0</span>
+      <span class="hint">Roles that aged off the live board before you marked them Applied — kept so nothing quietly disappears. The link may still be open elsewhere even if it's gone from here.</span>
+    </div>
+    <div class="grid" id="archive-grid"></div>
+    <div class="empty" id="archive-empty">Nothing archived yet — this fills in automatically as roles age off the live board.</div>
+    <div style="margin:10px 0 4px">
+      <button id="show-ignored-btn" type="button" style="font-family:var(--mono);font-size:12px;background:none;border:0;color:var(--muted);cursor:pointer;padding:0;text-decoration:underline">Show ignored (0)</button>
+    </div>
+
+    <div class="sec-head">
       <h2>Funding leads</h2>
       <span class="count" id="lead-count">0</span>
       <span class="hint">Recently‑funded startups — often hiring PMs before they post. Reach the founder directly.</span>
@@ -405,7 +421,7 @@
   ];
 
   // ---- State ----
-  const state = { q:"", sen:"all", ai:false, fresh:false, india:false, remote:false, sort:"fresh", tab:"toapply" };
+  const state = { q:"", sen:"all", ai:false, fresh:false, india:false, remote:false, sort:"fresh", tab:"toapply", showIgnored:false };
 
   // ---- Applied tracking (saved on this device via localStorage) ----
   const APPLIED_KEY = "pmradar_applied_v1";
@@ -413,6 +429,98 @@
   function saveApplied(){ try { localStorage.setItem(APPLIED_KEY, JSON.stringify([...applied])); } catch (e) {} }
   function isApplied(r){ return applied.has(typeof r === "string" ? r : r.url); }
   function toggleApplied(url){ applied.has(url) ? applied.delete(url) : applied.add(url); saveApplied(); render(); }
+
+  // ---- Archive: roles that aged off the live board while NOT marked Applied ("couldn't apply") ----
+  const SEEN_KEY = "pmradar_seen_v1", ARCHIVE_KEY = "pmradar_archive_v1", IGNORED_KEY = "pmradar_ignored_v1";
+  let archive = []; try { archive = JSON.parse(localStorage.getItem(ARCHIVE_KEY) || "[]"); } catch (e) {}
+  let ignoredUrls = new Set(); try { ignoredUrls = new Set(JSON.parse(localStorage.getItem(IGNORED_KEY) || "[]")); } catch (e) {}
+  function saveArchive(){ try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archive)); } catch (e) {} }
+  function saveIgnored(){ try { localStorage.setItem(IGNORED_KEY, JSON.stringify([...ignoredUrls])); } catch (e) {} }
+
+  // Diff the newly-fetched roles against what was seen last visit; anything that vanished and
+  // wasn't marked Applied goes into the archive. Then remember this fetch as the new baseline.
+  function detectExpired(newRoles){
+    let seen = []; try { seen = JSON.parse(localStorage.getItem(SEEN_KEY) || "[]"); } catch (e) {}
+    const newUrls = new Set(newRoles.map(r => r.url));
+    const archiveUrls = new Set(archive.map(r => r.url));
+    for (const r of seen) {
+      if (newUrls.has(r.url) || applied.has(r.url) || archiveUrls.has(r.url) || ignoredUrls.has(r.url)) continue;
+      archive.push({ ...r, expiredAt: new Date().toISOString() });
+      archiveUrls.add(r.url);
+    }
+    saveArchive();
+    try { localStorage.setItem(SEEN_KEY, JSON.stringify(newRoles)); } catch (e) {}
+  }
+
+  function relAgo(iso){
+    const hrs = (Date.now() - new Date(iso).getTime()) / 3.6e6;
+    return hrs < 1 ? "just now" : hrs < 24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs / 24)}d ago`;
+  }
+
+  function archiveCardHTML(r){
+    const rb = regionBadge[r.region] || regionBadge.verify;
+    const ignored = ignoredUrls.has(r.url);
+    return `<article class="card archive-card">
+      <div class="card-top">
+        <div><h3>${esc(r.title)}</h3><div class="company"><b>${esc(r.company)}</b></div></div>
+      </div>
+      <div class="badges">
+        <span class="badge stretch">Off the board</span>
+        <span class="badge ${rb[0]}">${rb[1]}</span>
+      </div>
+      <div class="meta">
+        <span class="posted">◷ expired ${esc(relAgo(r.expiredAt))}</span>
+        <span>${senLabel[r.sen] || r.sen} level</span>
+      </div>
+      <div class="card-foot">
+        <span class="src">${esc(r.source)}</span>
+        <div class="foot-actions">
+          <button class="applied-btn archive-ignore-btn${ignored ? ' is-ignored' : ''}" data-url="${esc(r.url)}">${ignored ? '✓ Ignored' : 'Ignore'}</button>
+          <button class="applied-btn archive-delete-btn" data-url="${esc(r.url)}">Delete</button>
+          <a class="apply" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function renderArchive(){
+    const activeList = archive.filter(r => !ignoredUrls.has(r.url));
+    const ignoredList = archive.filter(r => ignoredUrls.has(r.url));
+    const list = state.showIgnored ? ignoredList : activeList;
+    document.getElementById("archive-grid").innerHTML = list.map(archiveCardHTML).join("");
+    document.getElementById("archive-count").textContent = activeList.length;
+    const emptyEl = document.getElementById("archive-empty");
+    emptyEl.textContent = state.showIgnored
+      ? "No ignored roles."
+      : "Nothing archived yet — this fills in automatically as roles age off the live board.";
+    emptyEl.classList.toggle("show", list.length === 0);
+    const btn = document.getElementById("show-ignored-btn");
+    if (btn) btn.textContent = state.showIgnored ? `← Back to archive (${activeList.length})` : `Show ignored (${ignoredList.length})`;
+  }
+
+  document.getElementById("archive-grid").addEventListener("click", (e) => {
+    const ignoreBtn = e.target.closest(".archive-ignore-btn");
+    const deleteBtn = e.target.closest(".archive-delete-btn");
+    if (ignoreBtn) {
+      e.preventDefault();
+      const u = ignoreBtn.dataset.url;
+      ignoredUrls.has(u) ? ignoredUrls.delete(u) : ignoredUrls.add(u);
+      saveIgnored(); renderArchive();
+    } else if (deleteBtn) {
+      e.preventDefault();
+      const u = deleteBtn.dataset.url;
+      if (!confirm("Delete this from your archive? This can't be undone.")) return;
+      archive = archive.filter(r => r.url !== u);
+      ignoredUrls.delete(u);
+      saveArchive(); saveIgnored(); renderArchive();
+    }
+  });
+  document.getElementById("show-ignored-btn").addEventListener("click", () => {
+    state.showIgnored = !state.showIgnored;
+    renderArchive();
+  });
   const senLabel = { PM:"PM", Senior:"Senior", Lead:"Lead+" };
   const regionBadge = {
     india: ['region-india','India‑eligible'],
@@ -633,9 +741,10 @@
       if (arr && arr.length){
         // Rich objects (from the verified routine) pass through; raw LinkedIn cards get mapped.
         roles = arr.map(j => (j && j.workplace) ? j : mapFeedRole(j));
+        detectExpired(roles);
         if (data.generatedAt) GENERATED = String(data.generatedAt).slice(0, 10);
         setFeedStatus("live", data.generatedAt);
-        renderStats(); render();
+        renderStats(); render(); renderArchive();
       } else { setFeedStatus("snapshot"); }
     } catch (e){ setFeedStatus("snapshot"); }
   }
@@ -650,7 +759,7 @@
   const fc = document.getElementById("feed-connect");
   if (fc){ fc.textContent = FEED_URL ? "⚡ Live feed connected · change" : "⚡ Connect live feed"; fc.addEventListener("click", connectFeed); }
 
-  renderStats(); renderLeads(); render(); loadFeed();
+  renderStats(); renderLeads(); render(); renderArchive(); loadFeed();
 </script>
 </body>
 </html>
