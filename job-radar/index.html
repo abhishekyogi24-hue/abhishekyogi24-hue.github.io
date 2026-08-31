@@ -148,9 +148,9 @@
   .card.hidden { display: none; }
   .card.archive-card { border-style: dashed; opacity: .82; }
   .card.archive-card:hover { opacity: 1; transform: none; }
-  .archive-delete-btn { color: var(--verify); border-color: color-mix(in srgb, var(--verify) 30%, transparent); }
-  .archive-delete-btn:hover { background: var(--verify-wash); border-color: var(--verify); }
-  .archive-ignore-btn.is-ignored { background: var(--fresh-wash); color: var(--fresh); border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
+  .delete-btn { color: var(--verify); border-color: color-mix(in srgb, var(--verify) 30%, transparent); }
+  .delete-btn:hover { background: var(--verify-wash); border-color: var(--verify); }
+  .ignore-btn.is-ignored { background: var(--fresh-wash); color: var(--fresh); border-color: color-mix(in srgb, var(--fresh) 34%, transparent); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
   .card h3 { font-size: 16px; line-height: 1.25; margin: 0; letter-spacing: -.01em; font-weight: 640; text-wrap: balance; }
   .company { font-size: 13.5px; color: var(--ink-2); margin-top: 3px; }
@@ -197,7 +197,7 @@
   .tab[data-tab="applied"] .tab-n { background: var(--fresh-wash); color: var(--fresh); }
   .card.card-applied { opacity: .62; }
   .card.card-applied:hover { opacity: 1; }
-  .foot-actions { display: inline-flex; align-items: center; gap: 8px; }
+  .foot-actions { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
   .applied-btn {
     font-family: var(--sans); font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
     background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border-strong);
@@ -431,11 +431,15 @@
   function toggleApplied(url){ applied.has(url) ? applied.delete(url) : applied.add(url); saveApplied(); render(); }
 
   // ---- Archive: roles that aged off the live board while NOT marked Applied ("couldn't apply") ----
-  const SEEN_KEY = "pmradar_seen_v1", ARCHIVE_KEY = "pmradar_archive_v1", IGNORED_KEY = "pmradar_ignored_v1";
+  // Ignore/Delete are shared everywhere a card appears (live board AND archive) — one concept, not two.
+  const SEEN_KEY = "pmradar_seen_v1", ARCHIVE_KEY = "pmradar_archive_v1";
+  const IGNORED_KEY = "pmradar_ignored_v1", DELETED_KEY = "pmradar_deleted_v1";
   let archive = []; try { archive = JSON.parse(localStorage.getItem(ARCHIVE_KEY) || "[]"); } catch (e) {}
   let ignoredUrls = new Set(); try { ignoredUrls = new Set(JSON.parse(localStorage.getItem(IGNORED_KEY) || "[]")); } catch (e) {}
+  let deletedUrls = new Set(); try { deletedUrls = new Set(JSON.parse(localStorage.getItem(DELETED_KEY) || "[]")); } catch (e) {}
   function saveArchive(){ try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(archive)); } catch (e) {} }
   function saveIgnored(){ try { localStorage.setItem(IGNORED_KEY, JSON.stringify([...ignoredUrls])); } catch (e) {} }
+  function saveDeleted(){ try { localStorage.setItem(DELETED_KEY, JSON.stringify([...deletedUrls])); } catch (e) {} }
 
   // Diff the newly-fetched roles against what was seen last visit; anything that vanished and
   // wasn't marked Applied goes into the archive. Then remember this fetch as the new baseline.
@@ -444,7 +448,7 @@
     const newUrls = new Set(newRoles.map(r => r.url));
     const archiveUrls = new Set(archive.map(r => r.url));
     for (const r of seen) {
-      if (newUrls.has(r.url) || applied.has(r.url) || archiveUrls.has(r.url) || ignoredUrls.has(r.url)) continue;
+      if (newUrls.has(r.url) || applied.has(r.url) || archiveUrls.has(r.url) || ignoredUrls.has(r.url) || deletedUrls.has(r.url)) continue;
       archive.push({ ...r, expiredAt: new Date().toISOString() });
       archiveUrls.add(r.url);
     }
@@ -457,26 +461,30 @@
     return hrs < 1 ? "just now" : hrs < 24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs / 24)}d ago`;
   }
 
+  // r.expiredAt present = genuinely aged off the board ("couldn't apply"). No expiredAt = still live,
+  // you just ignored it from the main board — shown here too when browsing "Show ignored".
   function archiveCardHTML(r){
     const rb = regionBadge[r.region] || regionBadge.verify;
     const ignored = ignoredUrls.has(r.url);
+    const statusBadge = r.expiredAt ? "Off the board" : "Still live";
+    const statusLine = r.expiredAt ? `◷ expired ${esc(relAgo(r.expiredAt))}` : `◷ ${esc(r.posted || "")}`;
     return `<article class="card archive-card">
       <div class="card-top">
         <div><h3>${esc(r.title)}</h3><div class="company"><b>${esc(r.company)}</b></div></div>
       </div>
       <div class="badges">
-        <span class="badge stretch">Off the board</span>
+        <span class="badge stretch">${statusBadge}</span>
         <span class="badge ${rb[0]}">${rb[1]}</span>
       </div>
       <div class="meta">
-        <span class="posted">◷ expired ${esc(relAgo(r.expiredAt))}</span>
+        <span class="posted">${statusLine}</span>
         <span>${senLabel[r.sen] || r.sen} level</span>
       </div>
       <div class="card-foot">
         <span class="src">${esc(r.source)}</span>
         <div class="foot-actions">
-          <button class="applied-btn archive-ignore-btn${ignored ? ' is-ignored' : ''}" data-url="${esc(r.url)}">${ignored ? '✓ Ignored' : 'Ignore'}</button>
-          <button class="applied-btn archive-delete-btn" data-url="${esc(r.url)}">Delete</button>
+          <button class="applied-btn ignore-btn${ignored ? ' is-ignored' : ''}" data-url="${esc(r.url)}">${ignored ? '✓ Ignored' : 'Ignore'}</button>
+          <button class="applied-btn delete-btn" data-url="${esc(r.url)}">Delete</button>
           <a class="apply" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
@@ -486,8 +494,13 @@
   }
 
   function renderArchive(){
-    const activeList = archive.filter(r => !ignoredUrls.has(r.url));
-    const ignoredList = archive.filter(r => ignoredUrls.has(r.url));
+    const activeList = archive.filter(r => !ignoredUrls.has(r.url) && !deletedUrls.has(r.url));
+    // "Ignored" can come from the live board (still open, you just hid it) or from the archive
+    // (already expired). Merge both by url; live data wins if a role happens to be in both.
+    const ignoredMap = new Map();
+    for (const r of archive) if (ignoredUrls.has(r.url) && !deletedUrls.has(r.url)) ignoredMap.set(r.url, r);
+    for (const r of roles) if (ignoredUrls.has(r.url) && !deletedUrls.has(r.url)) ignoredMap.set(r.url, r);
+    const ignoredList = [...ignoredMap.values()];
     const list = state.showIgnored ? ignoredList : activeList;
     document.getElementById("archive-grid").innerHTML = list.map(archiveCardHTML).join("");
     document.getElementById("archive-count").textContent = activeList.length;
@@ -501,20 +514,21 @@
   }
 
   document.getElementById("archive-grid").addEventListener("click", (e) => {
-    const ignoreBtn = e.target.closest(".archive-ignore-btn");
-    const deleteBtn = e.target.closest(".archive-delete-btn");
+    const ignoreBtn = e.target.closest(".ignore-btn");
+    const deleteBtn = e.target.closest(".delete-btn");
     if (ignoreBtn) {
       e.preventDefault();
       const u = ignoreBtn.dataset.url;
       ignoredUrls.has(u) ? ignoredUrls.delete(u) : ignoredUrls.add(u);
-      saveIgnored(); renderArchive();
+      saveIgnored(); render(); renderStats(); renderArchive();
     } else if (deleteBtn) {
       e.preventDefault();
       const u = deleteBtn.dataset.url;
       if (!confirm("Delete this from your archive? This can't be undone.")) return;
       archive = archive.filter(r => r.url !== u);
       ignoredUrls.delete(u);
-      saveArchive(); saveIgnored(); renderArchive();
+      deletedUrls.add(u);
+      saveArchive(); saveIgnored(); saveDeleted(); render(); renderStats(); renderArchive();
     }
   });
   document.getElementById("show-ignored-btn").addEventListener("click", () => {
@@ -539,6 +553,7 @@
   }
 
   function passes(r){
+    if (ignoredUrls.has(r.url) || deletedUrls.has(r.url)) return false;
     if (state.tab === "toapply" && isApplied(r)) return false;
     if (state.tab === "applied" && !isApplied(r)) return false;
     if (state.sen !== "all" && r.sen !== state.sen) return false;
@@ -583,7 +598,9 @@
       <div class="card-foot">
         <span class="src">${esc(r.source)}</span>
         <div class="foot-actions">
-          <button class="applied-btn${isApplied(r) ? ' is-applied' : ''}" data-url="${esc(r.url)}">${isApplied(r) ? '✓ Applied' : 'Mark applied'}</button>
+          <button class="applied-btn mark-applied-btn${isApplied(r) ? ' is-applied' : ''}" data-url="${esc(r.url)}">${isApplied(r) ? '✓ Applied' : 'Mark applied'}</button>
+          <button class="applied-btn ignore-btn" data-url="${esc(r.url)}">Ignore</button>
+          <button class="applied-btn delete-btn" data-url="${esc(r.url)}">Delete</button>
           <a class="apply" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">View &amp; apply
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
@@ -592,11 +609,15 @@
     </article>`;
   }
 
+  // Roles hidden via Ignore/Delete don't count anywhere on the board — keeps the numbers matching what's shown.
+  function visibleRoles(){ return roles.filter(r => !ignoredUrls.has(r.url) && !deletedUrls.has(r.url)); }
+
   function updateTabCounts(){
-    const ap = roles.filter(r => applied.has(r.url)).length;
+    const vis = visibleRoles();
+    const ap = vis.filter(r => applied.has(r.url)).length;
     document.getElementById("n-applied").textContent = ap;
-    document.getElementById("n-toapply").textContent = roles.length - ap;
-    document.getElementById("n-all").textContent = roles.length;
+    document.getElementById("n-toapply").textContent = vis.length - ap;
+    document.getElementById("n-all").textContent = vis.length;
   }
 
   // Bucket a role by when it was posted. Uses the absolute date when available,
@@ -657,12 +678,13 @@
   }
 
   function renderStats(){
-    document.getElementById("s-total").textContent = roles.length;
-    document.getElementById("s-new").textContent = roles.filter(r=>r.new24).length;
-    document.getElementById("s-ai").textContent = roles.filter(r=>r.ai).length;
-    document.getElementById("s-remote").textContent = roles.filter(r=>r.workplace==="remote").length;
+    const vis = visibleRoles();
+    document.getElementById("s-total").textContent = vis.length;
+    document.getElementById("s-new").textContent = vis.filter(r=>r.new24).length;
+    document.getElementById("s-ai").textContent = vis.filter(r=>r.ai).length;
+    document.getElementById("s-remote").textContent = vis.filter(r=>r.workplace==="remote").length;
     document.getElementById("gen").textContent = GENERATED;
-    document.getElementById("foot-total").textContent = roles.length;
+    document.getElementById("foot-total").textContent = vis.length;
     document.getElementById("foot-leads").textContent = leads.length;
     document.getElementById("lead-count").textContent = leads.length;
   }
@@ -691,10 +713,24 @@
     b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-selected", String(x===b)));
     render();
   }));
-  // Mark applied / undo (event-delegated since cards re-render)
+  // Mark applied / Ignore / Delete (event-delegated since cards re-render)
   document.getElementById("grid").addEventListener("click", e => {
-    const btn = e.target.closest(".applied-btn");
-    if (btn){ e.preventDefault(); toggleApplied(btn.dataset.url); }
+    const ignoreBtn = e.target.closest(".ignore-btn");
+    const deleteBtn = e.target.closest(".delete-btn");
+    const applyBtn = e.target.closest(".mark-applied-btn");
+    if (ignoreBtn) {
+      e.preventDefault();
+      const u = ignoreBtn.dataset.url;
+      ignoredUrls.has(u) ? ignoredUrls.delete(u) : ignoredUrls.add(u);
+      saveIgnored(); render(); renderStats(); renderArchive();
+    } else if (deleteBtn) {
+      e.preventDefault();
+      if (!confirm("Delete this from your board? This can't be undone.")) return;
+      deletedUrls.add(deleteBtn.dataset.url);
+      saveDeleted(); render(); renderStats(); renderArchive();
+    } else if (applyBtn) {
+      e.preventDefault(); toggleApplied(applyBtn.dataset.url);
+    }
   });
 
   // Theme
