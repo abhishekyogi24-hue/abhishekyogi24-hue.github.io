@@ -2,7 +2,7 @@
 
 A self-updating personal job-hunt system that surfaces **fully-remote Product Manager & AI-PM roles** open to India-based applicants — freshest first, every link verified live.
 
-**Live demo:** https://jobraderabhii.netlify.app
+**Live demo:** https://abhishekyogi.in/job-radar/ (auto-refreshing daily — the Netlify copy of this project is retired/frozen and no longer maintained)
 
 ## Why
 Job hunting means re-running the same searches across a dozen sites daily, and most "remote" listings are secretly on-site or already swamped with applicants by the time you find them. A role posted an hour ago has far fewer applicants than one that's been up two weeks — so freshness is the edge.
