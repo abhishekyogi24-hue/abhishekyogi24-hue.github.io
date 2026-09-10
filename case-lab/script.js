@@ -255,6 +255,12 @@ function getBehavQuestions() {
   if (Array.isArray(BEHAVIOURAL.questions)) return BEHAVIOURAL.questions;
   return [];
 }
+function getQuestionById(qid) {
+  return getBehavQuestions().find(q => q.id === qid) || null;
+}
+function storiesForQuestion(qid) {
+  return STORIES.filter(s => Array.isArray(s.questionTags) && s.questionTags.includes(qid));
+}
 function getBehavThemesList() {
   if (BEHAVIOURAL && Array.isArray(BEHAVIOURAL.themes)) {
     return BEHAVIOURAL.themes.map(t => (typeof t === 'string' ? t : (t.key || t.name || String(t))));
@@ -413,6 +419,13 @@ function switchTab(tab) {
   else if (tab === 'stories') renderStories();
   else if (tab === 'progress') renderProgress();
   renderStats();
+}
+function jumpToQuestion(qid) {
+  switchTab('behavioural');
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`details[data-qid="${window.CSS && CSS.escape ? CSS.escape(qid) : qid}"]`);
+    if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
 }
 function openCase(caseId, returnView) {
   const c = getCaseById(caseId);
@@ -688,11 +701,13 @@ function questionCardHTML(q) {
   const status = getBehavStatus(q.id);
   const fields = fieldsForStructure(q.structure);
   const linked = ans.linkedStories || [];
+  const suggested = storiesForQuestion(q.id).filter(s => !linked.includes(s.id));
   const variants = asList(q.variants), probes = asList(q.probes), pitfalls = asList(q.pitfalls), followUps = asList(q.followUps);
   return `
     <details class="question-card" data-qid="${esc(q.id)}">
       <summary><span>${esc(q.question || q.text || 'Untitled question')}</span><span class="badge status-${esc(status)}">${esc(titleCase(status))}</span></summary>
       <div class="qbody">
+        ${suggested.length ? `<div><p class="block-label">Suggested from your stories</p><div class="tag-row">${suggested.map(s => `<button type="button" class="tag-chip" data-action="suggest-story" data-qid="${esc(q.id)}" data-story="${esc(s.id)}" title="${esc(s.title)} — click to link it">${esc(s.title)}</button>`).join('')}</div></div>` : ''}
         ${variants.length ? `<div><p class="block-label">Variants</p><ul class="plain">${variants.map(v => `<li>${esc(v)}</li>`).join('')}</ul></div>` : ''}
         ${probes.length ? `<div><p class="block-label">Probes</p><ul class="plain">${probes.map(v => `<li>${esc(v)}</li>`).join('')}</ul></div>` : ''}
         ${pitfalls.length ? `<div><p class="block-label">Pitfalls</p><ul class="plain">${pitfalls.map(v => `<li>${esc(v)}</li>`).join('')}</ul></div>` : ''}
@@ -752,6 +767,12 @@ function renderBehavioural() {
 
 /* ============================== Stories ============================== */
 function storyCardHTML(s) {
+  const tags = Array.isArray(s.questionTags) ? s.questionTags : [];
+  const tagChips = tags.map(qid => {
+    const q = getQuestionById(qid);
+    const label = q ? (q.question || q.text || qid) : qid;
+    return `<button type="button" class="tag-chip" data-action="goto-question" data-qid="${esc(qid)}" title="${esc(label)}">${esc(label.length > 56 ? label.slice(0, 53) + '…' : label)}</button>`;
+  }).join('');
   return `
     <article class="card">
       <div><h3>${esc(s.title)}</h3><div class="company">${esc(s.company)}${s.role ? ` · ${esc(s.role)}` : ''}</div></div>
@@ -763,6 +784,7 @@ function storyCardHTML(s) {
         <div class="star-field"><div class="flabel">Result</div><p>${esc(s.result || '')}</p></div>
       </div>
       ${s.sourceQuote ? `<blockquote class="quote">&ldquo;${esc(s.sourceQuote)}&rdquo;</blockquote>` : ''}
+      ${tagChips ? `<div class="star-field"><div class="flabel">Answers these interview questions</div><div class="tag-row">${tagChips}</div></div>` : ''}
     </article>`;
 }
 function renderStories() {
@@ -1036,10 +1058,18 @@ function wireEvents() {
     if (e.target.closest('[data-action="import-json"]')) { const inp = document.getElementById('import-file-input'); if (inp) inp.click(); return; }
     const st = e.target.closest('[data-action="toggle-story"]');
     if (st) { toggleLinkedStory(st.dataset.qid, st.dataset.story); renderBehavioural(); afterMutation(); return; }
+    const suggest = e.target.closest('[data-action="suggest-story"]');
+    if (suggest) { toggleLinkedStory(suggest.dataset.qid, suggest.dataset.story); renderBehavioural(); afterMutation(); return; }
   });
   behavEl.addEventListener('input', e => {
     const ta = e.target.closest('[data-behav-field]');
     if (ta) debounceSaveBehavField(ta.dataset.qid, ta.dataset.behavField, ta.value);
+  });
+
+  const storiesEl = document.getElementById('view-stories');
+  storiesEl.addEventListener('click', e => {
+    const goto = e.target.closest('[data-action="goto-question"]');
+    if (goto) { jumpToQuestion(goto.dataset.qid); return; }
   });
   behavEl.addEventListener('change', e => {
     const sel = e.target.closest('[data-behav-status-for]');

@@ -28,7 +28,12 @@
         "ivr",
         "voice-of-customer"
       ],
-      "sourceQuote": "60% of bookings are international (wrt US),  so calling was expensive as well due to roaming and email doesn’t get quick support."
+      "sourceQuote": "60% of bookings are international (wrt US),  so calling was expensive as well due to roaming and email doesn’t get quick support.",
+      "questionTags": [
+        "beh-004",
+        "beh-042",
+        "beh-049"
+      ]
     },
     {
       "id": "story-dialogflow-es-automation",
@@ -65,7 +70,13 @@
         "chatbot",
         "self-serve-flows"
       ],
-      "sourceQuote": "On DF chatbot afterwards, we achieved 50% automation with 62% CSAT. Engagement 60% this is through onboarding self-serve flows like new bookings, cancellations, exchanges, schedule changes, add-ons, ccd, ccv."
+      "sourceQuote": "On DF chatbot afterwards, we achieved 50% automation with 62% CSAT. Engagement 60% this is through onboarding self-serve flows like new bookings, cancellations, exchanges, schedule changes, add-ons, ccd, ccv.",
+      "questionTags": [
+        "beh-053",
+        "beh-061",
+        "beh-022",
+        "beh-019"
+      ]
     },
     {
       "id": "story-typing-box-block",
@@ -89,7 +100,13 @@
         "intent-classification",
         "ux"
       ],
-      "sourceQuote": "we have taken strategic decision for the major flows (exch, cancel, schedule, add-ons) once intent is identified from CTAs or based on source of booking, we block the typing box and let user flow the fixed defined path"
+      "sourceQuote": "we have taken strategic decision for the major flows (exch, cancel, schedule, add-ons) once intent is identified from CTAs or based on source of booking, we block the typing box and let user flow the fixed defined path",
+      "questionTags": [
+        "beh-042",
+        "beh-061",
+        "beh-013",
+        "beh-040"
+      ]
     },
     {
       "id": "story-dialogflow-cx-kill",
@@ -112,7 +129,12 @@
         "google-poc",
         "cost-benefit-analysis"
       ],
-      "sourceQuote": "But it didn’t worked due to the higher cost and ROI."
+      "sourceQuote": "But it didn’t worked due to the higher cost and ROI.",
+      "questionTags": [
+        "beh-035",
+        "beh-014",
+        "beh-021"
+      ]
     },
     {
       "id": "story-vertex-orchestrator",
@@ -149,7 +171,13 @@
         "orchestrator",
         "ai-agents"
       ],
-      "sourceQuote": "Created orchestrator agent (which will decide what to do with the customer’s query) and different Ai agents whose job was defined (Intent Classifier, Booking details query, Small talk, FAQs, Agent Summarization)"
+      "sourceQuote": "Created orchestrator agent (which will decide what to do with the customer’s query) and different Ai agents whose job was defined (Intent Classifier, Booking details query, Small talk, FAQs, Agent Summarization)",
+      "questionTags": [
+        "beh-003",
+        "beh-061",
+        "beh-053",
+        "beh-039"
+      ]
     },
     {
       "id": "story-eval-system",
@@ -173,7 +201,11 @@
         "golden-sets",
         "adversarial-testing"
       ],
-      "sourceQuote": "Groundness, Faithfulness, Safety, Jail break, Answer Relevancy"
+      "sourceQuote": "Groundness, Faithfulness, Safety, Jail break, Answer Relevancy",
+      "questionTags": [
+        "beh-061",
+        "beh-005"
+      ]
     },
     {
       "id": "story-compliance-rollout",
@@ -198,7 +230,14 @@
         "ai-committee",
         "phased-rollout"
       ],
-      "sourceQuote": "We first opened it for internal stakeholders for testing, and then to the whole org. Circulated feedback forms and improved on the suggestions received. Post resolving this, made it live for 5% traffic."
+      "sourceQuote": "We first opened it for internal stakeholders for testing, and then to the whole org. Circulated feedback forms and improved on the suggestions received. Post resolving this, made it live for 5% traffic.",
+      "questionTags": [
+        "beh-059",
+        "beh-060",
+        "beh-057",
+        "beh-023",
+        "beh-017"
+      ]
     },
     {
       "id": "story-analytics-lead",
@@ -223,7 +262,11 @@
         "sql",
         "analytics"
       ],
-      "sourceQuote": "Started with Sr. Business analyst, where I was leading the analytics team of Operations Product, had one data analyst in my team."
+      "sourceQuote": "Started with Sr. Business analyst, where I was leading the analytics team of Operations Product, had one data analyst in my team.",
+      "questionTags": [
+        "beh-075",
+        "beh-063"
+      ]
     },
     {
       "id": "story-priority-leads",
@@ -253,7 +296,13 @@
         "crm",
         "sla"
       ],
-      "sourceQuote": "we were able to reduce the complaints by 12%."
+      "sourceQuote": "we were able to reduce the complaints by 12%.",
+      "questionTags": [
+        "beh-053",
+        "beh-025",
+        "beh-042",
+        "beh-023"
+      ]
     },
     {
       "id": "story-chat-listing-page",
@@ -278,7 +327,12 @@
         "agent-routing",
         "ux-experiments"
       ],
-      "sourceQuote": "Seamless integration with OBE (where Agent book the flight) with the chat to reduce the AHT, on a single click - same search is getting opened on OBE to what customer have searched online."
+      "sourceQuote": "Seamless integration with OBE (where Agent book the flight) with the chat to reduce the AHT, on a single click - same search is getting opened on OBE to what customer have searched online.",
+      "questionTags": [
+        "beh-006",
+        "beh-011",
+        "beh-025"
+      ]
     },
     {
       "id": "story-search-explorer",
@@ -307,7 +361,11 @@
         "personalization",
         "conversion"
       ],
-      "sourceQuote": "users who are selecting any contract on search explorer have 40% more chances of getting converted at the end."
+      "sourceQuote": "users who are selecting any contract on search explorer have 40% more chances of getting converted at the end.",
+      "questionTags": [
+        "beh-053",
+        "beh-042"
+      ]
     },
     {
       "id": "story-oli-trip-planner",
@@ -333,7 +391,14 @@
         "competitive-analysis",
         "prd"
       ],
-      "sourceQuote": "Then first launched on 5% app traffic, then 20% -> 50% -> 100%."
+      "sourceQuote": "Then first launched on 5% app traffic, then 20% -> 50% -> 100%.",
+      "questionTags": [
+        "beh-003",
+        "beh-007",
+        "beh-057",
+        "beh-022",
+        "beh-047"
+      ]
     },
     {
       "id": "story-whatsapp-meta",
@@ -367,7 +432,13 @@
         "nice-max",
         "social-ads"
       ],
-      "sourceQuote": "Initiated WhatsApp support via Meta APIs on social media ads; generating 25 new bookings with $3.7K daily revenue"
+      "sourceQuote": "Initiated WhatsApp support via Meta APIs on social media ads; generating 25 new bookings with $3.7K daily revenue",
+      "questionTags": [
+        "beh-023",
+        "beh-053",
+        "beh-049",
+        "beh-019"
+      ]
     },
     {
       "id": "story-cancel-exchange-funnel",
@@ -402,7 +473,11 @@
         "otp",
         "refund"
       ],
-      "sourceQuote": "Then from the logs of APIs, we got to figure it out the there is issue with the email API for few booking engines and these booking types were not getting the email at all."
+      "sourceQuote": "Then from the logs of APIs, we got to figure it out the there is issue with the email API for few booking engines and these booking types were not getting the email at all.",
+      "questionTags": [
+        "beh-008",
+        "beh-010"
+      ]
     }
   ]
 }

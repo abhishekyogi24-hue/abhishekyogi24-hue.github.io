@@ -67,7 +67,12 @@ It fails loudly (exit code 1, message prefixed `[build-cases] FAILED:`) on any s
 node tools/build-stories.mjs
 ```
 
-Reads `data/stories.json` (behavioural STAR stories, authored separately) against `data/behavioural.json`'s themes, and writes `data/coverage.json` — for each of the 27 behavioural themes, which story ids cover it and whether it's a gap. Both inputs are optional while the story bank is still being authored; if either file is missing, this script prints a message and exits 0 rather than failing.
+Reads `data/stories.json` (behavioural STAR stories, authored separately) against `data/behavioural.json`'s themes and questions, and writes `data/coverage.json` at two levels:
+
+- **Theme-level** — for each of the 27 behavioural themes, which story ids cover it and whether it's a gap.
+- **Question-level** — each story can carry a `questionTags` array of specific `behavioural.json` question ids it's usable as a real answer to (a story often answers questions outside its own primary theme, so this is more granular than the theme match). The builder validates every id in `questionTags` against the real question list and computes the reverse map (question → stories) into `coverage.json`. The site surfaces both directions: a story card shows "Answers these interview questions" chips that jump straight to that question, and a question card shows "Suggested from your stories" chips that link the story with one click.
+
+Both inputs are optional while the story bank is still being authored; if either file is missing, this script prints a message and exits 0 rather than failing.
 
 ## How the daily case is chosen
 

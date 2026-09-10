@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T02:35:46.227Z",
+  "generatedAt": "2026-09-10T03:38:21.444Z",
   "themeCount": 27,
   "gapCount": 5,
   "coverage": {
@@ -209,6 +209,461 @@
     },
     "career-motivation": {
       "label": "Career & motivation",
+      "storyIds": [
+        "story-analytics-lead"
+      ],
+      "isGap": false
+    }
+  },
+  "questionCount": 75,
+  "questionGapCount": 46,
+  "questionCoverage": {
+    "beh-001": {
+      "theme": "ai-product",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-002": {
+      "theme": "ai-product",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-003": {
+      "theme": "0-to-1",
+      "storyIds": [
+        "story-vertex-orchestrator",
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "beh-004": {
+      "theme": "0-to-1",
+      "storyIds": [
+        "story-chatbot-origin"
+      ],
+      "isGap": false
+    },
+    "beh-005": {
+      "theme": "0-to-1",
+      "storyIds": [
+        "story-eval-system"
+      ],
+      "isGap": false
+    },
+    "beh-006": {
+      "theme": "0-to-1",
+      "storyIds": [
+        "story-chat-listing-page"
+      ],
+      "isGap": false
+    },
+    "beh-007": {
+      "theme": "0-to-1",
+      "storyIds": [
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "beh-008": {
+      "theme": "rca",
+      "storyIds": [
+        "story-cancel-exchange-funnel"
+      ],
+      "isGap": false
+    },
+    "beh-009": {
+      "theme": "rca",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-010": {
+      "theme": "funnel-optimization",
+      "storyIds": [
+        "story-cancel-exchange-funnel"
+      ],
+      "isGap": false
+    },
+    "beh-011": {
+      "theme": "funnel-optimization",
+      "storyIds": [
+        "story-chat-listing-page"
+      ],
+      "isGap": false
+    },
+    "beh-012": {
+      "theme": "data-driven-decision",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-013": {
+      "theme": "data-driven-decision",
+      "storyIds": [
+        "story-typing-box-block"
+      ],
+      "isGap": false
+    },
+    "beh-014": {
+      "theme": "data-driven-decision",
+      "storyIds": [
+        "story-dialogflow-cx-kill"
+      ],
+      "isGap": false
+    },
+    "beh-015": {
+      "theme": "data-driven-decision",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-016": {
+      "theme": "data-driven-decision",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-017": {
+      "theme": "stakeholder-management",
+      "storyIds": [
+        "story-compliance-rollout"
+      ],
+      "isGap": false
+    },
+    "beh-018": {
+      "theme": "stakeholder-management",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-019": {
+      "theme": "stakeholder-management",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "beh-020": {
+      "theme": "stakeholder-management",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-021": {
+      "theme": "stakeholder-management",
+      "storyIds": [
+        "story-dialogflow-cx-kill"
+      ],
+      "isGap": false
+    },
+    "beh-022": {
+      "theme": "cross-functional",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "beh-023": {
+      "theme": "cross-functional",
+      "storyIds": [
+        "story-compliance-rollout",
+        "story-priority-leads",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "beh-024": {
+      "theme": "cross-functional",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-025": {
+      "theme": "influence-without-authority",
+      "storyIds": [
+        "story-priority-leads",
+        "story-chat-listing-page"
+      ],
+      "isGap": false
+    },
+    "beh-026": {
+      "theme": "influence-without-authority",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-027": {
+      "theme": "conflict",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-028": {
+      "theme": "conflict",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-029": {
+      "theme": "conflict",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-030": {
+      "theme": "conflict",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-031": {
+      "theme": "conflict",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-032": {
+      "theme": "saying-no",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-033": {
+      "theme": "saying-no",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-034": {
+      "theme": "saying-no",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-035": {
+      "theme": "killed-a-project",
+      "storyIds": [
+        "story-dialogflow-cx-kill"
+      ],
+      "isGap": false
+    },
+    "beh-036": {
+      "theme": "killed-a-project",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-037": {
+      "theme": "failure",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-038": {
+      "theme": "failure",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-039": {
+      "theme": "failure",
+      "storyIds": [
+        "story-vertex-orchestrator"
+      ],
+      "isGap": false
+    },
+    "beh-040": {
+      "theme": "failure",
+      "storyIds": [
+        "story-typing-box-block"
+      ],
+      "isGap": false
+    },
+    "beh-041": {
+      "theme": "failure",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-042": {
+      "theme": "ambiguity",
+      "storyIds": [
+        "story-chatbot-origin",
+        "story-typing-box-block",
+        "story-priority-leads",
+        "story-search-explorer"
+      ],
+      "isGap": false
+    },
+    "beh-043": {
+      "theme": "ambiguity",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-044": {
+      "theme": "prioritization",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-045": {
+      "theme": "prioritization",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-046": {
+      "theme": "prioritization",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-047": {
+      "theme": "prioritization",
+      "storyIds": [
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "beh-048": {
+      "theme": "prioritization",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-049": {
+      "theme": "customer-empathy",
+      "storyIds": [
+        "story-chatbot-origin",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "beh-050": {
+      "theme": "customer-empathy",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-051": {
+      "theme": "user-research",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-052": {
+      "theme": "user-research",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-053": {
+      "theme": "metrics-ownership",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-vertex-orchestrator",
+        "story-priority-leads",
+        "story-search-explorer",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "beh-054": {
+      "theme": "metrics-ownership",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-055": {
+      "theme": "experimentation",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-056": {
+      "theme": "experimentation",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-057": {
+      "theme": "phased-launch",
+      "storyIds": [
+        "story-compliance-rollout",
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "beh-058": {
+      "theme": "phased-launch",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-059": {
+      "theme": "compliance-risk",
+      "storyIds": [
+        "story-compliance-rollout"
+      ],
+      "isGap": false
+    },
+    "beh-060": {
+      "theme": "compliance-risk",
+      "storyIds": [
+        "story-compliance-rollout"
+      ],
+      "isGap": false
+    },
+    "beh-061": {
+      "theme": "technical-depth",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-typing-box-block",
+        "story-vertex-orchestrator",
+        "story-eval-system"
+      ],
+      "isGap": false
+    },
+    "beh-062": {
+      "theme": "technical-depth",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-063": {
+      "theme": "mentoring",
+      "storyIds": [
+        "story-analytics-lead"
+      ],
+      "isGap": false
+    },
+    "beh-064": {
+      "theme": "mentoring",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-065": {
+      "theme": "feedback",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-066": {
+      "theme": "feedback",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-067": {
+      "theme": "ethical-call",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-068": {
+      "theme": "ethical-call",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-069": {
+      "theme": "leadership",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-070": {
+      "theme": "leadership",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-071": {
+      "theme": "execution-under-constraint",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-072": {
+      "theme": "execution-under-constraint",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-073": {
+      "theme": "career-motivation",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-074": {
+      "theme": "career-motivation",
+      "storyIds": [],
+      "isGap": true
+    },
+    "beh-075": {
+      "theme": "career-motivation",
       "storyIds": [
         "story-analytics-lead"
       ],

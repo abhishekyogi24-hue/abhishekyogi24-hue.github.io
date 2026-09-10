@@ -44,15 +44,26 @@ const behaviouralFile = readJSON(BEHAVIOURAL_PATH);
 
 const stories = Array.isArray(storiesFile) ? storiesFile : storiesFile.stories;
 const themes = Array.isArray(behaviouralFile) ? behaviouralFile : behaviouralFile.themes;
+const questions = Array.isArray(behaviouralFile) ? [] : (behaviouralFile.questions || []);
 
 if (!Array.isArray(stories)) fail(`data/stories.json must contain an array of stories (or a { "stories": [...] } wrapper)`);
 if (!Array.isArray(themes)) fail(`data/behavioural.json must contain an array of themes (or a { "themes": [...] } wrapper)`);
 
-// Validate: every story must have a non-empty sourceQuote.
+const questionIds = new Set(questions.map((q) => q.id));
+
+// Validate: every story must have a non-empty sourceQuote, and every id in a
+// story's questionTags (which behavioural questions this story can answer)
+// must reference a real question in data/behavioural.json.
 for (const s of stories) {
   const ref = s && s.id ? `story "${s.id}"` : "an unidentified story";
   if (!s || typeof s.sourceQuote !== "string" || s.sourceQuote.trim().length === 0) {
     fail(`${ref}: missing or empty "sourceQuote"`);
+  }
+  if (s.questionTags !== undefined) {
+    if (!Array.isArray(s.questionTags)) fail(`${ref}: "questionTags" must be an array of question ids`);
+    for (const qid of s.questionTags) {
+      if (!questionIds.has(qid)) fail(`${ref}: questionTags references unknown question id "${qid}"`);
+    }
   }
 }
 
@@ -73,14 +84,31 @@ for (const theme of themes) {
   };
 }
 
+// Question-level coverage: for each behavioural question, which stories are
+// authored (via questionTags) as usable answers to it. This is the granular
+// counterpart to the theme-level coverage above — a story can answer a
+// specific question in a theme it isn't the primary fit for.
+const questionCoverage = {};
+for (const q of questions) {
+  const coveringStories = stories.filter((s) => Array.isArray(s.questionTags) && s.questionTags.includes(q.id)).map((s) => s.id);
+  questionCoverage[q.id] = { theme: q.theme || null, storyIds: coveringStories, isGap: coveringStories.length === 0 };
+}
+const taggedStoryCount = stories.filter((s) => Array.isArray(s.questionTags) && s.questionTags.length > 0).length;
+
 const coverageOut = {
   generatedAt: new Date().toISOString(),
   themeCount: Object.keys(coverage).length,
   gapCount: Object.values(coverage).filter((c) => c.isGap).length,
-  coverage
+  coverage,
+  questionCount: questions.length,
+  questionGapCount: Object.values(questionCoverage).filter((c) => c.isGap).length,
+  questionCoverage
 };
 
 writeFileSync(COVERAGE_PATH, JSON.stringify(coverageOut, null, 2) + "\n");
 
 console.log(`[build-stories] validated ${stories.length} story(ies) against ${themes.length} theme(s)`);
-console.log(`[build-stories] wrote data/coverage.json (${coverageOut.gapCount} gap(s) out of ${coverageOut.themeCount} theme(s))`);
+console.log(`[build-stories] wrote data/coverage.json (${coverageOut.gapCount} theme gap(s) out of ${coverageOut.themeCount} theme(s))`);
+if (questions.length) {
+  console.log(`[build-stories] question-level: ${taggedStoryCount}/${stories.length} stories tagged, ${coverageOut.questionGapCount}/${coverageOut.questionCount} questions have no suggested story`);
+}
