@@ -1,0 +1,1571 @@
+{
+  "themes": [
+    {
+      "key": "ai-product",
+      "label": "AI product judgment",
+      "why": "Tests whether you can reason about building with genuinely probabilistic, imperfect AI and still ship something users trust."
+    },
+    {
+      "key": "0-to-1",
+      "label": "0-to-1 building",
+      "why": "Tests whether you can create structure and momentum from nothing, without an existing team, process, or user base to lean on."
+    },
+    {
+      "key": "rca",
+      "label": "Root-cause diagnosis",
+      "why": "Tests your diagnostic rigor — whether you form and test hypotheses systematically or jump to the first plausible story."
+    },
+    {
+      "key": "funnel-optimization",
+      "label": "Funnel optimization",
+      "why": "Tests whether you can find and fix the highest-leverage step in a multi-step journey, not just the most visible one."
+    },
+    {
+      "key": "data-driven-decision",
+      "label": "Data-driven decisions",
+      "why": "Tests whether you actually use data to decide, or use it to justify a decision you'd already made."
+    },
+    {
+      "key": "stakeholder-management",
+      "label": "Stakeholder management",
+      "why": "Tests whether you can align people with competing incentives without just deferring to the loudest voice."
+    },
+    {
+      "key": "cross-functional",
+      "label": "Cross-functional alignment",
+      "why": "Tests whether you can get eng, design, and business functions rowing in the same direction without formal authority over any of them."
+    },
+    {
+      "key": "influence-without-authority",
+      "label": "Influence without authority",
+      "why": "Tests how you move people who don't report to you and have no obligation to listen."
+    },
+    {
+      "key": "conflict",
+      "label": "Conflict & disagreement",
+      "why": "Tests whether disagreement makes you defensive or curious, and whether you can disagree without damaging the relationship."
+    },
+    {
+      "key": "saying-no",
+      "label": "Saying no",
+      "why": "Tests whether you can protect the roadmap and the team's focus even when the request comes from someone senior or persistent."
+    },
+    {
+      "key": "killed-a-project",
+      "label": "Killing a project",
+      "why": "Tests whether you can recognize sunk cost and pull the plug on your own work before it wastes more of the company's resources."
+    },
+    {
+      "key": "failure",
+      "label": "Failure & self-awareness",
+      "why": "Tests whether you can own a real mistake without spiraling into excuses or reaching for false modesty."
+    },
+    {
+      "key": "ambiguity",
+      "label": "Ambiguity",
+      "why": "Tests whether you can make forward progress and a defensible call when there's no clean data or precedent to lean on."
+    },
+    {
+      "key": "prioritization",
+      "label": "Prioritization",
+      "why": "Tests your judgment on trade-offs when everything looks urgent and resources are fixed."
+    },
+    {
+      "key": "customer-empathy",
+      "label": "Customer empathy",
+      "why": "Tests whether your decisions are actually grounded in a real user's context, not an assumption about them."
+    },
+    {
+      "key": "user-research",
+      "label": "User research",
+      "why": "Tests whether you know how to extract a genuine insight from users rather than just confirming what you wanted to hear."
+    },
+    {
+      "key": "metrics-ownership",
+      "label": "Metrics ownership",
+      "why": "Tests whether you can define, move, and defend a number you're accountable for, not just report it."
+    },
+    {
+      "key": "experimentation",
+      "label": "Experimentation",
+      "why": "Tests your rigor in testing ideas — hypothesis, design, sample size, and honest reading of ambiguous results."
+    },
+    {
+      "key": "phased-launch",
+      "label": "Phased launches",
+      "why": "Tests your judgment on de-risking a rollout without stalling momentum or hiding behind an endless beta."
+    },
+    {
+      "key": "compliance-risk",
+      "label": "Compliance & risk",
+      "why": "Tests whether you can hold the line on legal, regulatory, or policy risk even when it slows the product down."
+    },
+    {
+      "key": "technical-depth",
+      "label": "Technical depth",
+      "why": "Tests whether you can go deep enough with engineering to make a real trade-off call, not just defer entirely."
+    },
+    {
+      "key": "mentoring",
+      "label": "Mentoring",
+      "why": "Tests whether you actively grow the people around you, not just your own output."
+    },
+    {
+      "key": "feedback",
+      "label": "Giving & receiving feedback",
+      "why": "Tests whether you can deliver hard feedback constructively and take it without getting defensive."
+    },
+    {
+      "key": "ethical-call",
+      "label": "Ethical calls",
+      "why": "Tests your judgment when the profitable or expedient choice and the right choice for the user diverge."
+    },
+    {
+      "key": "leadership",
+      "label": "Leadership",
+      "why": "Tests whether you can rally and unblock a team without formal management authority over its members."
+    },
+    {
+      "key": "execution-under-constraint",
+      "label": "Execution under constraint",
+      "why": "Tests whether you can still ship something real when time, budget, or people get cut out from under you."
+    },
+    {
+      "key": "career-motivation",
+      "label": "Career & motivation",
+      "why": "Tests whether your reasons for this role and this company are genuine and specific, not generic."
+    }
+  ],
+  "questions": [
+    {
+      "id": "beh-001",
+      "theme": "ai-product",
+      "question": "Tell me about a time you had to decide whether an AI feature was actually the right solution, versus something simpler.",
+      "variants": [
+        "Walk me through a call you made on whether to use AI at all for a problem"
+      ],
+      "probes": "Whether you reach for AI by default or actually weigh it against a deterministic or rules-based baseline first.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Describing the AI build without ever stating what a simpler, non-AI solution would have achieved",
+        "Treating 'we used AI' as the impressive part of the story instead of the judgment behind it"
+      ],
+      "followUps": [
+        "What would have made you choose the non-AI path instead?",
+        "How did you validate the AI approach was actually better before committing engineering time to it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-002",
+      "theme": "ai-product",
+      "question": "Describe a time an AI or ML-powered feature you owned produced a wrong or embarrassing output in front of users. What did you do?",
+      "variants": [
+        "Tell me about a moment your model or AI feature failed publicly"
+      ],
+      "probes": "Whether you designed for the probabilistic failure mode in advance, and how you respond operationally when it surfaces in production.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Blaming the model or the data science team instead of owning the product decisions around confidence, fallback, and UX",
+        "No mention of what changed in the guardrails after the incident"
+      ],
+      "followUps": [
+        "What guardrail or eval would have caught this before it reached users?",
+        "How did you decide whether to roll back versus patch forward?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-003",
+      "theme": "0-to-1",
+      "question": "Tell me about a time you built a product or feature completely from scratch, with no existing playbook to follow.",
+      "variants": [
+        "Walk me through a 0-to-1 you owned end to end"
+      ],
+      "probes": "Whether you can create structure, sequence decisions, and get to a shippable V1 without an established process to lean on.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Spending too long on process and research before shipping anything a real user could react to",
+        "Describing the build chronologically with no mention of what you deliberately left out of V1"
+      ],
+      "followUps": [
+        "How did you decide what NOT to build in version one?",
+        "What was your very first signal that you were on the right track?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-004",
+      "theme": "0-to-1",
+      "question": "Describe a time you had to convince leadership to invest in a brand-new product line with no existing revenue or user data to point to.",
+      "variants": [
+        "Tell me about pitching something net-new when you had no traction numbers to back it up"
+      ],
+      "probes": "Whether you can build a credible case from proxy evidence and market signal rather than hiding behind 'trust me.'",
+      "structure": "STAR",
+      "pitfalls": [
+        "Relying purely on passion or conviction with no evidence at all",
+        "Overpromising a timeline or revenue number just to get the green light"
+      ],
+      "followUps": [
+        "What proxy data did you use instead of real usage data?",
+        "What was the smallest bet you asked for, and why that size?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-005",
+      "theme": "0-to-1",
+      "question": "Tell me about a time you had to define success metrics for a product that didn't exist yet.",
+      "variants": [
+        "How have you set goals for something with zero historical baseline?"
+      ],
+      "probes": "Whether you can reason from first principles and comparable products rather than picking an arbitrary number to look decisive.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Picking a vanity metric because it was easy to measure, not because it reflected real value",
+        "No plan for revisiting the metric once real data started coming in"
+      ],
+      "followUps": [
+        "How did that metric hold up once you had three months of real data?",
+        "What would you have set as the goal instead, in hindsight?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-006",
+      "theme": "0-to-1",
+      "question": "Walk me through a time you had to build the first version of a product with a team smaller than the scope really required.",
+      "variants": [
+        "Tell me about doing more with less on a brand-new build"
+      ],
+      "probes": "Whether you can scope ruthlessly and make real trade-offs rather than just working longer hours to compensate.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Framing it as a heroics story about personal effort instead of the scoping decisions that made it possible",
+        "Not naming what got cut"
+      ],
+      "followUps": [
+        "What's the first thing you'd add back if you got two more engineers?",
+        "What broke first because the team was too small?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-007",
+      "theme": "0-to-1",
+      "question": "Tell me about launching a product into a market you didn't fully understand yet.",
+      "variants": [
+        "Describe a time you took a product into unfamiliar territory — a new geography, industry, or user type"
+      ],
+      "probes": "How you compensated for the knowledge gap — through research, local partners, or fast iteration — rather than assuming your home-market intuition would transfer.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Assuming domestic user behavior would generalize without checking",
+        "No specific example of something you got wrong about the new market and had to correct"
+      ],
+      "followUps": [
+        "What assumption from your home market turned out to be wrong there?",
+        "How long did it take to feel like you actually understood the market?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-008",
+      "theme": "rca",
+      "question": "Tell me about a time you diagnosed a sudden, unexplained drop in a key metric.",
+      "variants": [
+        "Walk me through a time the numbers went wrong and you had to find out why"
+      ],
+      "probes": "Whether you worked through hypotheses systematically — ruling out data artifacts, segmenting before guessing — rather than jumping to the first plausible story.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Narrating the timeline without naming the hypotheses you ruled out",
+        "Jumping straight to 'we shipped X, it must be that' without checking if the drop was even real"
+      ],
+      "followUps": [
+        "What would have caught it earlier?",
+        "What was the one hypothesis you were most confident in that turned out to be wrong?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-009",
+      "theme": "rca",
+      "question": "Describe a time a metric looked broken but turned out to be a data or instrumentation issue, not a real problem.",
+      "variants": [
+        "Tell me about a false alarm you had to run down and rule out"
+      ],
+      "probes": "Whether you validate data integrity before treating a metric move as a real signal — a common trap even for senior PMs.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Spending days building a fix for a problem that never actually existed",
+        "Not describing how you eventually figured out it was a data issue"
+      ],
+      "followUps": [
+        "What tipped you off that it might be a data issue rather than real?",
+        "What did you change in your process after that?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-010",
+      "theme": "funnel-optimization",
+      "question": "Tell me about a time you found and fixed the biggest drop-off point in a user funnel.",
+      "variants": [
+        "Walk me through improving conversion at a specific step in a multi-step flow"
+      ],
+      "probes": "Whether you can isolate the real bottleneck with data rather than optimizing the step that's easiest to change or most visible to leadership.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Optimizing the top of the funnel because it's more visible, while a downstream step was the real leak",
+        "No quantified before/after impact"
+      ],
+      "followUps": [
+        "How did you rule out that the drop-off was a symptom of an earlier step, not that step itself?",
+        "What was the actual lift, and how did you attribute it to your change specifically?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-011",
+      "theme": "funnel-optimization",
+      "question": "Describe a time you had to choose between optimizing for funnel conversion and optimizing for a different goal, like long-term retention or trust.",
+      "variants": [
+        "Tell me about a trade-off between conversion rate and something else that mattered more"
+      ],
+      "probes": "Whether you understand that a locally-optimized funnel can hurt the business — dark patterns, mismatched expectations — and can articulate that trade-off explicitly.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Chasing the conversion number in isolation with no mention of downstream effects (refunds, churn, support load)",
+        "Presenting it as a clean win with no acknowledgment of the trade-off"
+      ],
+      "followUps": [
+        "How did you measure the downstream effect on retention or trust?",
+        "Where's the line for you between persuasive design and a dark pattern?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-012",
+      "theme": "data-driven-decision",
+      "question": "Tell me about a decision you made that went against what the data seemed to be telling you.",
+      "variants": [
+        "Walk me through a time you overrode the numbers with judgment"
+      ],
+      "probes": "Whether you can articulate a defensible reason — a flaw in the data, a longer time horizon, a qualitative signal — rather than just ignoring evidence you didn't like.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Framing it as 'trusting your gut' with no articulated reasoning for why the data was insufficient",
+        "Not mentioning how the decision actually played out afterward"
+      ],
+      "followUps": [
+        "How did you know you weren't just rationalizing a decision you'd already made?",
+        "How did it turn out — were you right?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-013",
+      "theme": "data-driven-decision",
+      "question": "Describe a time you had to make a significant product call with data that was incomplete or actively conflicting.",
+      "variants": [
+        "Tell me about a decision where the numbers you had didn't clearly point one way"
+      ],
+      "probes": "How you weigh partial or contradictory evidence and still commit to a call, rather than waiting indefinitely for more data.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Treating incomplete data as an excuse for inaction",
+        "No mention of what would have changed your mind"
+      ],
+      "followUps": [
+        "What was the minimum evidence bar you set for yourself to act?",
+        "What additional data, if you'd had it, would have changed the call?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-014",
+      "theme": "data-driven-decision",
+      "question": "Tell me about a time you used data to kill an idea that you personally liked or had championed.",
+      "variants": [
+        "Describe a moment the numbers told you your own idea was wrong"
+      ],
+      "probes": "Intellectual honesty — whether you can let go of a personal favorite when the evidence doesn't support it.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Downplaying how attached you actually were to the idea, making the letting-go sound trivial",
+        "No specifics on the actual metric or evidence that changed your mind"
+      ],
+      "followUps": [
+        "How long did it take you to accept the data once you saw it?",
+        "What did you do with the resources that were freed up?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-015",
+      "theme": "data-driven-decision",
+      "question": "Walk me through a time you had to present a data-backed recommendation to an audience that was skeptical of the data itself.",
+      "variants": [
+        "Tell me about convincing a room that didn't trust your numbers"
+      ],
+      "probes": "Whether you can build credibility for the data — methodology, sample size, source — rather than just repeating the conclusion louder.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Getting defensive about the data instead of addressing the specific skepticism",
+        "No mention of what, if anything, was legitimate about their skepticism"
+      ],
+      "followUps": [
+        "What was the strongest objection they raised, and was it valid?",
+        "Did you change your methodology afterward because of that pushback?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-016",
+      "theme": "data-driven-decision",
+      "question": "Tell me about a time a small sample size or noisy result nearly led you to the wrong conclusion.",
+      "variants": [
+        "Describe a time you almost over-read a result that wasn't statistically solid"
+      ],
+      "probes": "Statistical judgment — whether you understand significance, sample size, and confidence intervals well enough to catch your own false positive.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Not explaining the actual statistical issue in plain terms",
+        "Taking credit for catching it if someone else actually caught it first"
+      ],
+      "followUps": [
+        "What made you double-check the result instead of just acting on it?",
+        "What's your rule of thumb now for how much data is enough?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-017",
+      "theme": "stakeholder-management",
+      "question": "Tell me about your toughest stakeholder and how you tackled them.",
+      "variants": [
+        "Who's been the hardest person to manage as a stakeholder, and how did you get them aligned?",
+        "Describe your most difficult stakeholder relationship and how you handled it"
+      ],
+      "probes": "Whether you adapted your approach to the specific person's incentives and communication style, rather than just repeating your standard pitch louder.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Blaming the stakeholder's personality instead of showing what you changed in your own approach",
+        "No resolution — the story ends at the conflict with no outcome"
+      ],
+      "followUps": [
+        "What was different about how you communicated with them versus everyone else on the project?",
+        "Is the relationship still difficult today, or did it fundamentally change?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-018",
+      "theme": "stakeholder-management",
+      "question": "Describe a time you had to manage a difficult, senior executive who kept pushing their own opinion over your product judgment.",
+      "variants": [
+        "Tell me about handling a VP or C-level exec who disagreed with your product direction"
+      ],
+      "probes": "Whether you can hold your ground on product judgment with someone senior to you, using evidence and framing rather than either capitulating or getting into a standoff.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Simply deferring to the executive's opinion and calling that 'stakeholder management'",
+        "Describing the exec as simply wrong with no acknowledgment of what valid concern was underneath their pushback"
+      ],
+      "followUps": [
+        "What did you concede, and what did you hold firm on?",
+        "How did the relationship evolve after that disagreement?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-019",
+      "theme": "stakeholder-management",
+      "question": "Tell me about a time you had to manage stakeholders across multiple time zones or geographies with different priorities.",
+      "variants": [
+        "Describe aligning stakeholders who weren't even working the same hours as you"
+      ],
+      "probes": "Whether you built processes (async updates, clear documentation, decision logs) to bridge the gap rather than relying on live meetings alone.",
+      "structure": "STAR",
+      "pitfalls": [
+        "No mention of specific process or tooling used to bridge the time-zone gap",
+        "Framing the time-zone difference as purely a burden with no acknowledgment of what it forced you to do better"
+      ],
+      "followUps": [
+        "What async process did you put in place to keep everyone aligned?",
+        "What broke down before you fixed the process?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-020",
+      "theme": "stakeholder-management",
+      "question": "Walk me through a time a key stakeholder lost trust in you or your team, and how you rebuilt it.",
+      "variants": [
+        "Tell me about repairing a stakeholder relationship after it went bad"
+      ],
+      "probes": "Whether you can diagnose the actual root of the broken trust and take ownership, rather than just being extra nice going forward.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Vague platitudes about 'communicating more' with no concrete change described",
+        "Not naming what originally broke the trust"
+      ],
+      "followUps": [
+        "What specifically caused the trust to break in the first place?",
+        "How do you know the trust is actually rebuilt, not just quieter?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-021",
+      "theme": "stakeholder-management",
+      "question": "Tell me about a time you had to say no to a stakeholder's request while keeping the relationship intact.",
+      "variants": [
+        "Describe pushing back on a stakeholder without damaging the relationship"
+      ],
+      "probes": "Whether you can decline a request with a clear, respectful rationale and an alternative, rather than a flat refusal or a reluctant yes.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Framing the no as purely their loss with no acknowledgment of their underlying need",
+        "Caving after minor pushback, undermining the credibility of the original no"
+      ],
+      "followUps": [
+        "What did you offer them instead of what they originally asked for?",
+        "How did they react in the moment, versus a few weeks later?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-022",
+      "theme": "cross-functional",
+      "question": "Tell me about a time engineering, design, and business stakeholders were all misaligned on the same project, and how you got them on the same page.",
+      "variants": [
+        "Describe a project where every function wanted something different and you had to reconcile it"
+      ],
+      "probes": "Whether you can find the underlying shared goal beneath surface-level disagreement and translate between functions with different incentives.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Just picking one side's opinion and calling it alignment",
+        "No mention of the actual mechanism used to reconcile the views — a shared doc, a working session, a reframed goal"
+      ],
+      "followUps": [
+        "What was the shared goal that got everyone to agree?",
+        "How long did the misalignment go undetected before you addressed it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-023",
+      "theme": "cross-functional",
+      "question": "Describe a time you had to work closely with a function you'd never partnered with before — legal, finance, sales ops — to ship something.",
+      "variants": [
+        "Tell me about collaborating with an unfamiliar function to get a product out"
+      ],
+      "probes": "Whether you can quickly learn a new function's language and constraints rather than treating them as a rubber-stamp step.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Treating the unfamiliar function as an obstacle to route around instead of a genuine collaborator",
+        "No specific detail about what you learned about how that function actually operates"
+      ],
+      "followUps": [
+        "What did you get wrong initially about how that function worked?",
+        "What would you do differently starting that collaboration again?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-024",
+      "theme": "cross-functional",
+      "question": "Tell me about a launch that slipped because two functions weren't actually aligned on scope, even though everyone thought they were.",
+      "variants": [
+        "Describe a time 'alignment' turned out to be an illusion and it cost you a deadline"
+      ],
+      "probes": "Whether you can spot the difference between agreement in a meeting and true shared understanding, and what you changed in your process afterward.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Blaming the other function for 'not really listening' with no reflection on your own communication gap",
+        "No process change described for future projects"
+      ],
+      "followUps": [
+        "What signal, in hindsight, would have told you the alignment wasn't real?",
+        "What do you do differently now to confirm alignment before it's too late?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-025",
+      "theme": "influence-without-authority",
+      "question": "Tell me about a time you had to get a team to prioritize your work when they had no formal obligation to listen to you.",
+      "variants": [
+        "Describe influencing a team you had zero authority over"
+      ],
+      "probes": "Whether you built genuine buy-in — through shared incentives, credibility, or relationship — rather than escalating to someone's manager as the first move.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Jumping straight to escalation instead of trying to build the case directly first",
+        "No mention of what was in it for the other team"
+      ],
+      "followUps": [
+        "What did the other team actually get out of prioritizing your work?",
+        "When, if ever, did you have to escalate, and how did you decide that was necessary?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-026",
+      "theme": "influence-without-authority",
+      "question": "Describe a time you changed a senior leader's mind on something they were already committed to, without having any positional power over them.",
+      "variants": [
+        "Tell me about persuading someone more senior than you to reverse a decision"
+      ],
+      "probes": "Whether you can build a case compelling enough to overcome someone's sunk-cost attachment to their own prior decision.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Overstating how quickly or easily the leader changed their mind",
+        "No mention of the specific evidence or framing that actually moved them"
+      ],
+      "followUps": [
+        "What was the one piece of evidence or framing that actually shifted their view?",
+        "How did you approach it so it didn't feel like a challenge to their authority?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-027",
+      "theme": "conflict",
+      "question": "Tell me about a time you had a real conflict with an engineer or designer over the right approach, and how you resolved it.",
+      "variants": [
+        "Describe disagreeing with engineering or design on direction — how did it play out?"
+      ],
+      "probes": "Whether you can disagree on substance without pulling rank, and whether you actually incorporated their perspective or just wore them down.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Framing the resolution as 'I was right and eventually they agreed' with no genuine incorporation of their view",
+        "Escalating a technical or design disagreement to a manager as the first move instead of working it out directly"
+      ],
+      "followUps": [
+        "What part of their position turned out to be right?",
+        "How did the relationship hold up afterward?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-028",
+      "theme": "conflict",
+      "question": "Describe the most significant disagreement you've had with a peer PM or a cross-functional partner.",
+      "variants": [
+        "Tell me about a time you and a peer strongly disagreed on something important"
+      ],
+      "probes": "Whether you can stay curious rather than defensive under real disagreement, and reach a resolution that isn't just capitulation from one side.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Making the peer sound unreasonable with no acknowledgment of their valid points",
+        "No clear resolution described"
+      ],
+      "followUps": [
+        "What did you learn about your own blind spot from that disagreement?",
+        "How do you two work together now?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-029",
+      "theme": "conflict",
+      "question": "Tell me about a time you disagreed with your manager's decision and had to decide whether to push back or go along with it.",
+      "variants": [
+        "Describe pushing back — or choosing not to — on a call your manager made"
+      ],
+      "probes": "Whether you can disagree upward constructively, and know when to escalate your objection versus commit once a decision is made.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Framing 'disagree and commit' as simply going silent, without describing how you actually voiced the disagreement first",
+        "Undermining the decision after agreeing to commit to it"
+      ],
+      "followUps": [
+        "Once the decision was made, how did you show up in support of it?",
+        "What would have made you escalate further instead of committing?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-030",
+      "theme": "conflict",
+      "question": "Walk me through a time a conflict on your team became personal rather than just professional, and how you defused it.",
+      "variants": [
+        "Tell me about a disagreement that started to affect a working relationship, not just the decision at hand"
+      ],
+      "probes": "Emotional intelligence — whether you can separate the person from the position and repair the relationship, not just resolve the immediate issue.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Only addressing the surface-level disagreement while ignoring the relational damage underneath",
+        "No mention of a direct, private conversation to repair the relationship"
+      ],
+      "followUps": [
+        "What did you say to them directly that helped defuse it?",
+        "How is that relationship now?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-031",
+      "theme": "conflict",
+      "question": "Tell me about a time you had to deliver a decision that you knew a stakeholder would strongly disagree with.",
+      "variants": [
+        "Describe delivering unwelcome news to someone who was going to push back hard"
+      ],
+      "probes": "How you prepared for and handled the pushback in the moment — whether you had a real rationale ready or just hoped it would go smoothly.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Softening the message so much the actual decision got lost",
+        "No mention of how you handled their reaction in real time"
+      ],
+      "followUps": [
+        "How did they react in the room, and how did you respond to that reaction?",
+        "Did you give them any way to shape the decision, or was it fully final?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-032",
+      "theme": "saying-no",
+      "question": "Tell me about a time you had to say no to someone senior who was pushing hard for a feature.",
+      "variants": [
+        "Describe declining a request from leadership that you didn't think was the right call"
+      ],
+      "probes": "Whether you can hold a position under seniority pressure using evidence and framing, rather than folding or being needlessly combative.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Caving after one round of pushback and building it anyway",
+        "No specific reasoning given for the no — just 'it wasn't the priority'"
+      ],
+      "followUps": [
+        "What evidence or framing finally got them to accept the no?",
+        "Did you offer any alternative to address their underlying concern?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-033",
+      "theme": "saying-no",
+      "question": "Describe a time you killed a feature that was already partially built.",
+      "variants": [
+        "Tell me about cutting something that had real engineering investment already sunk into it"
+      ],
+      "probes": "Whether you can act on sunk-cost logic correctly — recognizing that past investment shouldn't drive a future decision — and how you communicated that to the team who built it.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Letting sunk cost keep the feature alive past the point the data justified it",
+        "Framing it purely as a data decision with no acknowledgment of the team morale impact"
+      ],
+      "followUps": [
+        "How did the team that built it react, and how did you handle that?",
+        "What would you have needed to see to keep it alive instead?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-034",
+      "theme": "saying-no",
+      "question": "Tell me about a time you had to turn down a customer's specific feature request, even though saying yes would have been the easier answer.",
+      "variants": [
+        "Describe declining a customer ask that would have been simple to just agree to"
+      ],
+      "probes": "Whether you protect product coherence and long-term direction over a short-term easy yes, and how you handle the customer relationship in the no.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Saying yes just to avoid the difficult conversation, then having it come back to bite the roadmap later",
+        "No explanation offered to the customer for the no"
+      ],
+      "followUps": [
+        "How did the customer react, and did you offer them anything in place of what they asked for?",
+        "Would you make the same call again?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-035",
+      "theme": "killed-a-project",
+      "question": "Tell me about a project or product you personally decided to kill.",
+      "variants": [
+        "Describe pulling the plug on something you were responsible for"
+      ],
+      "probes": "Whether you can recognize a losing bet objectively and act on it decisively, rather than letting it limp along out of attachment or fear of admitting failure.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Waiting far too long past the point the data was clear, out of attachment to the work",
+        "Framing the kill decision as someone else's call to avoid owning it"
+      ],
+      "followUps": [
+        "What was the specific signal that finally convinced you?",
+        "What did you do with the team and resources once it was killed?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-036",
+      "theme": "killed-a-project",
+      "question": "Describe a time you recommended killing a project that wasn't yours, and had to convince the owner.",
+      "variants": [
+        "Tell me about telling another PM their project should be shut down"
+      ],
+      "probes": "Whether you can deliver a hard, evidence-based message to a peer without it becoming personal or political.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Going over the owner's head instead of talking to them directly first",
+        "No mention of how you framed it to make it about the evidence, not their competence"
+      ],
+      "followUps": [
+        "How did the project owner react, and how did that affect your relationship?",
+        "Were you right, in hindsight?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-037",
+      "theme": "failure",
+      "question": "Tell me about your biggest failure as a PM.",
+      "variants": [
+        "What's a time you really got it wrong professionally?"
+      ],
+      "probes": "Self-awareness and ownership — whether you can name a real, consequential mistake and what you actually changed because of it, not a humble-brag disguised as a failure.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Picking a 'failure' that's actually a thinly veiled strength ('I worked too hard')",
+        "No concrete change in behavior described afterward"
+      ],
+      "followUps": [
+        "What would you do differently if you were in that exact situation again today?",
+        "Who else was affected by that failure, and how did you make it right with them?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-038",
+      "theme": "failure",
+      "question": "Describe a launch you shipped that failed to move the metrics you expected, or failed outright.",
+      "variants": [
+        "Tell me about a launch that just didn't work"
+      ],
+      "probes": "Whether you can diagnose why it failed — a bad hypothesis, poor execution, wrong timing — rather than attributing it vaguely to 'the market.'",
+      "structure": "STAR",
+      "pitfalls": [
+        "Blaming external factors (market conditions, timing) without examining your own hypothesis or execution",
+        "No specifics on what metric moved, or didn't, and by how much"
+      ],
+      "followUps": [
+        "Looking back, was the failure in the idea, the execution, or the timing?",
+        "What did you do with the feature after it failed to land?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-039",
+      "theme": "failure",
+      "question": "If you could go back, what's the one thing you'd improve about your product?",
+      "variants": [
+        "Looking back at a product you've owned, what's the single change you wish you'd made?",
+        "What's one regret you have about a product you shipped?"
+      ],
+      "probes": "Whether you have genuine, specific hindsight about your own product rather than a generic answer — this tests reflective depth, not diplomacy.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Giving a safe, inconsequential answer to avoid sounding critical of your own work",
+        "Picking something entirely outside your control so it doesn't reflect on your judgment"
+      ],
+      "followUps": [
+        "Why didn't you make that change at the time?",
+        "What would it take to make that change now?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-040",
+      "theme": "failure",
+      "question": "Tell me about a time you shipped something and only later realized it created a real problem for users.",
+      "variants": [
+        "Describe a time your own launch caused unintended harm or friction for users"
+      ],
+      "probes": "Whether you can recognize and own downstream consequences you didn't foresee, and how quickly you acted once you saw them.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Discovering the problem but downplaying its severity in the retelling",
+        "No mention of the actual fix or mitigation, only the discovery"
+      ],
+      "followUps": [
+        "How did you find out it was a problem — did users tell you, or did you catch it in the data?",
+        "How long did it take to fix once you knew?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-041",
+      "theme": "failure",
+      "question": "Describe a time you gave leadership a forecast or projection that turned out to be significantly wrong.",
+      "variants": [
+        "Tell me about a time your numbers were off, and how that landed with leadership"
+      ],
+      "probes": "Whether you own the miss transparently and can explain what was wrong with your model or assumptions, rather than minimizing the gap.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Minimizing how far off the forecast actually was",
+        "No explanation of what assumption in the model was flawed"
+      ],
+      "followUps": [
+        "What assumption turned out to be the flawed one?",
+        "How did you rebuild credibility with leadership after that?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-042",
+      "theme": "ambiguity",
+      "question": "Tell me about a complex problem you solved.",
+      "variants": [
+        "Walk me through the most complicated problem you've had to untangle",
+        "Describe a genuinely hard, multi-layered problem you worked through"
+      ],
+      "probes": "Whether you can break a messy, multi-dimensional problem into tractable pieces and actually reach a resolution, not just describe how hard it was.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Spending the whole answer establishing how complex the problem was, with too little time left for the actual resolution",
+        "No clear articulation of what made it complex — multiple stakeholders, unclear data, technical constraints — versus just 'a lot of work'"
+      ],
+      "followUps": [
+        "What made this more complex than a typical problem you'd face?",
+        "What was the turning point where it started to become tractable?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-043",
+      "theme": "ambiguity",
+      "question": "Describe a time you had to make a significant product decision with no data available at all to guide you.",
+      "variants": [
+        "Tell me about deciding something important with zero data to lean on"
+      ],
+      "probes": "Whether you can reason from first principles, analogous situations, and qualitative signal, and still commit — rather than freezing or defaulting to whoever's opinion is loudest.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Waiting for data that was never going to arrive in time, stalling the decision",
+        "Presenting the eventual decision as obvious in hindsight, hiding how uncertain it actually felt at the time"
+      ],
+      "followUps": [
+        "What reasoning did you use in place of data?",
+        "How did you know when you had enough conviction to act?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-044",
+      "theme": "prioritization",
+      "question": "Tell me about a time you had to prioritize under real time pressure, with more urgent asks than your team could handle.",
+      "variants": [
+        "Describe a moment everything felt like the top priority and you had to pick"
+      ],
+      "probes": "Whether you have and can articulate an actual framework for trade-offs under pressure, rather than defaulting to whoever escalated loudest.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Prioritizing based on who complained the most rather than actual impact",
+        "No framework or criteria mentioned — just 'I made a judgment call'"
+      ],
+      "followUps": [
+        "What criteria did you use to rank the competing asks?",
+        "What did you deliberately choose not to do, and how did that land with the people who wanted it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-045",
+      "theme": "prioritization",
+      "question": "Describe a time you had to reprioritize an entire roadmap mid-quarter because of a new piece of information.",
+      "variants": [
+        "Tell me about a significant roadmap change you had to make partway through"
+      ],
+      "probes": "Whether you can recognize when new information genuinely warrants disruption versus chasing every shiny new signal.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Changing the roadmap too easily, signaling a lack of conviction in the original plan",
+        "No mention of how you communicated the change to the team already executing against the old plan"
+      ],
+      "followUps": [
+        "How did the team react to the roadmap change mid-flight?",
+        "In hindsight, was the reprioritization worth the disruption it caused?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-046",
+      "theme": "prioritization",
+      "question": "Tell me about a time two equally important initiatives were competing for the same limited engineering resources, and you had to choose.",
+      "variants": [
+        "Describe choosing between two genuinely important projects with only enough capacity for one"
+      ],
+      "probes": "Whether you can make and defend a genuinely hard trade-off rather than finding a way to claim you did both.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Claiming you found a way to 'do both' when really one got shortchanged without saying so",
+        "No mention of how you handled the disappointment of whoever owned the deprioritized initiative"
+      ],
+      "followUps": [
+        "What tipped the decision in favor of the one you picked?",
+        "What happened to the initiative you didn't pick?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-047",
+      "theme": "prioritization",
+      "question": "Walk me through how you prioritized features for a 0-to-1 product with far more good ideas than you had time to build.",
+      "variants": [
+        "Tell me about narrowing a big backlog down to an actual V1"
+      ],
+      "probes": "Whether you can ruthlessly scope to what proves the core hypothesis, rather than trying to include everything that sounds valuable.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Including too much in V1 because everything genuinely sounded valuable",
+        "No clear criteria for what made the cut versus what didn't"
+      ],
+      "followUps": [
+        "What was the one feature you almost cut but kept, and why?",
+        "What did you add in V2 that you'd originally deprioritized?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-048",
+      "theme": "prioritization",
+      "question": "Tell me about a time you had to prioritize a small but urgent bug fix over a big strategic initiative you were excited about.",
+      "variants": [
+        "Describe dropping strategic work for something more urgent but less exciting"
+      ],
+      "probes": "Whether you can set aside your own excitement or ego in favor of what the business actually needs in the moment.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Resenting the interruption visibly instead of handling it professionally",
+        "Downplaying how much the urgent fix actually mattered, to make the story feel more strategic"
+      ],
+      "followUps": [
+        "How did you get back to the strategic work afterward?",
+        "How did you decide it was actually urgent enough to warrant the switch?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-049",
+      "theme": "customer-empathy",
+      "question": "Tell me about a time direct contact with a customer changed a decision you were about to make.",
+      "variants": [
+        "Describe a moment talking to a real user completely shifted your thinking"
+      ],
+      "probes": "Whether you actively seek out unfiltered customer contact, and whether it genuinely changes your decisions or just confirms what you already believed.",
+      "structure": "STAR",
+      "pitfalls": [
+        "The customer interaction conveniently confirms exactly what you already wanted to do",
+        "No specific quote, moment, or detail from the actual conversation"
+      ],
+      "followUps": [
+        "What exactly did the customer say that changed your mind?",
+        "How often do you talk to customers directly versus relying on secondhand research?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-050",
+      "theme": "customer-empathy",
+      "question": "Describe a time you had to design for a user whose context was very different from your own.",
+      "variants": [
+        "Tell me about building for a user very unlike yourself"
+      ],
+      "probes": "Whether you can genuinely step outside your own assumptions and context rather than projecting your own habits onto a different user base.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Assuming your own usage patterns and preferences generalize to a very different user",
+        "No specific method described for how you actually understood their context (field visits, interviews, data)"
+      ],
+      "followUps": [
+        "What was the biggest wrong assumption you started with?",
+        "How did you validate you'd actually understood their context correctly?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-051",
+      "theme": "user-research",
+      "question": "Tell me about a time user research surfaced something that contradicted your own hypothesis.",
+      "variants": [
+        "Describe a moment research proved you wrong about what users wanted"
+      ],
+      "probes": "Whether you run research to genuinely learn versus to validate a decision you'd already made, and whether you actually acted on the contradiction.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Research 'discovering' exactly what you expected it to, with no genuine surprise",
+        "Acknowledging the contradictory finding but not actually changing course because of it"
+      ],
+      "followUps": [
+        "What did you do differently because of that finding?",
+        "How did you make sure the research questions weren't leading users toward your hypothesis?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-052",
+      "theme": "user-research",
+      "question": "Describe a time you ran user research with a very small or imperfect sample and had to decide how much to trust it.",
+      "variants": [
+        "Tell me about drawing conclusions from research you knew wasn't statistically ideal"
+      ],
+      "probes": "Whether you understand the limits of qualitative and small-sample research and calibrate your confidence accordingly.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Treating five user interviews as if they carried the statistical weight of a large quantitative study",
+        "No mention of triangulating the finding with any other source of evidence"
+      ],
+      "followUps": [
+        "How did you triangulate that finding with other evidence before acting on it?",
+        "What would have made you distrust the finding instead?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-053",
+      "theme": "metrics-ownership",
+      "question": "Tell me about a metric you were accountable for and how you moved it.",
+      "variants": [
+        "Walk me through owning a number and actually improving it"
+      ],
+      "probes": "Whether you can trace a clear causal chain from the actions you took to the metric moving, rather than claiming credit for a number that moved for other reasons.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Taking credit for a metric improvement that was likely driven by something outside your control (seasonality, another team's launch)",
+        "No specific magnitude or timeframe given for the improvement"
+      ],
+      "followUps": [
+        "How do you know your specific changes caused the movement, versus something else?",
+        "What guardrail metric did you watch to make sure you weren't gaming it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-054",
+      "theme": "metrics-ownership",
+      "question": "Describe a time a metric you owned moved in the wrong direction despite your team's best efforts, and how you handled reporting that upward.",
+      "variants": [
+        "Tell me about a number that got worse on your watch"
+      ],
+      "probes": "Whether you report bad news transparently and quickly rather than delaying or dressing it up, and whether you can diagnose the real cause.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Delaying reporting the bad number, hoping it would self-correct before anyone noticed",
+        "Blaming external factors without a genuine root-cause investigation"
+      ],
+      "followUps": [
+        "How quickly did you flag it once you noticed?",
+        "What was the actual root cause, once you dug in?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-055",
+      "theme": "experimentation",
+      "question": "Tell me about an A/B test whose result surprised you.",
+      "variants": [
+        "Describe an experiment that didn't go the way you expected"
+      ],
+      "probes": "Whether you can honestly interpret a result that contradicts your hypothesis, rather than explaining it away or rerunning until you get the answer you wanted.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Rerunning or re-slicing the experiment repeatedly until it shows the desired result",
+        "Dismissing a valid but unwelcome result as 'noise' without statistical justification"
+      ],
+      "followUps": [
+        "What did you do differently as a result of that surprising finding?",
+        "How did you rule out that it was just statistical noise?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-056",
+      "theme": "experimentation",
+      "question": "Describe a time you had to decide whether an experiment's result was strong enough to ship, when the data was borderline.",
+      "variants": [
+        "Tell me about a close call on whether to ship a test result"
+      ],
+      "probes": "Whether you understand statistical significance, practical significance, and business risk well enough to make a defensible borderline call.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Shipping a marginal result purely because you wanted a positive story to tell",
+        "No mention of the actual confidence level or effect size involved"
+      ],
+      "followUps": [
+        "What was the actual effect size and confidence level?",
+        "What would you have needed to see to not ship it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-057",
+      "theme": "phased-launch",
+      "question": "Tell me about a time you deliberately phased or staged a launch to de-risk it.",
+      "variants": [
+        "Describe rolling something out gradually instead of all at once"
+      ],
+      "probes": "Whether you can design a rollout plan with real go/no-go criteria at each stage, rather than a phased launch that's phased in name only.",
+      "structure": "STAR",
+      "pitfalls": [
+        "No concrete criteria described for what would have stopped or reversed the rollout at each stage",
+        "Describing the phasing as a formality rather than something that actually informed decisions along the way"
+      ],
+      "followUps": [
+        "What would have made you pull back at an earlier stage?",
+        "Did anything from an early phase actually change your plan for the next one?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-058",
+      "theme": "phased-launch",
+      "question": "Describe a phased rollout that stalled in beta far longer than intended, and how you got it unstuck.",
+      "variants": [
+        "Tell me about a launch that got stuck in an extended pilot phase"
+      ],
+      "probes": "Whether you can diagnose why a beta stalled — usually unclear success criteria or organizational fear — and force a real decision.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Letting the beta run indefinitely without ever forcing a go/no-go decision",
+        "No mention of what specifically was blocking the full rollout"
+      ],
+      "followUps": [
+        "What was actually blocking it from graduating out of beta?",
+        "What finally forced the decision to move forward or kill it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-059",
+      "theme": "compliance-risk",
+      "question": "Tell me about a time you had to slow down or change a launch because of a legal, regulatory, or compliance concern.",
+      "variants": [
+        "Describe a launch that got delayed or reshaped by a compliance issue"
+      ],
+      "probes": "Whether you take regulatory and legal risk seriously as a genuine product constraint, rather than treating compliance as a rubber stamp to route around.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Treating legal/compliance as an obstacle to work around instead of a legitimate constraint to design within",
+        "No specifics on what the actual regulatory concern was"
+      ],
+      "followUps": [
+        "How did you redesign the feature to satisfy the concern without gutting the value?",
+        "How early did you loop in legal or compliance, in hindsight — early enough?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-060",
+      "theme": "compliance-risk",
+      "question": "Describe a time you identified a privacy or data-risk issue in a product before it became a real problem.",
+      "variants": [
+        "Tell me about catching a data or privacy risk proactively"
+      ],
+      "probes": "Whether you proactively think about data risk as part of product design, rather than only reacting after a breach or complaint.",
+      "structure": "STAR",
+      "pitfalls": [
+        "The 'catch' actually happening after a near-miss or complaint, not proactively as claimed",
+        "No specifics about what data was at risk or how"
+      ],
+      "followUps": [
+        "What made you think to check for that risk in the first place?",
+        "What process did you put in place afterward to catch similar issues earlier?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-061",
+      "theme": "technical-depth",
+      "question": "Tell me about a time you had to go deep on a technical trade-off to make the right product call.",
+      "variants": [
+        "Describe a moment you had to really understand the engineering constraints before deciding"
+      ],
+      "probes": "Whether you can engage substantively with technical trade-offs (latency, scalability, tech debt) rather than deferring the decision entirely to engineering.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Deferring the entire decision to engineering with no independent product judgment applied",
+        "Overstating your own technical fluency in a way that wouldn't survive a follow-up question"
+      ],
+      "followUps": [
+        "What was the specific trade-off, in technical terms?",
+        "How did you validate your understanding of the constraint with the engineering team?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-062",
+      "theme": "technical-depth",
+      "question": "Describe a time you pushed back on an engineering estimate because you believed there was a simpler technical path.",
+      "variants": [
+        "Tell me about questioning an engineering timeline or approach"
+      ],
+      "probes": "Whether you can engage credibly on technical scope without overstepping into engineering's actual expertise.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Pushing back on the estimate with no real technical basis, purely because you wanted it faster",
+        "Damaging trust with engineering by being right in a way that felt like a gotcha"
+      ],
+      "followUps": [
+        "Were you right about the simpler path, in the end?",
+        "How did you raise it in a way that didn't feel like second-guessing their expertise?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-063",
+      "theme": "mentoring",
+      "question": "Tell me about a time you mentored someone — a junior PM, an intern, or someone outside your direct team.",
+      "variants": [
+        "Describe helping someone grow professionally, even without a formal reporting relationship"
+      ],
+      "probes": "Whether you invest genuinely in others' growth, and can point to a specific, measurable change in them, not just time spent together.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Describing time spent together with no specific growth or outcome for the person mentored",
+        "Taking too much credit for their growth rather than crediting their own effort"
+      ],
+      "followUps": [
+        "What's the most specific piece of feedback or advice you gave them?",
+        "Where are they now, and how did that mentoring affect their trajectory?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-064",
+      "theme": "mentoring",
+      "question": "Describe a time a mentee or junior teammate pushed back on your advice, and how you handled it.",
+      "variants": [
+        "Tell me about someone you were mentoring disagreeing with your guidance"
+      ],
+      "probes": "Whether you can hold a mentoring relationship with genuine two-way respect, rather than expecting your advice to be taken uncritically.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Dismissing their pushback simply because of the seniority gap",
+        "No acknowledgment of whether their pushback turned out to have a point"
+      ],
+      "followUps": [
+        "Did their pushback turn out to be right, in hindsight?",
+        "How did that change how you mentor since then?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-065",
+      "theme": "feedback",
+      "question": "Tell me about a time you had to give someone difficult feedback they didn't want to hear.",
+      "variants": [
+        "Describe delivering hard feedback to a peer or teammate"
+      ],
+      "probes": "Whether you can be direct and specific without being harsh, and whether the feedback actually landed and changed behavior.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Softening the feedback so much the actual message got lost",
+        "No mention of whether the person's behavior actually changed afterward"
+      ],
+      "followUps": [
+        "How did they react in the moment, and how did that change over time?",
+        "What would you do differently in how you delivered it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-066",
+      "theme": "feedback",
+      "question": "Describe the toughest piece of feedback you've ever received, and what you did with it.",
+      "variants": [
+        "Tell me about a time someone gave you hard feedback about yourself"
+      ],
+      "probes": "Whether you can take criticism without getting defensive, and show a real, specific behavior change as a result — not just polite acceptance.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Claiming to have 'taken it well' with no specific evidence of what actually changed afterward",
+        "Picking feedback that's actually flattering in disguise"
+      ],
+      "followUps": [
+        "What specifically did you change in how you work because of that feedback?",
+        "How did you feel in the moment you received it, honestly?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-067",
+      "theme": "ethical-call",
+      "question": "Tell me about a time you faced an ethical call where the most profitable option and the right option for the user weren't the same thing.",
+      "variants": [
+        "Describe a moment doing right by the user cost the business something"
+      ],
+      "probes": "Whether you have a genuine ethical compass that shows up in a real trade-off, not just a stated value that's never actually been tested.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Presenting a decision as an ethical dilemma when it was actually a clear-cut, low-stakes call",
+        "The 'right' choice conveniently costing the business nothing at all"
+      ],
+      "followUps": [
+        "What did it actually cost the business to make the ethical choice?",
+        "Did leadership support that call, or did you have to push for it?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-068",
+      "theme": "ethical-call",
+      "question": "Describe a time you noticed a product pattern (dark pattern, misleading copy, aggressive nudge) that worked but felt wrong, and what you did about it.",
+      "variants": [
+        "Tell me about pushing back on a growth tactic that crossed a line for you"
+      ],
+      "probes": "Whether you can distinguish persuasive design from manipulation and act on that distinction even when the manipulative version performs better.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Not being specific about what made the pattern actually manipulative rather than just aggressive",
+        "No mention of the performance cost of removing or softening it"
+      ],
+      "followUps": [
+        "What was the actual performance impact of changing it?",
+        "Where do you personally draw the line between persuasive and manipulative design?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-069",
+      "theme": "leadership",
+      "question": "Tell me about a time you had to rally a discouraged or burnt-out team to keep pushing on a hard project.",
+      "variants": [
+        "Describe leading a team through a low point on a project"
+      ],
+      "probes": "Whether you can read and address team morale directly, not just push harder on the roadmap and hope motivation follows.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Only addressing the roadmap or timeline, with no attention to actual team morale",
+        "Taking sole credit for the team's recovery rather than crediting the team"
+      ],
+      "followUps": [
+        "What specifically did you do to address morale, versus just the work itself?",
+        "How did you know the team had actually recovered, not just gone quiet?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-070",
+      "theme": "leadership",
+      "question": "Describe a time you had to make an unpopular call as the leader of a cross-functional initiative.",
+      "variants": [
+        "Tell me about a decision that wasn't well received by the team you were leading"
+      ],
+      "probes": "Whether you can absorb the unpopularity of a necessary decision without either backing down or becoming defensive about it.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Softening the description of how unpopular it actually was",
+        "No mention of how you addressed the team's concerns directly, even while holding the decision"
+      ],
+      "followUps": [
+        "How did you communicate the decision to the team who disagreed with it?",
+        "Would you make the same call again?"
+      ],
+      "seniority": "senior"
+    },
+    {
+      "id": "beh-071",
+      "theme": "execution-under-constraint",
+      "question": "Tell me about a time you had to cut scope significantly to hit a hard deadline.",
+      "variants": [
+        "Describe shrinking a project's scope under real time pressure"
+      ],
+      "probes": "Whether you can distinguish what's essential from what's nice-to-have under real pressure, and communicate the cut transparently rather than quietly dropping it.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Cutting corners on quality instead of scope, and not admitting that's what happened",
+        "Not clearly communicating to stakeholders what was cut and why"
+      ],
+      "followUps": [
+        "What was the first thing you cut, and how did you decide?",
+        "What was the cost of cutting that scope — did it show up later?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-072",
+      "theme": "execution-under-constraint",
+      "question": "Describe a time you had to deliver a project after losing a key team member partway through.",
+      "variants": [
+        "Tell me about executing through unexpected loss of resources mid-project"
+      ],
+      "probes": "Whether you can replan and reprioritize under a real, unplanned resource hit rather than just working harder to absorb the gap.",
+      "structure": "STAR",
+      "pitfalls": [
+        "Framing it purely as personal heroics rather than a genuine replanning of scope or timeline",
+        "No mention of how the remaining team's workload or morale was managed"
+      ],
+      "followUps": [
+        "What did you cut or delay because of the resourcing hit?",
+        "How did the rest of the team absorb the extra load?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-073",
+      "theme": "career-motivation",
+      "question": "Why product management, and not another function?",
+      "variants": [
+        "What drew you to product management specifically?",
+        "Why did you choose to become a PM?"
+      ],
+      "probes": "Whether your motivation is specific and grounded in real experience, not a generic answer about 'liking to build things.'",
+      "structure": "STAR",
+      "pitfalls": [
+        "A generic answer that could apply equally to almost any function",
+        "No specific formative moment or experience behind the choice"
+      ],
+      "followUps": [
+        "What's a moment that first made you think 'this is the job I want'?",
+        "What function did you consider instead, and why didn't you go that way?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-074",
+      "theme": "career-motivation",
+      "question": "Why this company, specifically, and why now?",
+      "variants": [
+        "What made you want to join us over other options you likely have?",
+        "Why here, and why this point in your career?"
+      ],
+      "probes": "Whether you've done real homework on the company's specific product, strategy, or challenges, versus giving an answer that could be recycled for any interview.",
+      "structure": "STAR",
+      "pitfalls": [
+        "An answer generic enough to be reused verbatim in any other interview",
+        "Praising the company in the abstract with no reference to a specific product, challenge, or strategic bet they're making"
+      ],
+      "followUps": [
+        "What's a specific product decision of ours you'd have made differently?",
+        "What's the biggest risk you see in our strategy right now?"
+      ],
+      "seniority": "both"
+    },
+    {
+      "id": "beh-075",
+      "theme": "career-motivation",
+      "question": "Walk me through your career arc and how each move led logically to this one.",
+      "variants": [
+        "Tell me your story — how did you get from where you started to sitting here today?"
+      ],
+      "probes": "Whether you can tell a coherent narrative connecting your choices, rather than a list of jobs with no throughline.",
+      "structure": "STAR",
+      "pitfalls": [
+        "A disconnected list of roles with no narrative thread tying them together",
+        "Spending too long on early career details and rushing the part most relevant to this role"
+      ],
+      "followUps": [
+        "What's the one thread that connects all of these moves?",
+        "What would you tell yourself at the start of your career, knowing what you know now?"
+      ],
+      "seniority": "both"
+    }
+  ]
+}

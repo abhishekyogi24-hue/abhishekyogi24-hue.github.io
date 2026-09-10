@@ -1,0 +1,1306 @@
+{
+  "pack": "ps-01",
+  "cases": [
+    {
+      "id": "ps-improve-002",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve discovery of Netflix's non-English-language catalog for English-speaking subscribers",
+      "company": [
+        "Netflix"
+      ],
+      "region": "global",
+      "industry": "video-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Netflix wants more of its English-speaking subscribers to watch non-English-language titles, not just the handful that go viral. How would you improve discovery for this audience?",
+      "context": [
+        "Netflix's Korean series Squid Game became the platform's most-watched show ever at launch in 2021, watched by subscribers far beyond Korea.",
+        "Netflix invests heavily in dubbing and subtitles, offering many titles in dozens of languages.",
+        "Netflix's home screen and recommendation rows are personalized per profile, including using per-title personalized artwork."
+      ],
+      "assumptions": [
+        "assumed: focusing on US and UK English-speaking subscribers, where non-English content historically gets a smaller share of watch time",
+        "assumed: roughly a small single-digit percentage of these subscribers' total watch time currently goes to non-English titles",
+        "assumed: dubbing and subtitle quality across major non-English titles is already strong enough not to be the primary barrier"
+      ],
+      "followUps": [
+        "How would you avoid this feeling like Netflix is force-feeding subscribers content they didn't ask for?",
+        "Squid Game succeeded through word-of-mouth virality, not discovery UI. Why might your solution matter even when virality already works sometimes?",
+        "How would you measure success without just counting a one-time novelty click?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll scope this to US and UK English-speaking subscribers, where non-English titles likely make up a small share of watch time despite hits like Squid Game proving the audience is there when something breaks through. I'll assume dubbing and subtitle quality isn't the core blocker, since Netflix already invests heavily there. My plan: connect this to Netflix's mission, segment English-speaking subscribers by their openness to non-English content, map the journey of a subscriber who'd enjoy a title but never sees it, then propose a discovery solution."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Netflix's value isn't 'a library of shows,' it's confidently handing a subscriber something great to watch tonight without them having to search for it. The deeper need is trust that Netflix's recommendations reflect quality, not just what's convenient to promote. My mission statement for this effort: 'help every subscriber find their next favorite show, regardless of what language it was made in.' Strategically, Netflix's global production footprint and personalization engine are strengths a licensor-only competitor lacks, so leaning into cross-language discovery plays directly to that advantage rather than fighting it."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes subscribers, Netflix's global content and licensing teams, and the recommendation algorithm itself. Within English-speaking subscribers, I'd segment by behaviour: (1) genre-loyal viewers who consistently pick a favorite genre regardless of language, (2) hit-chasers who only watch whatever's trending globally, and (3) language-cautious viewers who actively skip subtitled or dubbed content out of habit, not preference. I'd prioritize genre-loyal viewers: they're a large, high-reach segment, and they're underserved today because Netflix's rows are more organized by 'popular now' than by genre-match across languages, so a genre-loyal thriller fan may never see a great non-English thriller surfaced to them."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this persona's journey: they open Netflix wanting a title in their favorite genre, scroll a home screen dominated by English-language and globally-trending rows, occasionally see one non-English title if it happens to be a current hit, and settle for a familiar English pick rather than exploring further. The problem isn't 'subscribers dislike non-English content' -- Squid Game disproves that -- it's that genre-based rows rarely cross language lines with confidence, so a great match never surfaces unless it's already a phenomenon. This is a problem, not a need, because it's specific and structural: no direct genre-to-title bridge across languages, prioritized highly since it's frequent (every browsing session) and moderately severe (a missed great match, not just a missed convenience). This ties to the mission because if genre-loyal viewers only get English matches, Netflix quietly caps its own catalog's reach."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) genre-first rows that blend languages by default, labelled by genre rather than by origin, so a thriller row includes strong non-English thrillers alongside English ones; (2) a lightweight 'because you liked X' cross-language nudge that explicitly says why a non-English title matches taste, building trust in the recommendation; (3) a limited-commitment preview, like a short in-app clip, lowering the risk of starting an unfamiliar title. Plotting impact x effort, the blended genre rows win for V1: it's a relatively low-effort ranking and UI change versus building new preview infrastructure, and high-impact since it touches every browsing session rather than a single moment. Risk: subscribers who are genuinely language-cautious may feel the home screen is less predictable; mitigation is to test this as a new row alongside existing ones rather than replacing familiar rows outright. This serves the mission by proving the algorithm's confidence in cross-language matches through consistent exposure, not one-off promotion."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming the fix is more marketing pushes for non-English hits, when the real gap is everyday genre-based discovery, not one-off promotion",
+        "Treating all English-speaking subscribers as equally open to non-English content instead of separating genre-loyal viewers from the language-cautious segment"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-003",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve booking conversion for first-time Airbnb guests who browse but never book",
+      "company": [
+        "Airbnb"
+      ],
+      "region": "global",
+      "industry": "short-term-rentals",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "A large share of first-time visitors to Airbnb browse listings for a trip but leave without booking. As a PM on the guest growth team, how would you improve conversion for this group?",
+      "context": [
+        "Airbnb introduced Categories in 2022, grouping listings by type (e.g. treehouses, OMG!) instead of only by destination search.",
+        "Airbnb launched AirCover for guests in 2022, a guest protection program covering issues like listing inaccuracies.",
+        "Airbnb's search includes an 'I'm Flexible' option that lets users browse by type of trip or budget rather than a fixed destination and date."
+      ],
+      "assumptions": [
+        "assumed: this cohort has completed at least one search session with multiple listing views but never reached checkout",
+        "assumed: a meaningful minority of these first-time browsers are comparing Airbnb against a hotel booking site in the same session",
+        "assumed: price is visible early in the browsing flow, not hidden until a later step"
+      ],
+      "followUps": [
+        "How would you distinguish someone who abandoned because of price shock from someone who simply hadn't decided to travel yet?",
+        "AirCover already addresses trust concerns. Why might browsers still not book?",
+        "What's the risk of pushing too hard on urgency tactics (like 'only 1 left') for first-timers specifically?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this cohort has actively browsed multiple listings in a session without reaching checkout, and that a meaningful share are comparing Airbnb to a hotel site in the same session. I'll also assume price is shown early rather than hidden, so sticker shock at checkout isn't the whole story. My plan: connect this to Airbnb's mission, segment first-time browsers by what's holding them back, map the journey to find where trust or confidence breaks down, then propose a conversion fix."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Airbnb's value isn't 'a place to stay,' it's the promise of belonging somewhere unfamiliar, paired with more space and character than a standard hotel room. For a first-timer, that promise is unproven, so the deeper need is confidence that this specific unfamiliar host and space will actually deliver what the photos suggest. My mission statement: 'make a stranger's home feel like a safe, obvious choice for your next trip.' Strategically, features like AirCover and Categories already reflect Airbnb investing in exactly this trust and browsability gap, so a conversion fix should build on those rather than introduce something disconnected."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the guest, the host, and Airbnb's trust and support systems. Within first-time browsers, I'd segment by behaviour: (1) hotel-comparers actively weighing Airbnb against a hotel in the same session, (2) trip-uncertain browsers who haven't committed to travel dates yet and are window-shopping, and (3) trust-hesitant browsers who've narrowed to a specific listing but stall before paying a stranger. I'd prioritize trust-hesitant browsers: they're far along the funnel already, making them high-reach relative to effort, and they're underserved because AirCover's protections aren't always visible at the exact moment of hesitation, right before payment."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this persona's journey: they find a listing they like, read some reviews, add dates, reach the payment screen, and then pause -- unsure whether this specific host and property will really match the listing, especially since they can't verify it in person. The problem isn't 'Airbnb lacks guest protections' -- AirCover exists -- it's that guest protections aren't surfaced persuasively at the exact decision point where doubt peaks, so trust-hesitant guests have to actively recall or search for reassurance rather than see it. This is a problem, not a need, because it's specific: a trust reassurance gap right before payment, prioritized highly since it's frequent (every first-time booking attempt) and directly tied to whether the booking completes at all. This ties to the mission because a hesitant guest who never gets that reassurance never gets to experience the 'belonging' Airbnb promises."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) surface a concise AirCover summary directly on the payment screen, tied to the specific listing being booked, rather than as a separate policy page; (2) show verified-stay signals close to the price, like a count of recent completed stays at that exact listing; (3) offer a lightweight message-the-host prompt right before payment for hesitant guests, since a quick human response can resolve last-minute doubt. Plotting impact x effort, surfacing AirCover on the payment screen wins for V1: it reuses an already-built protection program, requires only a UI and messaging change, and hits every guest at the exact moment of maximum hesitation. Risk: over-explaining protections could itself raise doubt ('why do they need to reassure me so much?'); mitigation is concise, confident copy rather than a wall of policy text. This serves the mission by making the unfamiliar feel safe at precisely the moment it needs to."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Defaulting to a generic discount to push first-timers through checkout instead of diagnosing whether the blocker is trust, price, or trip uncertainty",
+        "Assuming AirCover's mere existence solves trust, when the real gap is whether it's visible at the moment doubt peaks"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-004",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve onboarding for employees added mid-project to an already-dense Slack workspace",
+      "company": [
+        "Slack"
+      ],
+      "region": "global",
+      "industry": "workplace-collaboration",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "A new employee joins a company partway through a project and is added to a Slack workspace with hundreds of existing channels and years of message history. How would you improve their onboarding experience?",
+      "context": [
+        "Slack organizes conversation into channels, which can number in the hundreds or thousands in a large, long-running workspace.",
+        "Slack Connect, launched in 2020, lets separate companies share channels directly rather than relying on email.",
+        "Slack supports channel search and a directory of all public channels within a workspace."
+      ],
+      "assumptions": [
+        "assumed: the new employee is joining an existing team with an established project already in progress, not starting a brand-new team",
+        "assumed: the workspace has more public channels than any single team's own relevant subset",
+        "assumed: the employee has already completed generic HR/IT onboarding and this is specifically about workspace orientation"
+      ],
+      "followUps": [
+        "How would you avoid this becoming yet another onboarding checklist the employee ignores?",
+        "What signals would tell you a new hire is still lost in the workspace two weeks in, versus just quiet by nature?",
+        "How would your answer change for a workspace with only a dozen channels instead of hundreds?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume the new employee is joining an established team with a project already underway, that the workspace has far more public channels than are relevant to their role, and that generic HR/IT onboarding is already handled elsewhere. My plan: connect this to Slack's mission, segment new joiners by how lost they tend to get, map their first-weeks journey, then propose a fix scoped to workspace orientation specifically."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Slack's value isn't 'a place to send messages,' it's making a team's collective knowledge and ongoing conversation instantly reachable instead of scattered across email threads and hallway conversations. For a brand-new joiner, that same collective knowledge is initially a wall of noise rather than an asset. My mission statement here: 'help someone new feel like part of the conversation, not an outsider reading someone else's history.' Strategically, Slack already has strong search and a channel directory, so this fix should lean on making existing structure legible rather than building new infrastructure."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the new employee, their direct team, and the broader workspace of channels they aren't yet part of. I'd segment new joiners by behaviour: (1) proactive explorers who join extra channels and search history on their own, (2) wait-and-follow joiners who rely entirely on teammates to point them to the right channels, and (3) overwhelmed joiners who stay only in the one channel they were explicitly added to and never expand. I'd prioritize wait-and-follow joiners: they're likely the largest group, and they're underserved because today's default is that a teammate has to remember to invite them to each relevant channel individually, which doesn't scale as the workspace grows."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this persona's journey: they're added to one or two channels directly related to their role, see message threads referencing decisions and channels they've never heard of, and either interrupt a teammate to ask or quietly stay out of the loop. The problem isn't 'Slack lacks a channel directory' -- it exists -- it's that nothing proactively connects a new joiner's actual project context to the specific channels and pinned history relevant to them, so discovery depends entirely on a teammate's memory. This is a problem, not a need, because it's specific: no contextual channel recommendation at the moment of joining, prioritized highly since it's frequent (every new hire) and quietly costly (missed context compounds over weeks). This ties to the mission because a joiner who never finds the right channels never actually becomes part of the conversation."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) when someone is added to a workspace, suggest channels based on the channels their direct teammates are already active in, surfaced as a one-time join prompt; (2) let a manager or teammate curate a short 'start here' channel list specific to the new hire's project, pinned to their view; (3) generate a lightweight, AI-assisted summary of a channel's recent history when a new member joins, so they can catch up without scrolling. Plotting impact x effort, teammate-based channel suggestions win for V1: it's a relatively contained ranking feature using data Slack already has (who talks to whom), versus manual curation which relies on a teammate remembering to do it, or history summarization which is a heavier build. Risk: over-suggesting channels could recreate the overwhelm problem; mitigation is capping suggestions to a small number tied clearly to the new hire's actual team. This serves the mission by making the workspace legible from day one instead of leaving it to be explained person to person."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Solving this with a generic onboarding checklist rather than a contextual, teammate-based channel recommendation",
+        "Assuming every new joiner is a proactive explorer, when the wait-and-follow segment needs the workspace to come to them instead"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-005",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve engagement for LinkedIn users who only visit to search for jobs",
+      "company": [
+        "LinkedIn"
+      ],
+      "region": "global",
+      "industry": "professional-networking",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "A segment of LinkedIn users logs in almost exclusively to search and apply for jobs, rarely posting, commenting, or browsing their feed. How would you improve engagement for this group without disrupting their job search?",
+      "context": [
+        "LinkedIn's 'Open to Work' feature, launched in 2020, lets job seekers add a visible frame to their profile photo signalling they're open to opportunities.",
+        "LinkedIn offers 'Easy Apply,' letting users apply to a job posting using their LinkedIn profile without leaving the site.",
+        "LinkedIn launched in-app games such as Queens, Pinpoint, and Crossclimb in 2023."
+      ],
+      "assumptions": [
+        "assumed: this segment logs in at least weekly but views close to zero feed content per session",
+        "assumed: most of this segment is either recently laid off or actively considering a job change, not passively browsing",
+        "assumed: this segment still has a complete profile, since they're actively applying to jobs"
+      ],
+      "followUps": [
+        "How do you avoid making the job search flow slower or more cluttered in the name of engagement?",
+        "Why might this segment specifically resist feed content, when other users don't?",
+        "How would you measure whether engagement improved without just measuring more time spent, which could mean more friction?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this segment logs in at least weekly with a complete profile, views close to zero feed content, and is mostly actively job-searching rather than passively browsing. My plan: connect this to LinkedIn's mission, segment job-seekers by their underlying situation, map their journey through a session, then propose engagement ideas that don't slow down their actual job search."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "LinkedIn's value isn't 'a job board,' it's being the place where your professional reputation and network compound over time, which happens to make job searching easier when you need it. For someone using it purely transactionally, that compounding value is invisible -- they're extracting one use case and ignoring the rest. My mission statement: 'make LinkedIn valuable to you even in the weeks you're not actively looking for a job.' Strategically, LinkedIn's real advantage over a pure job board is its network and content layer, so any fix should reconnect job-seekers to that layer rather than compete with their job search."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are job-seekers, LinkedIn's content and feed systems, and recruiters posting jobs. Within job-search-only users, I'd segment by behaviour: (1) urgently job-hunting users who need a fast, focused search experience and have no bandwidth for anything else, (2) exploratory job-hunters casually checking what's out there without urgency, and (3) recently-placed users who just landed a role and are about to disengage entirely. I'd prioritize exploratory job-hunters: they have more attention available than the urgent segment, and they're underserved because LinkedIn's current experience treats all job-search users the same, missing the chance to re-engage this group with lower-pressure content."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the exploratory job-hunter's journey: they log in, go straight to the jobs tab, search, maybe save a few postings, and log out without seeing anything else. The problem isn't 'they dislike LinkedIn's content' -- it's that the jobs experience is functionally isolated from the rest of the product, so nothing in their job-search flow naturally exposes them to relevant feed content, like posts from people at companies they're researching. This is a problem, not a need, because it's specific: no bridge between job-search intent and adjacent content that's actually relevant to that intent, prioritized moderately since it's frequent but not urgent to fix. This ties to the mission because a user who never sees LinkedIn's broader value has no reason to stay once their job search ends."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) surface a small number of relevant posts from a company's current employees directly within that company's job posting page, since that's directly useful research, not a distraction; (2) after saving a job, offer an optional one-tap way to follow that company's page, seeding future feed content around a topic the user already cares about; (3) a lightweight 'people also asked about this company' content module drawing on existing posts. Plotting impact x effort, surfacing employee posts on the job page wins for V1: it's contextually relevant rather than generic feed content, low-effort since it reuses existing post and company data, and directly useful to the user's actual task. Risk: cluttering the job posting page could slow down the core apply flow; mitigation is keeping it collapsed by default, expandable on demand. This serves the mission by making LinkedIn useful within the job search itself, not by competing against it."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Trying to force generic feed engagement (notifications, prompts to post) onto a segment that came specifically to avoid that friction",
+        "Treating urgently job-hunting and casually exploring users as the same segment, when their tolerance for anything beyond search differs sharply"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-006",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve trust in Amazon's product reviews amid rising fake-review activity",
+      "company": [
+        "Amazon"
+      ],
+      "region": "global",
+      "industry": "e-commerce",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Shoppers increasingly distrust product star ratings and reviews on large marketplaces due to fake and incentivized reviews. As a PM on Amazon's reviews and trust team, how would you improve shopper trust in reviews?",
+      "context": [
+        "Amazon has taken public legal action against operators of private social media groups that recruited people to post fake reviews in exchange for free products or payment.",
+        "Amazon labels reviews from confirmed purchasers with a 'Verified Purchase' badge.",
+        "Regulators, including the UK's Competition and Markets Authority, have publicly scrutinized fake reviews on large online marketplaces including Amazon."
+      ],
+      "assumptions": [
+        "assumed: Verified Purchase reviews are the large majority of visible reviews on a typical product page, but fake reviews still concentrate on certain product categories",
+        "assumed: sellers, not Amazon itself, are the primary source recruiting fake reviewers",
+        "assumed: shoppers can already see the Verified Purchase badge but don't necessarily register it as a strong trust signal"
+      ],
+      "followUps": [
+        "How would you tell the difference between a genuinely low-quality product with honest bad reviews and one being propped up by fake positive reviews?",
+        "What's the risk of being too aggressive removing suspicious reviews, especially for small sellers?",
+        "How would you measure whether shopper trust actually improved, not just whether you removed more fake reviews?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume Verified Purchase reviews already make up most visible reviews, but fake reviews concentrate in specific categories, and that sellers rather than Amazon are typically the ones recruiting fake reviewers. My plan: connect this to Amazon's mission, segment shoppers by how they currently use reviews, map the journey where trust breaks down, then propose a solution that improves trust without over-penalizing small sellers."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Amazon's value isn't 'infinite selection,' it's letting a shopper buy something they've never touched with confidence it'll be what it claims to be -- reviews are the substitute for physically inspecting a product. The deeper need is confidence, not just information; a five-star rating that can't be trusted is worse than no rating at all, since it actively misleads. My mission statement: 'make every star rating something a shopper can act on without hesitation.' Strategically, Amazon's Verified Purchase infrastructure and legal enforcement capacity are strengths a smaller marketplace lacks, so a fix should build on that scale advantage."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are shoppers, honest sellers, bad-faith sellers recruiting fake reviews, and Amazon's trust and enforcement systems. Within shoppers, I'd segment by behaviour: (1) rating-skimmers who glance only at the star average, (2) review-readers who dig into recent written reviews before buying, and (3) trust-eroded shoppers who've been burned before and now discount ratings entirely, seeking outside validation instead. I'd prioritize review-readers: they're already engaging with the deepest trust signal available and are underserved because even careful reading can't easily distinguish an organic negative review from a fake positive one without better tooling."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the review-reader's journey: they scan the star average, open the written reviews, read a handful, and try to judge authenticity from writing style alone, since Amazon doesn't clearly flag suspicious patterns to the shopper directly. The problem isn't 'reviews don't exist' -- it's that shoppers have no reliable, visible way to distinguish likely-authentic reviews from suspicious ones without expert judgment, so trust decays for the entire review system rather than just the compromised subset. This is a problem, not a need, because it's specific: no shopper-facing authenticity signal beyond Verified Purchase, prioritized highly since it's frequent (every purchase decision) and severe (a bad purchase from a fake-inflated rating directly damages trust in the platform). This ties to the mission because if any doubt about authenticity exists, the substitute-for-inspection value of reviews collapses."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a more prominent, expanded Verified Purchase distinction that separates 'purchased recently, at full price' from lower-signal verified purchases (e.g. deeply discounted or bundled purchases used to game reviews); (2) a review-pattern warning shown directly on a product page when Amazon's backend detects unusual review clustering (e.g. many five-star reviews in a short window from new accounts), similar to how some platforms flag suspicious activity; (3) faster seller consequences, like temporarily hiding new reviews on flagged listings during investigation. Plotting impact x effort, the review-pattern warning wins for V1: it surfaces a signal Amazon likely already computes internally for enforcement, made visible to shoppers directly at the decision point, which is lower-effort than restructuring the Verified Purchase system and more shopper-facing than backend-only seller enforcement. Risk: false positives could unfairly flag a legitimately popular product's early reviews; mitigation is a conservative detection threshold and a clear appeal path for sellers. This serves the mission by giving shoppers a visible reason to trust or question a rating, rather than trust being all-or-nothing."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Framing this purely as a seller-enforcement problem and ignoring that shoppers themselves need a visible, product-page-level trust signal",
+        "Being aggressive enough removing suspicious reviews that small, legitimately popular sellers are unfairly penalized alongside bad actors",
+        "Assuming Verified Purchase alone solves trust, when incentivized-but-verified reviews are a known gap"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-007",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve trust in product quality for Meesho shoppers in smaller towns and cities",
+      "company": [
+        "Meesho"
+      ],
+      "region": "india",
+      "industry": "social-commerce",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Meesho serves value-conscious shoppers, many in smaller Indian towns and cities, buying low-priced products from third-party sellers. A share of shoppers hesitate to buy again after receiving an item that didn't match the listing photos or description. As a PM on Meesho's trust and quality team, how would you improve shopper trust?",
+      "context": [
+        "Meesho operates a marketplace connecting shoppers, many in smaller Indian towns and cities, with small third-party sellers, historically emphasizing low prices.",
+        "Meesho announced a zero-commission model for sellers in 2021, aiming to keep listed prices low.",
+        "Meesho's platform allows customer ratings and reviews on individual product listings."
+      ],
+      "assumptions": [
+        "assumed: most sellers on the platform are small, independent operations rather than large branded manufacturers",
+        "assumed: a meaningful share of shoppers in this segment are relatively new to online shopping generally, not just new to Meesho",
+        "assumed: return and refund flows exist but require some manual shopper effort (photos, request submission) to initiate"
+      ],
+      "followUps": [
+        "How would you distinguish a genuinely mismatched item from a shopper simply changing their mind after receiving it?",
+        "What's the risk of being too strict on sellers in the name of quality, given the zero-commission model depends on keeping many small sellers active?",
+        "How would you measure whether trust actually improved, not just whether return rates changed?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume most sellers are small independent operations rather than branded manufacturers, that a meaningful share of this shopper segment is relatively new to online shopping in general, and that the existing return flow requires some manual shopper effort to initiate. My plan: connect this to Meesho's mission, segment shoppers by their experience level and how they respond to a bad first experience, map the journey where trust breaks, then propose a fix that doesn't undermine the small-seller model the zero-commission structure depends on."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Meesho's value isn't 'cheap products,' it's making online shopping affordable and accessible to someone who might otherwise be priced out or intimidated by shopping online at all -- affordability is the entry point, but repeat use depends on the product actually being what was promised. The deeper need for this shopper is confidence that a low price doesn't mean a gamble on getting something unusable or embarrassingly different from what they ordered. My mission statement: 'make an affordable price feel like a smart choice, not a risky one.' Strategically, Meesho's zero-commission model, which keeps many small sellers active and prices low, is a genuine strength, so any trust fix needs to work with that seller base rather than filtering it down to only large, established sellers."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the shopper, small independent sellers, and Meesho's ratings and returns infrastructure. Within shoppers who've had a mismatch experience, I'd segment by behaviour: (1) new-to-online shoppers who are still forming their baseline expectations for online shopping generally, not just Meesho specifically, (2) repeat Meesho shoppers who've had mostly good experiences but occasionally hit a bad one and are more forgiving, and (3) comparison shoppers who also use other marketplaces and directly compare Meesho's reliability against them. I'd prioritize new-to-online shoppers: a single bad early experience can disproportionately shape their entire view of online shopping, not just of Meesho, making the stakes of getting this right especially high, and they're underserved because current trust signals (ratings, reviews) assume a level of savvy in interpreting them that a first-time online shopper may not have."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a new-to-online shopper's journey: they see a listing photo and price, order without much scrutiny of reviews since they're not yet used to checking them critically, receive an item that doesn't match, feel there's little they could have done differently, and initiate a return only if they're confident enough to navigate that process, otherwise simply not returning. The problem isn't 'listings are always inaccurate' -- most likely aren't -- it's that this segment has no simple, trustworthy way to gauge listing accuracy risk before ordering, since existing ratings and reviews aren't presented in a way accessible to someone unfamiliar with interpreting them. This is a problem, not a need, because it's specific: no accessible pre-purchase accuracy signal for shoppers unfamiliar with reading reviews critically, prioritized highly since a single bad early experience can end the relationship for this segment entirely, unlike a repeat shopper who might give a second chance. This ties to the mission because if the very first purchases feel risky, the affordability that draws this shopper in never gets the chance to prove itself trustworthy."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a simple, visual 'accuracy match' indicator on listings, aggregating how often past buyers confirmed the item matched photos, distinct from and simpler to read than a general star rating; (2) a lightweight, photo-based return process that's easier for a first-time shopper to navigate, reducing the effort barrier to reporting and resolving a mismatch; (3) seller-level accuracy scoring feeding into how prominently a seller's listings are shown, incentivizing accurate listings platform-wide. Plotting impact x effort, the simple accuracy-match indicator on listings wins for V1: it's a relatively contained addition to existing review data, directly targets the pre-purchase confidence gap identified as the core problem, and is simpler to build and understand than a full seller-scoring system that would require broader seller-side changes. Risk: being too aggressive in penalizing sellers for accuracy issues could discourage small sellers central to the zero-commission model from staying active; mitigation is starting with a shopper-facing signal only, without automatically restricting seller visibility, so sellers have a chance to improve before facing consequences. This serves the mission by giving a first-time shopper a simple, honest way to judge risk before buying, protecting their very first impression of online shopping."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Solving this purely through stricter seller enforcement, risking driving away the small sellers the zero-commission model depends on",
+        "Assuming existing star ratings already solve this, when a shopper unfamiliar with reading reviews critically may not know how to use that signal"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-008",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve conversion from saved Pins to actual purchases",
+      "company": [
+        "Pinterest"
+      ],
+      "region": "global",
+      "industry": "visual-discovery-shopping",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Pinterest users frequently save (pin) products they're interested in but rarely go on to purchase them. How would you improve conversion from a saved Pin to a completed purchase?",
+      "context": [
+        "Pinterest offers Product Pins that display real-time pricing and availability pulled from the retailer's site.",
+        "Pinterest launched 'Try On' for beauty products in 2020, letting users see how a makeup product would look on them using their camera.",
+        "Users organize saved Pins into boards, which can be public or private."
+      ],
+      "assumptions": [
+        "assumed: most saved product Pins are saved during an early-stage browsing or inspiration session, not right before an intended purchase",
+        "assumed: a saved Pin sits in a board for a noticeable period, often weeks, before any follow-up action",
+        "assumed: price and availability shown at save-time can go stale by the time a user reconsiders the Pin"
+      ],
+      "followUps": [
+        "How would you separate someone who saved a Pin purely for inspiration or mood-boarding from someone who saved it with real purchase intent?",
+        "What's the risk of pushing purchase reminders too aggressively on a platform people use for browsing, not just shopping?",
+        "How would you handle a Pin whose price or availability changed significantly since it was saved?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume most saved product Pins happen during early browsing rather than right before a purchase decision, that saved Pins often sit for weeks before any follow-up, and that price or availability shown at save-time can go stale. My plan: connect this to Pinterest's mission, segment savers by their underlying intent, map the journey from save to (non-)purchase, then propose a conversion fix that respects Pinterest's browsing-first culture."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Pinterest's value isn't 'a shopping site,' it's a place to collect ideas and possibilities before you've committed to a decision -- saving is closer to a mood board than a cart. The deeper need is helping someone move from inspiration to action only when they're actually ready, not forcing that transition prematurely. My mission statement: 'turn maybe someday into yes, now, at exactly the right moment, not before.' Strategically, Pinterest's strength is its visual, intent-rich saving behaviour that most shopping apps don't have, so any fix should use that saved intent rather than resorting to generic retargeting ads."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the user, the retailer whose product was pinned, and Pinterest's ad and shopping systems. I'd segment savers by behaviour: (1) pure mood-boarders who save for aesthetic inspiration with no purchase intent at all, (2) intent-savers who saved specifically because they're considering buying but aren't ready yet, and (3) forgetters who had real intent at save-time but simply lost track of the Pin. I'd prioritize forgetters: they already had genuine purchase intent, making conversion from this segment both high-reach and low-effort to earn, and they're underserved today since nothing resurfaces a saved Pin unless the user manually revisits their board."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the forgetter's journey: they save a product Pin while browsing, close the app, and unless they happen to revisit that specific board later, the Pin simply disappears from their attention even though their original intent hasn't gone away. The problem isn't 'users don't want to buy' -- intent-savers and forgetters both had real interest -- it's that a save is a one-way action with no resurfacing mechanism tied to the user's original intent, so it depends entirely on the user remembering to go back. This is a problem, not a need, because it's specific: no follow-up loop after a save, prioritized moderately since it's frequent but not urgent to fix, and severity depends heavily on not being pushy. This ties to the mission because inspiration that's never revisited never becomes action, no matter how strong the original intent was."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a gentle, infrequent digest notification resurfacing a small number of saved product Pins whose price dropped or stock is running low, giving a real reason to return rather than a generic reminder; (2) a lightweight 'still interested?' prompt shown only when a user reopens a board containing an old saved Pin, rather than proactively pushing; (3) letting users optionally tag a save as 'considering buying' at save-time, which only then triggers any follow-up. Plotting impact x effort, the price-drop or low-stock digest wins for V1: it's a relatively contained backend check against retailer-fed data Pinterest already has via Product Pins, and it gives a genuinely useful reason to return rather than manufactured urgency. Risk: over-notifying could feel like Pinterest becoming an ad platform rather than an inspiration one, which would damage the core browsing experience; mitigation is capping frequency and only surfacing real price or stock changes, never generic 'don't forget' nudges. This serves the mission by nudging at a moment justified by new information, not by manufactured pressure."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Pushing frequent purchase reminders on all savers, ignoring that pure mood-boarders will find this intrusive and damaging to Pinterest's core browsing use case",
+        "Treating a save as equivalent to purchase intent for every user, when many saves are aesthetic inspiration with no intent to buy at all"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-009",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve retention for Strava users whose activity logging drops off after an initial burst of motivation",
+      "company": [
+        "Strava"
+      ],
+      "region": "global",
+      "industry": "fitness-social-network",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Many Strava users log activities enthusiastically for the first few weeks after joining, then taper off sharply. How would you improve retention for this group?",
+      "context": [
+        "Strava lets users log runs, rides, and other activities, and see them on Segments -- specific routes where users compete for the fastest time.",
+        "Strava sends an annual 'Year in Sport' recap summarizing a user's activity.",
+        "Strava offers a paid subscription (Strava Premium/Summit) with features like advanced training analysis, on top of a free tier."
+      ],
+      "assumptions": [
+        "assumed: this cohort logs multiple activities per week in their first month, then drops to near-zero within two to three months",
+        "assumed: most of this cohort joined Strava alongside starting a new fitness habit (e.g. New Year's resolution, new running routine) rather than being long-time athletes switching apps",
+        "assumed: the underlying physical activity (running, cycling) itself may also be tapering off, not just the logging behaviour"
+      ],
+      "followUps": [
+        "How would you separate someone who stopped logging because they stopped exercising from someone who's still exercising but stopped bothering to log it?",
+        "What's the risk of leaning too hard on social/competitive features like Segments for a beginner who finds them intimidating?",
+        "How would your approach differ for someone motivated by fitness versus someone motivated by social validation?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this cohort logs frequently in month one, then drops sharply within two to three months, that most joined alongside a new fitness habit rather than switching from another app, and that the underlying exercise habit may be fading too, not just the logging. My plan: connect this to Strava's mission, segment this cohort by what's driving the drop-off, map their journey from enthusiastic starter to lapsed logger, then propose a retention fix."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Strava's value isn't 'a fitness tracker,' it's turning solitary exercise into something socially witnessed and motivating -- the deeper need is staying motivated through the unglamorous middle of a habit, well past the initial burst of willpower. My mission statement: 'keep showing up feel worth it, even in week six when the novelty is gone.' Strategically, Strava's social and competitive layer (kudos, segments, leaderboards) is its clearest differentiator from a plain fitness-tracking app, so a retention fix should lean into that layer rather than just improving raw tracking features."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the athlete, their Strava followers, and segment/leaderboard participants. I'd segment this drop-off cohort by behaviour: (1) still-active-but-stopped-logging users whose real exercise habit continues but who lost the logging habit specifically, (2) genuinely-lapsed exercisers whose underlying activity itself faded, and (3) intimidated beginners who felt the competitive Segments and leaderboard culture wasn't for them and disengaged partly because of it. I'd prioritize still-active-but-stopped-logging users: their underlying behaviour Strava wants (exercise) hasn't actually stopped, making them the highest-reach, most recoverable segment, and they're underserved because Strava has no lightweight way to log an activity that doesn't imply competing on a Segment."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this persona's journey: in month one, every run feels new and worth logging in detail; by month two, the routine is familiar, logging starts to feel like an extra chore layered on top of the exercise itself, and it's the first thing dropped when time is tight. The problem isn't 'they lost the exercise habit' -- for this segment they haven't -- it's that logging has no low-effort mode once the novelty wears off, so it competes with the exercise itself for effort rather than sitting alongside it easily. This is a problem, not a need, because it's specific: no friction-free logging path for a routine, no-longer-novel activity, prioritized highly since it's frequent (every workout, for months) and directly determines whether Strava retains the user's ongoing behaviour data at all. This ties to the mission because if logging itself becomes a chore, Strava loses the social witnessing that's supposed to keep the user motivated in the first place."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) auto-detected activity logging via phone or connected device that requires just a one-tap confirm rather than manual entry, reducing logging to near-zero effort; (2) a private, low-pressure logging mode that doesn't post to followers or compete on Segments by default, for users who felt some social pressure; (3) a lightweight 'still going?' check-in after a defined period without any log, explicitly framed around the exercise habit rather than the app itself. Plotting impact x effort, auto-detected low-effort logging wins for V1: it directly removes the friction identified as the core problem, and Strava likely already has the device-connection infrastructure to support it, versus building an entirely separate private mode. Risk: auto-detection could misclassify or miss activities, undermining trust in the log; mitigation is always keeping a simple manual override visible. This serves the mission by making the habit of showing up on Strava as easy as the workout itself, not an extra task layered on top."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming every lapsed logger stopped exercising, when many simply stopped logging while still active",
+        "Leaning harder into competitive Segments and leaderboards as the fix, when for some of this cohort that competitive pressure is part of why they disengaged"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-010",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve repeat ordering for Zomato users who only order on specific occasions like big cricket matches",
+      "company": [
+        "Zomato"
+      ],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "A segment of Zomato users orders reliably during big occasions, like major cricket matches or festivals, but rarely orders any other time. How would you improve repeat ordering for this group outside of those occasions?",
+      "context": [
+        "Zomato is one of India's largest food-delivery platforms, alongside Swiggy, and listed on Indian stock exchanges in 2021.",
+        "Zomato has historically run visible promotional campaigns and offers timed around major cricket tournaments like the IPL.",
+        "Zomato's app shows real-time order tracking and estimated delivery times for each order."
+      ],
+      "assumptions": [
+        "assumed: this cohort orders multiple times during a major occasion week but drops to near-zero orders in the following month",
+        "assumed: most of this cohort otherwise cooks at home or eats out rather than skipping meals",
+        "assumed: this cohort is price-aware and has previously used a promotional offer during at least one occasion order"
+      ],
+      "followUps": [
+        "How would you tell an occasion-only orderer who simply prefers cooking normally from one who'd order more often if reminded?",
+        "What's the risk of running the same discount-heavy playbook outside occasions that works during them?",
+        "How would you measure whether a new habit formed, versus just pulling forward an order that would have happened during the next occasion anyway?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this cohort orders multiple times during an occasion week, then drops to near-zero for weeks after, that most otherwise cook or eat out rather than skip meals, and that they've used a promotional offer before, so they're price-aware. My plan: connect this to Zomato's mission, segment this cohort by why occasions specifically trigger ordering, map their routine outside occasions, then propose a fix that doesn't just replicate occasion-time discounting."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Zomato's value isn't 'food delivery,' it's removing the friction of a meal decision at a moment when cooking or going out feels like the wrong effort for the moment. During a big match or festival, that moment is obvious -- people are occupied, hosting, or celebrating. My mission statement: 'be the easy answer whenever a meal decision feels like the wrong thing to spend effort on, not just on the big days.' Strategically, Zomato's brand association with occasions is already strong, so the fix should extend that trusted association to smaller, everyday occasions rather than compete against home cooking head-on."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the orderer, restaurant partners, and Zomato's promotions engine. Within occasion-only orderers, I'd segment by behaviour: (1) social-occasion orderers who order specifically because they're hosting or gathering with others, (2) low-effort-seekers who order because the occasion makes cooking feel like an unwelcome interruption, and (3) deal-seekers who order mainly because of the promotional pricing specific to that occasion. I'd prioritize low-effort-seekers: their underlying trigger (not wanting to cook at that moment) recurs far more often than major occasions do, making them high-reach, and they're underserved because Zomato hasn't connected their occasion-time behaviour to the many smaller everyday moments with the same underlying trigger."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the low-effort-seeker's journey: during a big match, a friend or family gathering makes cooking feel like the wrong use of time, so ordering in is an easy call; a normal weekday evening after a long day carries the same 'don't want to cook' feeling, but without an occasion prompting the thought, they default to cooking something quick or skipping the decision to order at all. The problem isn't 'they don't like ordering in' -- they clearly do, during occasions -- it's that outside a recognizable occasion, nothing reminds them ordering in is just as reasonable an option on an ordinary tiring day. This is a problem, not a need, because it's specific: a recognition gap on ordinary low-energy days, prioritized highly since ordinary tiring evenings are far more frequent than occasions, even if each one is less certain to convert. This ties to the mission because if Zomato is only top-of-mind on marked occasions, it's competing for a tiny fraction of the moments it could actually serve."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) reframe smaller everyday moments as mini-occasions in messaging, e.g. a 'long day' prompt timed to typical end-of-workday hours rather than generic promotional blasts; (2) a lightweight one-tap reorder of a past occasion-time favorite, lowering the decision effort on an ordinary evening to the same level it was during the occasion; (3) local, smaller-scale occasion tie-ins (a weekday web series release, a local team's match) extending the occasion logic to more frequent, smaller moments. Plotting impact x effort, the 'long day' reframed prompt wins for V1: it's a relatively low-effort messaging and timing change reusing existing promotional infrastructure, and it directly targets the low-effort-seeker's actual daily trigger rather than manufacturing a new occasion. Risk: over-messaging on ordinary days could feel like generic spam rather than a genuine occasion; mitigation is keeping frequency low and tone specific to plausible end-of-day fatigue, not generic discounting. This serves the mission by extending Zomato's occasion-time trust to the far more frequent ordinary days that share the same underlying trigger."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Running the same blanket discount playbook used during occasions on ordinary days, training this cohort to only order when there's a deal rather than building a genuine habit",
+        "Treating all occasion-only orderers as deal-seekers, when for many the trigger is really about effort and mood, not price"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-011",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve engagement for CRED members who pay bills but never explore CRED's other features",
+      "company": [
+        "CRED"
+      ],
+      "region": "india",
+      "industry": "fintech-rewards",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Many CRED members log in monthly to pay their credit card bill and collect CRED coins, but never explore CRED Store, CRED Cash, or other parts of the app. How would you improve engagement for this group?",
+      "context": [
+        "CRED rewards members with CRED coins for paying credit card bills through the app, redeemable in the CRED Store for products and offers.",
+        "CRED has expanded beyond bill payments into CRED Cash (short-term lending) and CRED Mint (peer-to-peer lending), launched after the core bill-payment product.",
+        "CRED restricts membership to users meeting a credit-score-based eligibility bar."
+      ],
+      "assumptions": [
+        "assumed: this cohort logs in almost exactly once per billing cycle, close to their bill due date",
+        "assumed: most of this cohort has accumulated some balance of unredeemed CRED coins",
+        "assumed: this cohort has never opened CRED Store, CRED Cash, or CRED Mint even once, not just infrequently"
+      ],
+      "followUps": [
+        "How would you avoid pushing lending products (CRED Cash, CRED Mint) on a segment that may not want or need credit?",
+        "What's the risk of cluttering the simple, once-a-month bill-pay flow in the name of cross-selling other features?",
+        "How would you know whether increased exploration actually reflects genuine interest versus curiosity-driven, one-time taps?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this cohort logs in roughly once per billing cycle near their due date, has accumulated some unredeemed CRED coins, and has literally never opened CRED Store, Cash, or Mint. My plan: connect this to CRED's mission, segment this cohort by their relationship to the coin reward itself, map their monthly journey, then propose an engagement fix that doesn't disrupt the simple bill-pay flow this segment clearly values."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "CRED's value isn't 'a bill payment app,' it's making a financially responsible habit (paying your credit card bill on time, in full) feel rewarding rather than just administratively necessary. The deeper need for a member is recognition -- being treated as part of an exclusive, trustworthy group because of good financial behaviour. My mission statement: 'make good financial habits feel like they're worth something beyond just avoiding late fees.' Strategically, CRED's exclusivity and coin-reward mechanic are its core differentiators from a generic bill-pay utility, so any engagement fix should extend that reward logic rather than push unrelated financial products."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the member, CRED Store's merchant partners, and CRED's lending products team. Within bill-pay-only members, I'd segment by behaviour: (1) coin-indifferent payers who use CRED purely for the payment convenience and don't care about coins at all, (2) coin-curious payers who notice their coin balance growing but haven't found a reason to redeem it, and (3) privacy-cautious payers who deliberately avoid exploring lending features out of caution about being sold credit products. I'd prioritize coin-curious payers: they already value the reward mechanic enough to notice it, making them the segment most likely to convert with the least friction, and they're underserved because there's no prompt connecting their specific accumulated balance to something concretely worth redeeming it for."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the coin-curious payer's journey: they pay their bill, see a coin balance update, feel a small moment of satisfaction, and close the app -- the coins exist as a number, not a decision point, since nothing at that exact moment shows them what those coins could become. The problem isn't 'CRED Store lacks good offers' -- it's that the reward moment (bill paid, coins earned) and the redemption moment (browsing CRED Store) are disconnected in time and screen flow, so the natural high point of the interaction ends without ever showing its payoff. This is a problem, not a need, because it's specific: no bridge from the coin-earning moment to a concrete redemption option, prioritized highly since it's frequent (every billing cycle) and directly explains why exploration never happens despite genuine interest. This ties to the mission because a reward a member never redeems stops feeling like a reward at all, undermining the very thing that's supposed to make responsible bill payment feel special."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) immediately after a successful bill payment, show one or two CRED Store offers specifically reachable with the member's exact new coin balance, rather than a generic 'coins earned' toast; (2) let members set a redemption goal (e.g. save toward a specific product), turning future bill payments into visible progress toward it; (3) a monthly digest email summarizing coin balance alongside nearby redemption options. Plotting impact x effort, showing reachable offers right after payment wins for V1: it's a relatively small UI addition to an existing high-traffic moment (the payment confirmation screen), and it directly closes the gap between earning and seeing value, without needing new infrastructure like goal-tracking. Risk: this could tip into feeling like aggressive upselling right after a payment; mitigation is showing only offers the member can already afford with existing coins, never anything requiring extra spend. This serves the mission by making the reward visibly real at the exact moment it's earned, not buried in a separate part of the app."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Cross-selling CRED Cash or CRED Mint to this segment as the primary engagement lever, when the segment's actual latent interest is in the coin-reward system, not credit products",
+        "Adding friction to the simple, valued bill-pay flow in the name of driving exploration, risking the one behaviour that already works well"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-012",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve adoption of PhonePe's merchant tools among small kirana stores already accepting PhonePe QR payments",
+      "company": [
+        "PhonePe"
+      ],
+      "region": "india",
+      "industry": "fintech-payments",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Millions of small merchants, like neighborhood kirana stores, accept PhonePe QR payments but never use PhonePe's other merchant-side tools, like transaction tracking or business insights. As a PM on PhonePe's merchant team, how would you improve adoption of these tools?",
+      "context": [
+        "PhonePe's QR code payment system is widely used by small merchants across India, including neighborhood kirana stores, to accept UPI payments.",
+        "PhonePe offers a separate business app for merchants, distinct from the main consumer PhonePe app.",
+        "PhonePe expanded beyond payments into other services such as PhonePe Switch, a mini-apps platform launched in 2020."
+      ],
+      "assumptions": [
+        "assumed: most kirana store owners primarily interact with PhonePe through the payment-acceptance sound notification and the QR code sticker, not the merchant app itself",
+        "assumed: this segment has low smartphone literacy relative to a typical urban small business, and often relies on a single low-cost smartphone shared across store duties",
+        "assumed: transaction volumes for a typical kirana store are frequent but individually low-value"
+      ],
+      "followUps": [
+        "How would you design for a merchant who can't easily read English-only interface text?",
+        "What's the risk of pushing merchant tools to an owner who's satisfied simply hearing the payment confirmation sound and never wants more?",
+        "How would you measure genuine tool adoption versus a merchant opening the app once out of curiosity and never returning?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume kirana store owners mostly interact with PhonePe through the QR sticker and audio payment confirmation, not the merchant app, that this segment has lower smartphone literacy and often a single shared device, and that their transactions are frequent but individually low-value. My plan: connect this to PhonePe's mission, segment merchants by their comfort with digital tools beyond bare payment acceptance, map a typical store owner's day, then propose an adoption fix suited to this segment's actual constraints."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "PhonePe's value for a kirana owner isn't 'digital payments' as a concept, it's letting them accept money from customers who no longer carry cash, without needing a bank-grade understanding of digital finance. The deeper need beyond that first win is helping them run their small business a little better -- knowing what sold, what's owed, what's coming in -- without that requiring new expertise they don't have time to learn. My mission statement: 'make understanding your own business as easy as hearing the payment confirmation sound.' Strategically, PhonePe's trusted, already-adopted QR payment moment is a strength competitors without that installed base lack, so the fix should extend from that trusted moment rather than introduce a separate, unfamiliar app experience."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the merchant, their customers, and PhonePe's merchant support and app teams. Within QR-only merchants, I'd segment by behaviour: (1) satisfied minimalists who are genuinely content just hearing the payment sound and have no interest in more, (2) curious-but-blocked owners who'd value business insights but find the merchant app intimidating or in an unfamiliar interface pattern, and (3) delegator owners who have staff handling the register and never personally touch the merchant app at all. I'd prioritize curious-but-blocked owners: they already have latent demand for the value being offered, making them the most reachable segment, and they're underserved because the merchant app likely assumes a baseline smartphone fluency this segment doesn't have."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the curious-but-blocked owner's journey: they hear the payment sound dozens of times a day, occasionally wonder how much they've made that day or week, but manually tallying from memory or a paper notebook is what they know, and opening a separate merchant app with menus and terms unfamiliar to them feels like more effort than it's worth for an unclear payoff. The problem isn't 'they don't want business insights' -- the curiosity is there -- it's that the merchant app's assumed fluency and separateness from the payment moment they already trust creates a barrier steep enough that most owners never cross it. This is a problem, not a need, because it's specific: a usability and discovery gap between the trusted payment moment and the separate, unfamiliar tools app, prioritized highly since it's frequent (every single day this segment could benefit) and severe (it fully blocks adoption, not just slows it). This ties to the mission because if the tools remain unreachable for this segment, PhonePe's own trusted payment moment never compounds into anything more for the merchants who most need the help."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) surface a simple, icon-led daily summary (today's total, number of transactions) directly within the same payment-confirmation surface merchants already trust, rather than requiring a separate app open; (2) build a radically simplified, local-language, icon-first version of core insights specifically for this segment, rather than a scaled-down version of the full merchant app; (3) local, in-person onboarding support (e.g. through existing PhonePe field agent networks) walking a subset of merchants through the merchant app once. Plotting impact x effort, the simple daily summary within the existing payment surface wins for V1: it meets merchants exactly where their trust already is, avoids requiring them to learn a new app, and is lower-effort than either building a fully separate simplified app or scaling in-person support nationally. Risk: cramming even a simple summary into the payment confirmation moment could clutter an experience merchants value for its speed and simplicity; mitigation is making it a single optional tap-to-expand, not something shown by default. This serves the mission by growing value from the trusted moment merchants already rely on, instead of asking them to adopt an entirely new habit."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming this segment simply needs better marketing of the merchant app, when the real barrier is a usability and language gap, not awareness",
+        "Building a scaled-down version of the full-featured merchant app instead of a genuinely reimagined, simplified experience for this segment's actual constraints",
+        "Treating delegator and satisfied-minimalist owners the same as curious-but-blocked owners, pushing tools onto segments with no latent demand for them"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-improve-013",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve onboarding completion for new Zerodha account applicants who drop off before their first trade",
+      "company": [
+        "Zerodha"
+      ],
+      "region": "india",
+      "industry": "stock-broking",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "A share of people who start opening a Zerodha demat and trading account never complete the process, or complete it but never place a first trade. As a PM on Zerodha's onboarding team, how would you improve completion?",
+      "context": [
+        "Zerodha is a discount broker offering zero brokerage on equity delivery trades, with its Kite platform as the primary trading app.",
+        "Opening a demat and trading account in India requires KYC steps such as PAN verification, bank account linking, and typically an in-person or video-based verification.",
+        "Zerodha runs Varsity, a free library of educational content covering trading and investing basics."
+      ],
+      "assumptions": [
+        "assumed: this cohort completes basic sign-up (name, PAN entry) but drops off during or after the KYC verification steps",
+        "assumed: a meaningful share of this cohort are first-time investors with no prior demat account, rather than people switching from another broker",
+        "assumed: the account, once opened, sits with a zero balance for an extended period before any trade is placed, if one is placed at all"
+      ],
+      "followUps": [
+        "How would you separate someone who dropped off due to KYC friction from someone who lost interest in investing altogether?",
+        "What's the risk of pushing a first-time investor to place a trade before they're genuinely ready, just to hit an activation metric?",
+        "How would your approach differ for someone switching from a competing broker versus a true first-time investor?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this cohort completes basic sign-up but drops off during or after KYC verification, that a meaningful share are true first-time investors rather than broker-switchers, and that even completed accounts often sit unused before any trade. My plan: connect this to Zerodha's mission, segment drop-off applicants by where and why they stall, map the account-opening journey, then propose a completion fix that respects first-time investors' actual readiness."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Zerodha's value isn't 'a trading app,' it's making investing in Indian markets accessible without the cost and opacity that kept it feeling exclusive for years. For a first-time investor specifically, the deeper need isn't just account access, it's feeling capable and informed enough to actually use it once they have it. My mission statement: 'make becoming an investor feel achievable, not just technically possible.' Strategically, Zerodha's Varsity education content and its reputation for founder-led transparency are strengths a purely transactional broker lacks, so completion should be tied to building genuine readiness, not just pushing through a form faster."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the applicant, Zerodha's KYC and compliance systems, and Varsity's education content. Within drop-off applicants, I'd segment by behaviour: (1) KYC-friction dropoffs who stall specifically during document verification or bank linking due to process friction, (2) confidence-dropoffs who complete KYC but never place a trade because they don't feel ready to risk real money, and (3) intent-dropoffs who started the process casually and simply lost interest before finishing. I'd prioritize confidence-dropoffs: they've cleared the hardest procedural step already, making them high-reach relative to remaining effort, and they're underserved because Zerodha's onboarding ends at account activation with no bridge to the confidence needed for a first trade."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the confidence-dropoff's journey: they complete KYC, see a live trading account with real money capability, and are immediately confronted with the fact that any trade is a real financial decision -- without a clear, low-stakes way to build comfort first, they postpone indefinitely rather than risk a mistake they don't understand. The problem isn't 'they don't want to invest' -- they went through KYC -- it's that there's a gap between having account access and feeling equipped to use it, and nothing in the flow bridges that gap at the moment it matters most. This is a problem, not a need, because it's specific: no confidence-building step between account activation and first trade, prioritized highly since it's frequent (affects most true first-timers) and severe (an indefinitely dormant account is effectively a lost customer). This ties to the mission because an account that's technically open but never used hasn't actually made anyone an investor."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a short, guided but optional first-trade walkthrough triggered right after account activation, using a small, clearly-labelled real amount to make the first trade feel procedurally simple rather than high-stakes; (2) surface a small number of relevant Varsity lessons tailored to the exact next step (e.g. how a market order works) right at the point of hesitation, rather than as a separate library the user must seek out; (3) a lightweight paper-trading or simulated first-trade mode before committing real money. Plotting impact x effort, the guided first-trade walkthrough with a small real amount wins for V1: it directly targets the confidence gap with real, low stakes, and it's a more contained build than a full paper-trading mode, while being more directly action-oriented than passively surfacing education content. Risk: nudging toward a real trade, even a small one, could be seen as encouraging financial risk-taking before someone is ready; mitigation is keeping the suggested first trade small, clearly optional, and paired with the specific Varsity lesson relevant to that exact trade type. This serves the mission by turning 'technically an investor' into 'confident enough to actually invest,' which is the harder and more important threshold to cross."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Focusing all effort on reducing KYC friction, missing that a real share of drop-off happens after KYC, at the confidence-to-trade step",
+        "Pushing first-time investors toward a trade purely to hit an activation metric, without regard for whether they're genuinely ready",
+        "Treating broker-switchers and true first-time investors as the same segment, when switchers need almost none of the confidence-building support first-timers do"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-001",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for commuters at Google",
+      "company": [
+        "Google"
+      ],
+      "region": "global",
+      "industry": "maps-navigation",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Design a new product for commuters at Google. Assume nothing exists today specifically built around the daily commute.",
+      "context": [
+        "Google Maps provides real-time traffic conditions and turn-by-turn navigation across driving, transit, walking, and cycling in thousands of cities.",
+        "Google acquired Waze, a community-driven traffic and navigation app, in 2013.",
+        "Android Auto, Google's software for in-car displays, is built into infotainment systems in many vehicles."
+      ],
+      "assumptions": [
+        "assumed: designing primarily for people with a fixed, repeated commute (same origin and destination most weekdays), not one-off trips",
+        "assumed: this commuter has a smartphone and, for a meaningful share of the segment, a car or regular access to public transit",
+        "assumed: roughly a third of a large city's working population commutes by car and could plausibly benefit from a repeated-trip product, for sizing purposes"
+      ],
+      "followUps": [
+        "How would this differ for someone who takes public transit versus someone who drives?",
+        "What's the risk of building something that's just a thinner version of Google Maps with less functionality?",
+        "How would you decide whether this should be a new app versus a feature inside Google Maps itself?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll scope this to people with a fixed, repeated weekday commute, assume they have a smartphone and either a car or regular transit access, and for sizing, assume roughly a third of a large city's working population commutes by car. My plan: build the mission and strategic fit for this new product from scratch, segment commuters by behaviour, map a commuter's actual daily journey to find the real problem, then propose a solution, since there's no existing product context to draw on here."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "The daily commute is one of the most repeated, unavoidable experiences in someone's week, yet most tools treat it as a one-off trip to be routed rather than a recurring pattern to be optimized and made less draining over time. The deeper human need isn't 'get me from A to B,' it's reclaiming the mental and emotional cost of a repeated, often tedious transition between home and work. My mission statement for this new product: 'make the same trip, every day, feel less like a tax on your time and attention.' Strategically, Google's existing real-time traffic data, transit coverage, and Android Auto integration are exactly the assets a from-scratch commute product should build on, since a competitor without Google's mapping data and reach couldn't easily replicate this foundation."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players include the commuter, other commuters sharing the same route or transit line, and Google's existing Maps and traffic data systems. I'd segment commuters by behaviour: (1) route-optimizers who obsessively check traffic and reroute for a few minutes saved, (2) routine-riders who take the same fixed transit line or road daily without much active monitoring, and (3) flexible-schedule commuters who have some control over when they leave and could shift timing to avoid the worst conditions. I'd prioritize flexible-schedule commuters: this group can act on new information in a way route-optimizers already do reflexively and routine-riders often can't, making them the most winnable segment on a reach x underserved basis, since no current tool proactively tells them when to leave, only how to get there once they've already decided."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a flexible-schedule commuter's journey: the night before or morning of, they guess a departure time based on habit, check traffic reactively once they're already about to leave, and either sit in worse-than-necessary traffic or arrive earlier than needed with no way to have known in advance. The problem isn't 'they lack traffic data' -- Google Maps already provides that reactively -- it's that no product proactively tells them the best departure window before they've committed to leaving, so the choice of when to go is made blind. This is a problem, not a need, because it's specific: a missing proactive departure-timing signal, prioritized highly since it recurs every single workday and the cumulative time cost of consistently suboptimal departure timing is significant. This ties to the mission because reclaiming the commute's mental cost starts with removing the guesswork of when to even leave, not just how to get there once en route."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a proactive daily notification predicting the best departure window for a saved, recurring commute route, based on historical and real-time traffic patterns; (2) a passive 'commute health' weekly summary showing patterns in time lost to traffic, nudging a user toward better habitual timing over weeks; (3) integration with a user's calendar to dynamically suggest departure time shifts around meetings. Plotting impact x effort, the proactive daily departure-window notification wins for V1: Google already has the historical and real-time traffic data to power this without new data infrastructure, and it directly targets the specific problem identified, unlike the calendar integration which adds complexity for a narrower use case. Risk: notification fatigue could make users tune this out entirely, similar to how many ignore generic traffic alerts; mitigation is sending it only when the predicted best window meaningfully beats the user's habitual departure time, not every single day regardless of value. This serves the mission by turning a repeated daily decision from a guess into an informed one, directly reducing the toll of the commute."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Building a thinner, worse version of Google Maps' existing reactive navigation instead of solving the genuinely unaddressed proactive-timing problem",
+        "Segmenting by demographics like age or income instead of by actual commuting behaviour and how much control someone has over their departure time"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-002",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for gardening at Meta",
+      "company": [
+        "Meta"
+      ],
+      "region": "global",
+      "industry": "hobby-community",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Design a new product for gardening enthusiasts at Meta. Assume nothing purpose-built for gardening exists today across Meta's apps.",
+      "context": [
+        "Meta operates Facebook Groups, widely used by hobbyist communities to share advice, photos, and organize local meetups.",
+        "Meta launched Facebook Marketplace in 2016, enabling local buying and selling between individuals.",
+        "Meta's stated mission includes building community and helping people stay connected to what matters to them."
+      ],
+      "assumptions": [
+        "assumed: designing for home and small-plot gardeners (backyard, balcony, community garden), not commercial agriculture",
+        "assumed: gardening advice needs vary heavily by hyperlocal climate and season, more than most hobbies discussed in generic Facebook Groups",
+        "assumed: a meaningful share of this audience already participates in gardening-related Facebook Groups today"
+      ],
+      "followUps": [
+        "How would you avoid this becoming just another feature bolted onto Facebook Groups that gets ignored?",
+        "What's the risk of a hyperlocal, climate-specific product being too niche to justify Meta's investment?",
+        "How would this integrate with, or compete against, Facebook Marketplace for buying and selling plants or tools?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll scope this to home and small-plot gardeners, assume gardening advice is unusually hyperlocal and seasonal compared to most hobbies, and assume a meaningful share of this audience already gathers in gardening-related Facebook Groups today. My plan: build the mission and strategic fit for this product from scratch, segment gardeners by behaviour, map a gardener's actual journey to find the real problem, then propose a solution."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Gardening is a hobby where success depends heavily on hyperlocal, timely knowledge -- what to plant this week, in this specific climate, given this specific soil -- yet most existing gardening content online is generic and not tied to a gardener's actual location or season. The deeper human need is confidence that the advice you're following actually applies to your exact situation, not a guess based on content made somewhere else entirely. My mission statement: 'make expert-level, hyperlocal gardening knowledge available to anyone with a patch of soil.' Strategically, Meta's existing Groups infrastructure and its reach into millions of hyperlocal and interest-based communities are strengths a standalone gardening app, starting from zero community, would take years to replicate."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players include the gardener, other local gardeners with similar climate and soil conditions, and Meta's Groups and Marketplace infrastructure. I'd segment gardeners by behaviour: (1) beginner experimenters who are gardening for the first time and need frequent, basic guidance, (2) seasoned hobbyists who know the fundamentals but want hyperlocal timing precision (exact planting windows, pest timing), and (3) community-builders who garden partly for the social and swap-and-share aspect with neighbors. I'd prioritize seasoned hobbyists: they're a large, engaged group already active in gardening Groups, and they're underserved because generic Group posts and comments aren't organized by hyperlocal relevance, so finding advice specific to their exact conditions means sifting through irrelevant posts from different climates."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a seasoned hobbyist's journey: they have a gardening question specific to this week and their exact location, search or post in a gardening Group, and get a flood of responses ranging from spot-on to completely irrelevant because commenters garden in different climates entirely, with no way to filter by location relevance. The problem isn't 'gardening advice doesn't exist' -- Groups are full of it -- it's that none of it is organized or filtered by hyperlocal applicability, so a gardener has to manually judge which advice actually applies to them. This is a problem, not a need, because it's specific: no location-aware filtering of gardening knowledge, prioritized highly since it recurs every planting season and bad hyperlocal timing can mean a lost season's harvest, a high-severity outcome for something people invest real time in. This ties to the mission because generic advice, however plentiful, doesn't deliver the confidence a hyperlocal answer would."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a location-tagged Q&A layer within gardening Groups, where a question and its answers are automatically weighted toward other members within a similar climate zone; (2) a proactive, hyperlocal seasonal reminder feed (e.g. it's time to start your tomato seeds in your zone) built from aggregated, anonymized regional planting data shared by local members; (3) a structured plant-and-plot profile letting a gardener log what they've planted, enabling more targeted advice matching from others with similar setups. Plotting impact x effort, the location-tagged Q&A layer wins for V1: it builds directly on existing Groups behaviour and content rather than requiring gardeners to build a new profile from scratch, and it's a more contained ranking and tagging change than building a full seasonal-reminder data pipeline. Risk: climate-zone tagging could be inaccurate or too coarse to be genuinely hyperlocal, undermining the core value proposition; mitigation is starting with a reasonably fine-grained zone system and letting users self-correct their tagged zone. This serves the mission by making the specific, hyperlocal answer easier to find than the generic one, right where gardeners already gather."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Building a standalone gardening app instead of extending Meta's existing Groups strength, underestimating how much the community already exists there",
+        "Segmenting gardeners by demographics like age instead of by their actual skill level and what kind of local precision they need"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-003",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Uber to help family caregivers arrange rides for aging parents",
+      "company": [
+        "Uber"
+      ],
+      "region": "global",
+      "industry": "ride-hailing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Design a new Uber product that lets an adult child, living elsewhere, arrange and manage recurring rides for an aging parent who doesn't use a smartphone confidently. Assume no such product exists today.",
+      "context": [
+        "Uber launched Uber Health in 2018, letting healthcare organizations book non-emergency medical transportation rides for patients.",
+        "Uber introduced Teen accounts in 2023, letting a parent set up and monitor a teenager's rides from the parent's own Uber app.",
+        "Uber operates in thousands of cities globally, with real-time GPS trip tracking visible to the rider."
+      ],
+      "assumptions": [
+        "assumed: the caregiver and the aging parent typically live in different cities, not the same household",
+        "assumed: the parent has a phone capable of receiving calls or texts, even if unable to comfortably navigate the Uber app themselves",
+        "assumed: rides needed are a mix of recurring (e.g. weekly medical appointments) and occasional, ad hoc requests"
+      ],
+      "followUps": [
+        "How is this different from Uber Health, which already books rides on behalf of patients?",
+        "What's the risk of an aging parent feeling surveilled or infantilized by a caregiver managing their rides remotely?",
+        "How would you handle a parent who needs help getting in or out of the vehicle, beyond just arranging the ride itself?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume the caregiver and parent live in different cities, that the parent has a basic phone for calls or texts but isn't comfortable navigating the Uber app itself, and that ride needs are a mix of recurring appointments and occasional ad hoc trips. My plan: since no product exists here yet, I'll build the mission and strategic case from scratch, segment the people involved, map the caregiving journey to find the real problem, then propose a solution, distinguishing this clearly from Uber Health, which serves a different relationship."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Uber's core value is turning 'I need to get somewhere' into a solved problem within minutes, but that value depends entirely on being able to confidently operate the app -- something an aging parent with declining smartphone comfort or memory can't always do, even though their transportation need hasn't gone away. The deeper human need for the caregiver is peace of mind that a parent living far away can still get to the places that matter, without either of them needing to coordinate ride logistics by phone call every single time. My mission statement: 'let distance stop being the reason a parent can't get where they need to go.' Strategically, Uber's existing Teen accounts feature already proves the company can build family-oriented, caregiver-managed ride experiences, and Uber Health proves it can serve non-app-fluent riders through a third party, so this product combines strengths Uber has already validated separately."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the aging parent (the rider), the adult child (the caregiver arranging rides), and potentially other local family or professional caregivers. I'd segment caregivers by behaviour: (1) proximity caregivers who live nearby and could drive the parent themselves but want backup options, (2) distance caregivers who live in another city and rely entirely on remote coordination, and (3) crisis-only caregivers who only step in during emergencies or specific events, not regularly. I'd prioritize distance caregivers: they have no local alternative and the highest reach x underserved combination, since proximity caregivers have workarounds and crisis-only caregivers don't need a persistent tool."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the distance caregiver's journey: their parent has a recurring doctor's appointment, the caregiver calls to confirm the parent remembers, worries whether the parent will actually book a ride correctly (or at all), sometimes ends up calling a local family friend as backup, and only finds out the ride happened after the fact, if at all. The problem isn't 'the parent has no way to get a ride' -- Uber exists and could serve them -- it's that the caregiver has no way to arrange and confirm the ride on the parent's behalf while the parent still experiences a simple, low-friction pickup, so the caregiving burden falls on manual phone coordination and after-the-fact worry. This is a problem, not a need, because it's specific: no caregiver-managed booking and confirmation layer for a parent who can't self-serve the app, prioritized highly since it recurs with every appointment and carries real severity (a missed medical appointment). This ties to the mission because unresolved, this problem means distance remains exactly the barrier to care Uber could otherwise remove."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a caregiver-linked account, similar in spirit to Teen accounts, where the caregiver books and pays for rides on the parent's behalf, and the parent simply receives a call or simple text confirming a driver is on the way, with no app interaction required; (2) recurring ride scheduling for standing appointments, set up once by the caregiver and auto-booked going forward with a cancel option; (3) a driver-assist flag for these bookings, requesting the driver confirm the rider is safely in the vehicle before departure, given the segment's higher likelihood of needing a bit more assistance. Plotting impact x effort, the caregiver-linked account with call/text confirmation wins for V1: it most directly matches how Uber already built Teen accounts, requires the parent to do nothing beyond answering a call, and solves the core coordination and confirmation problem, while the driver-assist flag is a valuable but separable addition for later. Risk: a parent could feel surveilled or infantilized by a caregiver managing their rides without their full buy-in; mitigation is requiring the parent's own explicit opt-in to link the account, and always giving them a way to see and control settings themselves, even if they rarely use it. This serves the mission by removing distance as a barrier to care, without removing the parent's own agency over their rides."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Confusing this with Uber Health, which serves organizations booking rides for patients, rather than an individual family member coordinating for a specific parent",
+        "Designing a caregiver-controlled experience that leaves the aging parent feeling monitored or without agency, rather than genuinely supported"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-004",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Reddit to serve hyperlocal neighborhood communities",
+      "company": [
+        "Reddit"
+      ],
+      "region": "global",
+      "industry": "online-community",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Design a new Reddit product focused specifically on hyperlocal, neighborhood-level communities -- more granular than an existing city-wide subreddit. Assume nothing purpose-built for this exists today.",
+      "context": [
+        "Reddit is organized around topic-based communities called subreddits, some of which are already organized around specific cities.",
+        "Reddit went public via an IPO in March 2024.",
+        "Reddit's core interaction model is threaded discussion with upvoting and downvoting, rather than a chronological feed."
+      ],
+      "assumptions": [
+        "assumed: city-level subreddits today mix hyperlocal neighborhood topics with city-wide news and discussion, diluting genuinely local content",
+        "assumed: a meaningful share of city-subreddit members would find neighborhood-level granularity more useful for practical, local questions",
+        "assumed: real-world location verification would be needed to keep a neighborhood community credible and locally relevant"
+      ],
+      "followUps": [
+        "How would you prevent a hyperlocal community from becoming too small to sustain active discussion?",
+        "What's the risk of location verification creating a privacy concern for users who prefer Reddit's relative anonymity?",
+        "How would this coexist with, rather than cannibalize, existing city-wide subreddits?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume city-level subreddits today mix hyperlocal and city-wide content, diluting truly local discussion, that a meaningful share of members would value neighborhood-level granularity, and that some location verification would be needed for credibility. My plan: build the mission and strategic case for this product from scratch, segment city-subreddit members by behaviour, map the journey of someone with a genuinely local question, then propose a solution while being careful not to cannibalize existing city subreddits."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Reddit's value isn't 'discussion forums,' it's letting people find and trust the opinions of others who've actually dealt with the same specific situation, organized by shared interest rather than by who they already know. For a hyperlocal question -- which plumber to call, whether a specific street is safe at night, what a specific local candidate is actually like -- that same principle applies at a much smaller radius than a whole city, where a city-wide subreddit's answers are often too general to be locally reliable. My mission statement: 'make your actual neighbors' collective knowledge as easy to find as a city's.' Strategically, Reddit's existing subreddit structure, moderation tooling, and threaded discussion format are proven assets that a genuinely new neighborhood app would have to build from nothing, so this should be a natural extension of subreddit mechanics, not a separate product entirely."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the neighborhood resident, existing city-subreddit moderators, and Reddit's community infrastructure. I'd segment city-subreddit members by behaviour: (1) city-wide news followers who want broad city discussion and have no particular need for hyperlocal granularity, (2) practical-question askers who post asking for genuinely local recommendations or concerns specific to their block or neighborhood, and (3) local-event organizers who want to coordinate something (a cleanup, a meetup) with people who can realistically show up. I'd prioritize practical-question askers: they have a clear, recurring, currently underserved need, since their posts in a city-wide subreddit often get answers irrelevant to their specific area, making them high-reach and clearly underserved by the current structure."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a practical-question asker's journey: they post a hyperlocal question in the city subreddit, get a mix of answers from people across the entire city, many of which don't actually apply to their specific neighborhood, and have no reliable way to filter for genuinely nearby respondents. The problem isn't 'no one on Reddit could answer this' -- it's that the current subreddit structure has no way to signal or filter by genuine neighborhood proximity, so a hyperlocal question gets diluted by city-wide noise. This is a problem, not a need, because it's specific: no proximity-aware filtering within existing local subreddits, prioritized highly since hyperlocal questions are frequent in any city subreddit and low answer relevance directly undermines the trust Reddit's whole model depends on. This ties to the mission because if hyperlocal answers aren't reliably local, the core promise of finding people who've dealt with your exact situation breaks down at exactly the scale where it matters most."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) an opt-in, verified neighborhood tag within existing city subreddits, letting a post be filtered or boosted for members who've verified a nearby location, without fragmenting the community into a separate subreddit; (2) fully separate, auto-created neighborhood-level subreddits nested under a city subreddit, mirroring Reddit's existing subreddit-within-topic structure; (3) a lightweight local-radius Q&A feature, more like a structured local-help board than a full subreddit, for narrowly practical questions. Plotting impact x effort, the opt-in neighborhood tag within existing subreddits wins for V1: it avoids fragmenting already-established, active city communities (a real risk with fully separate subreddits, which could end up too small to sustain discussion), and it's a smaller build than a parallel Q&A product. Risk: location verification could raise privacy concerns for users who value Reddit's relative anonymity; mitigation is keeping verification loose (e.g. neighborhood-level, not exact address) and entirely optional, with unverified users still able to participate in the broader city subreddit as today. This serves the mission by making genuinely local answers findable without asking users to give up the anonymity that draws many of them to Reddit in the first place."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Fragmenting active city subreddits into many small, under-populated neighborhood subreddits that can't sustain discussion",
+        "Requiring strict location verification that conflicts with Reddit's relative-anonymity culture and depresses participation"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-005",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Canva to serve solo small-business owners running their own marketing",
+      "company": [
+        "Canva"
+      ],
+      "region": "global",
+      "industry": "design-software",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Design a new Canva product specifically for a solo small-business owner -- like someone running a home bakery or a small local service business -- who does their own marketing with no design background. Assume nothing purpose-built for this segment exists today.",
+      "context": [
+        "Canva offers Canva for Teams (previously Canva for Business), aimed at organizations collaborating on designs.",
+        "Canva introduced Magic Studio, a set of AI-powered design tools including text-to-image and background removal, in 2023.",
+        "Canva offers a print-on-demand service, letting users order physical prints of designs made in the app."
+      ],
+      "assumptions": [
+        "assumed: this owner posts to social media and occasionally needs printed materials (flyers, menus) but has no dedicated marketing budget or team",
+        "assumed: this owner already uses Canva's free tier or occasionally browses templates, but doesn't have a consistent visual brand across posts",
+        "assumed: this owner's time for design work is limited to short bursts, often in between running the actual business"
+      ],
+      "followUps": [
+        "How is this different from Canva's existing templates, which already target small businesses to some degree?",
+        "What's the risk of over-automating design decisions for someone who still wants some creative control?",
+        "How would you keep this simple without making it feel like a stripped-down, lesser version of full Canva?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this owner posts to social media occasionally, sometimes needs printed materials, has no dedicated marketing budget or team, and only has short bursts of time for design work between running the actual business. My plan: build the mission and strategic fit for this product from scratch, segment small-business owners by behaviour, map a specific owner's journey to find the real problem, then propose a solution that respects both their time constraints and their desire for some creative control."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Canva's value isn't 'design tools,' it's letting someone with no design training produce something that looks professionally made, closing the gap between what they can imagine and what they can actually produce. For a solo business owner specifically, the deeper need goes beyond one-off designs -- it's looking consistently credible across every post and flyer, without design consistency becoming a full-time job on top of running the business. My mission statement: 'let a business of one look as put-together as a business with a marketing team.' Strategically, Canva's existing templates, Magic Studio AI tools, and print-on-demand service are exactly the building blocks this segment needs, so this product should package existing strengths around this specific owner's constraints rather than build new capability from scratch."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the business owner, their customers who see the marketing output, and Canva's existing template and AI tooling. I'd segment small-business owners by behaviour: (1) template-hunters who search fresh each time they need something, with no consistent look across posts, (2) brand-conscious owners who have a rough sense of their brand colors and style but lack the time to apply it consistently, and (3) delegators who occasionally pay a freelancer for anything beyond the basics. I'd prioritize brand-conscious owners: they already have the intent and a rough brand sense, making them the most winnable segment, and they're underserved because nothing in Canva today locks in their specific brand choices once and applies them automatically across future designs."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a brand-conscious owner's journey: they need a new social post, search templates fresh, pick one that's close to their style, manually re-enter their logo, colors, and fonts again since nothing remembers their choices from last time, and the result is visually similar but not truly consistent across posts. The problem isn't 'they can't make something that looks good' -- Canva's templates already help with that -- it's that there's no persistent, remembered brand setup that automatically applies across every new design, so consistency depends entirely on the owner's memory and manual re-entry each time. This is a problem, not a need, because it's specific: no persistent brand-kit application by default, prioritized highly since it recurs with every single piece of marketing they make, and inconsistent branding directly undermines the credibility this owner is trying to build. This ties to the mission because looking consistently credible, not just occasionally polished, is exactly what a real marketing team would provide and what's missing here."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a one-time, guided brand setup (logo, colors, fonts) that's then automatically pre-applied to every template the owner opens going forward, removing repeated manual entry; (2) an AI-assisted 'match my brand' feature using Magic Studio, generating design variations already styled to the saved brand kit for a given post idea; (3) a simple recurring content calendar suggesting what to post and when, tailored to a small business's typical needs (promotions, seasonal content). Plotting impact x effort, the persistent brand-kit auto-application wins for V1: it's a relatively contained feature building directly on Canva's existing template and brand-kit concepts, and it solves the core consistency problem identified, whereas the content calendar addresses a different problem (what to post, not how it looks) and the AI-matching feature can build on the brand kit once it exists. Risk: over-automating brand application could make the owner feel like they've lost creative control over their own designs; mitigation is keeping every auto-applied choice easily overridable in one tap, never locked in. This serves the mission by making consistent, credible branding the default outcome of using Canva, not an extra effort layered on top."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Building this as a stripped-down, lesser version of full Canva instead of packaging existing strengths (templates, Magic Studio, brand kits) around this segment's real constraint, which is time, not capability",
+        "Over-automating design choices in a way that removes the creative control this segment still wants to retain"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-006",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Stripe to help independent creators get paid across borders",
+      "company": [
+        "Stripe"
+      ],
+      "region": "global",
+      "industry": "fintech-payments-infrastructure",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Design a new Stripe product specifically for independent creators -- freelancers, newsletter writers, coaches -- who need to get paid by clients and fans in multiple countries, often in different currencies. Assume nothing purpose-built for this segment exists today.",
+      "context": [
+        "Stripe Connect lets platforms and marketplaces route payments to multiple recipients, commonly used by platforms that pay out creators or sellers.",
+        "Stripe Atlas, launched in 2016, helps founders incorporate a US company, including creators who want a formal business entity.",
+        "Stripe supports processing payments in a large number of currencies and settling payouts to bank accounts in many countries."
+      ],
+      "assumptions": [
+        "assumed: this creator has clients or fans in at least a handful of different countries, not a single-market business",
+        "assumed: this creator operates as an individual or very small operation, without a finance or accounting team",
+        "assumed: currency conversion fees and cross-border payout delays are a meaningful, recurring cost and frustration for this segment"
+      ],
+      "followUps": [
+        "How is this different from what a creator could already build using Stripe Connect or standard Stripe Checkout directly?",
+        "What's the risk of a solo creator getting tangled in cross-border tax complexity that this product can't fully solve for them?",
+        "How would you decide which currencies and countries to prioritize supporting first?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this creator has clients or fans in multiple countries, operates solo without a finance team, and that currency conversion fees and payout delays are a real recurring cost for them. My plan: build the mission and strategic fit for this product from scratch, segment creators by their cross-border payment behaviour, map a specific creator's journey to find the real problem, then propose a solution, being clear about how this differs from a creator simply using Stripe's existing building blocks directly today."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Stripe's value isn't 'a payments API,' it's letting someone focus on their actual work instead of becoming an amateur expert in payments, tax, and currency handling just to get paid. For an independent creator with an international audience specifically, the deeper need is being paid reliably and predictably despite complexity (currencies, cross-border fees, timing) that a large company would have a finance team to absorb but a solo creator has to absorb personally. My mission statement: 'let getting paid internationally feel as simple as getting paid locally.' Strategically, Stripe's existing multi-currency processing and payout infrastructure, plus Atlas's experience helping individuals formalize a business, are exactly the strengths this product should package specifically for creators rather than leaving them to piece together Stripe's general-purpose tools themselves."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the creator, their international clients or fans, and Stripe's existing payments and Atlas infrastructure. I'd segment creators by behaviour: (1) occasional cross-border earners who get paid internationally rarely and don't mind ad hoc handling, (2) recurring cross-border earners with a steady base of international clients or subscribers who deal with the same friction repeatedly, and (3) scaling creators approaching the complexity of needing a formal business entity and more sophisticated tax handling. I'd prioritize recurring cross-border earners: they experience this friction often enough that a solution has real, repeated value, and they're underserved because Stripe's general tools work for them technically but weren't packaged around their specific, repeated pain."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a recurring cross-border earner's journey: a client or subscriber pays in their local currency, the creator sees the converted amount land with a fee they didn't clearly anticipate, some payouts take longer to settle than others with no clear pattern, and reconciling what was actually earned versus what arrived becomes a manual, recurring headache with no simple summary view. The problem isn't 'Stripe can't process this payment' -- it can -- it's that there's no creator-facing, simplified layer showing predictable, transparent cross-border earnings and payout timing, so a solo creator has to manually piece together clarity that a finance team would otherwise provide. This is a problem, not a need, because it's specific: no transparent, creator-facing cross-border earnings summary, prioritized highly since it recurs with every international payment and directly affects a creator's ability to trust and plan around their own income. This ties to the mission because unpredictability in something as basic as knowing how much they actually earned undermines the simplicity the mission promises."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a creator-facing dashboard showing, per payment, the exact conversion rate applied, fee taken, and expected settlement date upfront, before the money moves, not after; (2) a multi-currency balance feature letting a creator hold earnings in the currency they were paid rather than forcing immediate conversion, converting only when they choose to withdraw; (3) bundling Atlas-style guided incorporation specifically for creators crossing into needing a formal entity, tied contextually to when their cross-border volume crosses a relevant threshold. Plotting impact x effort, the upfront transparency dashboard wins for V1: it directly targets the core problem of unpredictability with primarily a reporting and UI layer on data Stripe already processes, versus the multi-currency balance feature which requires deeper product and possibly regulatory work across many currencies. Risk: this segment could still run into cross-border tax complexity this product can't fully solve, leading to disappointment if expectations aren't set correctly; mitigation is being explicit in-product that this handles payment transparency, not tax advice, with clear signposting to when a creator should seek that separately. This serves the mission by making the money side of international creator work as predictable as it should be, even if it doesn't solve every downstream complexity a creator faces."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Building this as a copy of Stripe Connect's platform-facing tools instead of designing specifically for a solo creator with no technical or finance team to configure it",
+        "Overpromising that this solves cross-border tax complexity, when it should be scoped clearly to payment transparency and predictability"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-007",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Groww to onboard first-time investors in India's smaller towns",
+      "company": [
+        "Groww"
+      ],
+      "region": "india",
+      "industry": "investing-fintech",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Design a new Groww product specifically for someone in a smaller Indian town or city who has never invested before and is intimidated by financial jargon and market volatility. Assume nothing purpose-built for this exact segment exists today.",
+      "context": [
+        "Groww started in 2017 as a platform for direct mutual fund investments before expanding into stock trading and other investment products.",
+        "Groww is registered with SEBI as a stockbroker and depository participant, subject to Indian securities regulation.",
+        "Groww offers educational content within its app aimed at explaining investment concepts to new users."
+      ],
+      "assumptions": [
+        "assumed: this first-time investor has stable but modest monthly savings capacity, not a lump sum to invest",
+        "assumed: this segment is more comfortable in a regional Indian language than in financial English",
+        "assumed: this segment's primary current saving behaviour is a bank recurring deposit or fixed deposit, not any market-linked product"
+      ],
+      "followUps": [
+        "How would you help this segment overcome fear of market volatility without oversimplifying the real risk involved?",
+        "What's the risk of pushing this segment into equity products before they're genuinely ready?",
+        "How would your onboarding differ for someone comfortable in English versus someone who isn't?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this investor has modest, stable monthly savings rather than a lump sum, is more comfortable in a regional language than financial English, and currently saves through a bank recurring or fixed deposit rather than anything market-linked. My plan: build the mission and strategic case for this product from scratch, segment this audience by their relationship to risk and unfamiliarity, map a specific first-timer's journey, then propose a solution that respects real market risk rather than oversimplifying it."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Groww's value isn't 'a place to buy mutual funds or stocks,' it's making market-linked investing accessible to people who've been taught, implicitly or explicitly, that markets are risky and not really for people like them. For a first-time investor in a smaller town, the deeper need is permission and confidence -- believing that a small, careful step into investing is safe and legitimate, not a gamble reserved for experts. My mission statement: 'make the first step into investing feel as safe and familiar as opening a bank recurring deposit.' Strategically, Groww's existing direct mutual fund roots, a genuinely simpler product than direct stock trading, and its in-app educational content are strengths this product should build from, rather than leading with the more intimidating stock-trading side of the business."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the first-time investor, their family (who may influence or discourage the decision), and Groww's existing education and product infrastructure. I'd segment this audience by behaviour: (1) curious-but-anchored savers who've heard about investing but remain anchored to fixed deposits out of comfort, (2) socially-nudged first-timers who are considering investing because a friend or relative already does, and (3) already-convinced first-timers who've decided to invest but don't know where to start. I'd prioritize curious-but-anchored savers: they represent the largest underserved group, since they have latent interest but a strong behavioural anchor to a familiar, if lower-return, saving habit, whereas already-convinced first-timers are closer to converting regardless of extra help."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a curious-but-anchored saver's journey: they hear about mutual funds from a coworker or social media, feel some curiosity, open an investment app, encounter jargon (NAV, expense ratio, SIP) presented in English with minimal context, feel out of their depth, and default back to renewing their familiar fixed deposit instead. The problem isn't 'they don't want better returns' -- the curiosity is there -- it's that the on-ramp into a first investment assumes a baseline financial literacy and English comfort this segment doesn't have, so the unfamiliarity itself, not the risk, is what stops them at the very first step. This is a problem, not a need, because it's specific: a literacy and language barrier at the exact moment of first product exposure, prioritized highly since it's the single point where this segment's real latent interest most often dies, and it's a large addressable population given how many first-time investors this describes. This ties to the mission because if the very first step feels unsafe or confusing, no amount of downstream product quality will ever be reached."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a regional-language-first onboarding flow, not just translated interface text but concepts explained through familiar comparisons (e.g. explicitly comparing a SIP to a recurring deposit the user already understands); (2) a very small, low-stakes 'starter SIP' product with an explicitly tiny suggested first amount, designed to be a safe, low-regret first step rather than a full-commitment decision; (3) a social-proof feature showing anonymized, aggregated data on how many first-time investors from similar towns have started small SIPs, building confidence through relatable numbers rather than abstract encouragement. Plotting impact x effort, the regional-language-first onboarding using familiar comparisons wins for V1: it directly targets the literacy and language barrier identified as the core problem, and it's a more contained content and localization effort than either the starter-SIP product design or a new social-proof data feature, both of which could layer on afterward. Risk: oversimplifying investment concepts through comparisons to familiar products could understate real market risk and volatility; mitigation is being explicit and honest about how a SIP differs from a fixed deposit (no guaranteed return, market-linked risk) even while using familiar framing to explain the mechanics. This serves the mission by making the first step feel safe and legitimate, without ever implying investing itself is risk-free."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Oversimplifying market risk in the name of accessibility, to the point that a first-time investor doesn't understand they could lose money",
+        "Assuming translated interface text alone solves the literacy gap, when the real barrier is unfamiliar financial concepts, not just language"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-008",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Rapido to serve outstation, intercity short trips",
+      "company": [
+        "Rapido"
+      ],
+      "region": "india",
+      "industry": "ride-hailing",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Design a new Rapido product for people who need to travel between two nearby towns or cities -- a trip too long for a typical in-city ride but not served well by trains or buses. Assume nothing purpose-built for this exists today.",
+      "context": [
+        "Rapido began as a bike-taxi service in India and has since expanded into auto-rickshaw and cab ride categories.",
+        "Rapido operates primarily within Indian cities, matching riders with nearby drivers for point-to-point trips.",
+        "India's intercity travel between nearby towns is commonly served by state and private bus operators and, on some routes, local train services."
+      ],
+      "assumptions": [
+        "assumed: this outstation trip is in the range of one to three hours by road, connecting two nearby towns or a town and a city",
+        "assumed: this rider has some flexibility on exact departure time but wants more certainty on trip timing than a shared bus typically offers",
+        "assumed: this segment is price-sensitive relative to a private, full-vehicle intercity cab charter"
+      ],
+      "followUps": [
+        "How is this different from an intercity cab-charter service that already exists in the market?",
+        "What's the risk of driver availability being unpredictable for a longer, less frequent trip type compared to Rapido's core short in-city rides?",
+        "How would you price this relative to a bus ticket versus a full private cab?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this trip is one to three hours by road between nearby towns, that the rider has some timing flexibility but wants more certainty than a shared bus offers, and that this segment is price-sensitive relative to a fully private intercity cab charter. My plan: build the mission and strategic case for this product from scratch, segment travelers by behaviour, map a specific traveler's journey, then propose a solution, being clear about how this differs from existing cab-charter services."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Rapido's value isn't 'a way to get a ride,' it's matching people needing to go somewhere with nearby available drivers quickly and affordably, without the overhead of booking a full private vehicle. For someone travelling between nearby towns, that same underlying need exists but currently falls into a gap: too long and specific a route for Rapido's in-city matching, too inconvenient in timing for a shared bus, and too expensive for a fully private cab charter. My mission statement: 'make the trip between two nearby towns as easy to book as a ride across town.' Strategically, Rapido's existing driver network and real-time matching engine, proven at in-city scale, are exactly the assets that make expanding into structured intercity matching more viable than building this from nothing."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the traveler, drivers willing to take longer trips, and Rapido's existing matching infrastructure. I'd segment travelers by behaviour: (1) time-sensitive travelers who need to be somewhere at a specific time (a job interview, a family event) and can't risk a bus's unpredictable schedule, (2) cost-conscious regular commuters making the same intercity trip repeatedly (e.g. for work) who want a cheaper-than-charter, more reliable-than-bus option, and (3) occasional travelers making a one-off trip with no strong time pressure. I'd prioritize cost-conscious regular commuters: their trip repeats, making them high-reach in aggregate demand even if each trip is infrequent for the traveler themselves, and they're underserved since neither a bus (unpredictable) nor a private charter (expensive) fits their repeated, budget-conscious need."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a cost-conscious regular commuter's journey: they need to travel to the nearby town regularly, check the bus schedule which may not align with their timing needs, consider a private cab charter but find it too expensive for a trip they make often, and often settle for either wasted time waiting on a bus or an unaffordable charter on days when timing really matters. The problem isn't 'there's no way to get there' -- buses and charters both exist -- it's that no option combines reasonable cost with reasonable timing certainty for this specific, repeated trip length, leaving this segment to choose between two flawed extremes each time. This is a problem, not a need, because it's specific: a missing mid-cost, mid-certainty option for repeated intercity trips, prioritized highly since it recurs regularly for this segment and the cost of the current tradeoff (time or money) is felt every single trip. This ties to the mission because if the gap between in-city and full intercity charter remains unfilled, this segment's actual travel need never gets a genuinely good answer."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a shared-intercity matching product, pairing multiple riders heading the same route around a similar time to split cost, similar in spirit to Rapido's core matching but for a longer route and a defined departure window; (2) a scheduled, single-rider intercity booking option at a fixed price below a full charter, prioritizing timing certainty over cost-sharing; (3) a recurring-route subscription for commuters making the same intercity trip regularly, offering a discounted rate in exchange for booking predictability. Plotting impact x effort, the shared-intercity matching product wins for V1: it most directly extends Rapido's existing core matching strength to a new route length, and it's the option most likely to hit this segment's specific need for cost below a private charter, whereas the recurring-route subscription depends on first proving there's enough repeat demand once the core matching product exists. Risk: driver availability for a longer, less frequent trip type may be unpredictable compared to short in-city rides, risking cancellations; mitigation is starting on a small number of proven, high-demand town-pair routes rather than launching broadly, to concentrate driver supply where it's most likely to be reliable. This serves the mission by giving this segment a genuinely new, better-fitting option rather than forcing a choice between an unpredictable bus and an unaffordable charter."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Positioning this as a direct competitor to full private cab-charter services instead of targeting the specific, underserved cost-and-certainty gap below it",
+        "Launching broadly across many town pairs at once instead of concentrating on a small number of high-demand routes where driver supply can be reliable"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-009",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a product for Ola to build recurring commuter routes around its electric vehicles",
+      "company": [
+        "Ola"
+      ],
+      "region": "india",
+      "industry": "ride-hailing-ev",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Design a new Ola product specifically built around electric vehicles for people with a fixed daily commute. Assume no existing Ola product is purpose-built for recurring EV commuting.",
+      "context": [
+        "Ola Electric, a separate but affiliated company to Ola Cabs, manufactures and sells electric scooters in India, and completed a stock market listing in 2024.",
+        "Ola operates a large ride-hailing service across Indian cities, historically dominated by petrol and CNG vehicles.",
+        "Electric vehicles typically have a limited range per charge and rely on charging infrastructure that is less widespread than fuel stations in many Indian cities."
+      ],
+      "assumptions": [
+        "assumed: designing for the ride-hailing (cab) side of Ola's business, matching riders to EV cabs, not the personal-ownership Ola Electric scooter business",
+        "assumed: this commuter travels the same route, or a small set of routes, most weekdays",
+        "assumed: EV cab supply is currently a smaller share of Ola's total fleet than petrol or CNG vehicles in most cities"
+      ],
+      "followUps": [
+        "Why would a commuter specifically want an EV ride over a regular Ola ride, beyond environmental preference?",
+        "What's the risk of promising EV availability for a recurring commute given limited EV fleet supply and charging constraints?",
+        "How does this relate to, or stay separate from, the Ola Electric scooter business?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll scope this specifically to Ola's ride-hailing cab business, not the separate Ola Electric scooter business, assume this commuter has a fixed route most weekdays, and assume EV cabs are currently a smaller share of the fleet than petrol or CNG vehicles. My plan: build the mission and strategic case for this product from scratch, segment commuters by their motivation for wanting an EV ride specifically, map a commuter's journey to find the real problem, then propose a solution honest about current EV fleet constraints."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Ola's value isn't 'a ride,' it's reliably getting someone from A to B without owning or maintaining a vehicle themselves -- for a recurring commuter, that reliability has to hold up every single weekday, not just occasionally. For a commuter who specifically wants an EV ride, the deeper need layers environmental or cost-conscious values on top of that same reliability need, and today those two things are in tension since EV availability is less predictable than the broader petrol/CNG fleet. My mission statement: 'make choosing an EV for your daily commute as reliable as choosing any other ride.' Strategically, Ola's affiliation with Ola Electric and its existing large-scale ride-hailing matching engine are strengths a competitor without both an EV manufacturing arm and ride-hailing scale would struggle to combine."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the commuter, EV-driving partners, and Ola's fleet and matching systems. I'd segment commuters interested in EV rides by behaviour: (1) environmentally-motivated commuters who actively prefer an EV regardless of small cost or time tradeoffs, (2) cost-motivated commuters drawn to potentially lower EV ride pricing where it exists, and (3) indifferent commuters who'd take an EV if offered but have no strong preference either way. I'd prioritize environmentally-motivated commuters: they have the strongest, most consistent underlying motivation to specifically seek out and stick with an EV option even through early-stage supply constraints, making them the segment most likely to make a new, imperfect product worth using and iterating on."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping an environmentally-motivated commuter's journey: they want to consistently choose an EV for their daily commute, but today's booking flow doesn't let them specify that preference, so they either get a petrol/CNG vehicle by default or have to hope for one, with no way to know in advance whether an EV will be available on their route at their usual time. The problem isn't 'Ola has no EVs' -- Ola Electric and EV cab supply exist -- it's that there's no way for a commuter to express and reliably act on an EV preference for a recurring trip, so their stated preference and their actual daily ride experience are disconnected. This is a problem, not a need, because it's specific: no preference-matching mechanism for EV availability on a recurring route, prioritized moderately given current fleet supply constraints, but still real since every commute is a missed opportunity to serve an expressed preference. This ties to the mission because reliability that ignores a stated EV preference isn't the reliability this specific segment is actually asking for."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) an EV-preference toggle for recurring commute bookings, matching the commuter to EV supply first when available on their route and time, falling back transparently to a non-EV ride rather than failing the booking; (2) a waitlist-style notification letting a commuter know in advance which of their usual weekly trips are likely to have EV availability, based on historical fleet patterns on that route; (3) route-level EV fleet concentration, deliberately allocating more EV supply to high-density recurring-commute corridors identified from booking data. Plotting impact x effort, the EV-preference toggle with transparent fallback wins for V1: it directly solves the preference-expression gap with a contained booking-flow change, and it's honest about current supply limits rather than overpromising, unlike route-level fleet reallocation which requires deeper operational change. Risk: setting an EV preference but frequently falling back to non-EV rides could feel like a broken promise; mitigation is being explicit in the booking flow about EV availability likelihood before the commuter commits to the preference, managing expectations rather than overselling availability. This serves the mission by making the preference genuinely actionable, even under real supply constraints, rather than a token toggle rarely honored."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Overpromising consistent EV availability given genuinely limited current fleet supply, and failing to manage rider expectations honestly",
+        "Conflating this ride-hailing EV product with the separate Ola Electric personal-scooter-ownership business, which serves a different need entirely"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-design-010",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "design-0to1",
+      "title": "Design a subscription discovery product for Nykaa's first-time online beauty shoppers",
+      "company": [
+        "Nykaa"
+      ],
+      "region": "india",
+      "industry": "beauty-ecommerce",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Design a new Nykaa product for someone who is curious about trying new beauty and skincare products but is overwhelmed by the sheer number of options and unsure what actually suits them. Assume no subscription discovery product exists on Nykaa today.",
+      "context": [
+        "Nykaa is an Indian beauty and personal care e-commerce platform, also operating physical retail stores.",
+        "Nykaa expanded into fashion through Nykaa Fashion, launched as a separate vertical in 2018.",
+        "Nykaa's platform features customer reviews and ratings on individual products."
+      ],
+      "assumptions": [
+        "assumed: this shopper has bought a small number of beauty products online before but doesn't browse confidently across the full catalog",
+        "assumed: this shopper's skin type, tone, or hair type meaningfully affects which products would actually suit them",
+        "assumed: full-size beauty products carry enough cost that trying several at once to find what works is a real financial deterrent for this shopper"
+      ],
+      "followUps": [
+        "How would you personalize recommendations without an intrusive, lengthy quiz that this shopper won't bother completing?",
+        "What's the risk of a subscription box model conflicting with Nykaa's existing on-demand shopping behaviour?",
+        "How would you handle a shopper who dislikes most items in a box, and might churn the subscription entirely?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this shopper has bought a few beauty products online before but doesn't browse confidently, that skin type and tone meaningfully affect what suits them, and that full-size product cost makes trying several new things at once a real financial deterrent. My plan: build the mission and strategic case for this product from scratch, segment beauty shoppers by their relationship to discovery, map this shopper's journey to find the real problem, then propose a solution mindful of how it might interact with Nykaa's existing on-demand shopping habits."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Nykaa's value isn't 'a place to buy beauty products,' it's helping someone put their best face forward with confidence, which depends entirely on actually knowing what works for their specific skin, tone, or hair. For a shopper overwhelmed by choice, the deeper need is a trustworthy way to discover what suits them without expensive trial and error, since guessing wrong with a full-size product is a real cost, not just an inconvenience. My mission statement: 'help someone find what actually works for them, before they have to commit to buying it.' Strategically, Nykaa's existing catalog breadth, reviews, and understanding of product-to-skin-type fit through existing filtering and reviews are the raw materials this discovery product should be built from, rather than treating discovery as an entirely separate problem from the existing catalog."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players are the shopper, the brands whose products get sampled, and Nykaa's existing catalog and review infrastructure. I'd segment beauty shoppers by behaviour: (1) confident routine-shoppers who know their preferred brands and repurchase the same products, (2) overwhelmed explorers who are curious to try new things but freeze when faced with the full catalog's range, and (3) trend-followers who buy based on what's currently popular or promoted, regardless of personal fit. I'd prioritize overwhelmed explorers: they have clear latent demand (curiosity to try new things) but are currently the most underserved, since Nykaa's catalog browsing today assumes a level of confidence in narrowing choices that this segment doesn't have."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping an overwhelmed explorer's journey: they open the app wanting to try something new, like a different foundation shade or a new skincare routine, are met with thousands of products and filters that assume they already know what they're looking for, feel unsure which of many options would actually suit their specific skin, and often close the app without buying anything rather than risk money on a guess. The problem isn't 'Nykaa lacks selection' -- the opposite, it has too much for this segment to navigate confidently -- it's that there's no low-risk way to sample a curated, personally-relevant set of products before committing to full-size purchases, so uncertainty itself blocks the purchase entirely. This is a problem, not a need, because it's specific: no low-cost sampling path matched to personal fit, prioritized highly since it's the exact moment this segment's curiosity dies before ever converting into a purchase, and it likely affects a meaningful share of shoppers new to online beauty buying. This ties to the mission because helping someone find what works for them is impossible if they never get to try it in the first place."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three angles: (1) a lightweight, short preference quiz (skin type, tone, concerns) feeding a recurring, small discovery box of sample or travel-size products matched to that profile, letting the shopper try before committing to full-size; (2) a one-time, non-subscription 'starter discovery kit' for someone new to a specific category (e.g. skincare), lower commitment than an ongoing subscription; (3) in-app AI-assisted shade or product matching using a photo, without any physical sampling involved. Plotting impact x effort, the recurring discovery box with a short quiz wins for V1: it directly solves the identified problem of low-risk sampling matched to personal fit, and a subscription model creates an ongoing, monetizable relationship rather than a single one-time kit, while being simpler to launch than building photo-based AI matching technology from scratch. Risk: a subscription commitment could conflict with this shopper's existing on-demand, no-commitment shopping habits, risking early churn if a box disappoints; mitigation is making the subscription easy to pause or cancel at any time, and using early feedback on disliked items to immediately improve the next box's matching rather than treating one bad box as an acceptable loss. This serves the mission by turning uncertainty into low-risk discovery, converting curiosity into confident purchases over time rather than losing it at the browsing stage."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Designing a long, detailed onboarding quiz that this segment abandons before ever reaching the product, defeating the purpose of removing friction",
+        "Launching only as an ongoing subscription without a lower-commitment option, when this segment's core hesitation is about commitment and risk in the first place"
+      ],
+      "related": []
+    }
+  ]
+}

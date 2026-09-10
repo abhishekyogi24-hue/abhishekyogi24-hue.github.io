@@ -1,0 +1,444 @@
+{
+  "product-sense": {
+    "label": "Product Sense",
+    "totalMin": 45,
+    "source": "Lenny Rachitsky's \"definitive guide to mastering product sense interviews\"",
+    "passNote": "A solid score on each dimension passes. Excellence in one area cannot compensate for weakness in another.",
+    "stages": [
+      {
+        "key": "communication",
+        "name": "Clear Communication",
+        "minMin": 3,
+        "maxMin": 5,
+        "guidance": "Open with waypointing — a strategic pause to gather your thoughts before you start talking — then set 2-4 assumptions that narrow the scope (role, geography, platform, constraints), and lay out your game plan for the rest of the session.",
+        "whatGoodLooksLike": "A candidate who pauses, states the scope narrowing assumptions out loud, and previews the stages they'll walk through, so the interviewer knows what to expect and can redirect early if needed.",
+        "pitfalls": [
+          "Thinking aloud without structure",
+          "Asking the interviewer for direction",
+          "Premature narrowing that limits the solution space"
+        ]
+      },
+      {
+        "key": "motivation",
+        "name": "Product Motivation",
+        "minMin": 3,
+        "maxMin": 5,
+        "guidance": "Describe the product and connect its value to a deeper human need, not just a feature list. Place it in its strategic and competitive context, and state a mission statement that acts as a purpose-driven compass for the rest of the answer.",
+        "whatGoodLooksLike": "A one-line mission statement the candidate can credibly return to in every later stage, grounded in why the product matters to people, not just what it does.",
+        "pitfalls": [
+          "Features without value",
+          "Vague or overly narrow mission",
+          "Strategic misalignment with company strengths"
+        ]
+      },
+      {
+        "key": "segmentation",
+        "name": "Segmentation",
+        "minMin": 8,
+        "maxMin": 10,
+        "guidance": "Map the ecosystem to identify all stakeholders, then pick one group to focus on. Create segments based on behaviours, motivations, and context — never demographics alone — develop a persona, and prioritise segments on a reach x degree-underserved 2x2. Segments must be mutually exclusive, meaning distinctly different needs.",
+        "whatGoodLooksLike": "A small set of behavioural segments that could not be swapped for each other, with a clear pick of which one to serve and why it scores well on reach and how underserved it is today.",
+        "pitfalls": [
+          "Demographics-only segmentation",
+          "Skipping ecosystem analysis",
+          "Non-mutually-exclusive segments"
+        ]
+      },
+      {
+        "key": "problem",
+        "name": "Problem Identification",
+        "minMin": 8,
+        "maxMin": 10,
+        "guidance": "Map the user journey for the chosen persona in a specific context, and surface problems at each stage. Distinguish needs (\"I want X\") from problems (\"I struggle with Y\"), prioritise on severity x frequency, and tie the chosen problem back to the mission statement.",
+        "whatGoodLooksLike": "A journey with a couple of concrete, non-generic stages specific to the persona's context, ending in one clearly stated problem with a reason it outranks the others on severity and frequency.",
+        "pitfalls": [
+          "Confusing needs with problems",
+          "Generic pre/during/post journey stages",
+          "Problem-solution conflation"
+        ]
+      },
+      {
+        "key": "solution",
+        "name": "Solution Development",
+        "minMin": 8,
+        "maxMin": 10,
+        "guidance": "Brainstorm multiple distinct approaches from different angles, prioritise on an impact x effort 2x2, and define a concrete V1. Assess risks and mitigations, and link the solution back to the mission. Leverage existing platform strengths, draw on analogous problems from other products, and apply emerging tech thoughtfully rather than by default.",
+        "whatGoodLooksLike": "Two or three genuinely different solution directions, a reasoned pick of one, a V1 scoped tightly enough to ship, and at least one named risk with a mitigation.",
+        "pitfalls": [
+          "Solution jumping",
+          "Feature obsession disconnected from the problem",
+          "Platform mismatch"
+        ]
+      }
+    ],
+    "rubric": [
+      {
+        "dimension": "Clear communication",
+        "weak": "Rambles without structure, skips assumptions, or asks the interviewer what to do next.",
+        "solid": "States assumptions and a game plan, then follows it with minor drift.",
+        "strong": "Waypoints naturally, scopes tightly with sharp assumptions, and executes the stated plan end to end."
+      },
+      {
+        "dimension": "Product motivation",
+        "weak": "Describes features with no connection to a human need or the competitive picture.",
+        "solid": "States a reasonable mission and situates the product in its market.",
+        "strong": "States a sharp mission statement and returns to it later to justify choices."
+      },
+      {
+        "dimension": "Segmentation",
+        "weak": "Segments by demographics or produces overlapping, non-exclusive groups.",
+        "solid": "Behavioural segments that are mostly distinct, with a defensible pick.",
+        "strong": "Crisp, mutually exclusive behavioural segments prioritised on a clear reach x underserved logic."
+      },
+      {
+        "dimension": "Problem identification",
+        "weak": "Conflates needs with problems or jumps straight to a solution.",
+        "solid": "A real problem tied to a journey stage, reasonably prioritised.",
+        "strong": "A specific, well-evidenced problem prioritised on severity x frequency and tied back to the mission."
+      },
+      {
+        "dimension": "Solution development",
+        "weak": "One obvious idea, no prioritisation, no risks considered.",
+        "solid": "A few ideas, a reasoned pick, a rough V1.",
+        "strong": "Distinct ideas prioritised on impact x effort, a tightly scoped V1, and named risks with mitigations."
+      }
+    ]
+  },
+  "analytical": {
+    "label": "Analytical Thinking",
+    "totalMin": 45,
+    "workingMin": 35,
+    "source": "Lenny Rachitsky's \"definitive guide to mastering analytical thinking interviews\"",
+    "stages": [
+      {
+        "key": "assumptions",
+        "name": "Assumptions and Game Plan",
+        "minMin": 1,
+        "maxMin": 2,
+        "guidance": "State 2-3 scoping assumptions, outline your structure for the rest of the session, and get alignment from the interviewer before proceeding.",
+        "whatGoodLooksLike": "A tight, explicit scope and a one-breath preview of the four steps to come.",
+        "pitfalls": [
+          "Skipping alignment and diving straight into metrics"
+        ]
+      },
+      {
+        "key": "rationale",
+        "name": "Product Rationale",
+        "minMin": 1,
+        "maxMin": 2,
+        "guidance": "Give the product context: its features, maturity, business model, and the problem it solves. Place it in the market and competitive landscape, and state a mission statement connecting company vision to product purpose.",
+        "whatGoodLooksLike": "A crisp two-sentence framing of what the product is, how it makes money, and where it sits competitively.",
+        "pitfalls": [
+          "Jumping to metrics without this context"
+        ]
+      },
+      {
+        "key": "metrics",
+        "name": "Metric Framework",
+        "minMin": 15,
+        "maxMin": 20,
+        "guidance": "Identify the ecosystem players and their value propositions. Define specific, implementable metrics with timeframes. Select a North Star metric that reflects ecosystem health, and identify guardrail metrics that address the North Star's weaknesses.",
+        "whatGoodLooksLike": "A North Star that is a single countable event with a timeframe (not an average or ratio), paired with 2-3 guardrails that would catch the North Star being gamed.",
+        "pitfalls": [
+          "Using averages or ratios as a North Star metric",
+          "Metrics a data scientist could not actually implement",
+          "Overlooking guardrail metrics"
+        ]
+      },
+      {
+        "key": "goals",
+        "name": "Goal-Setting",
+        "minMin": 5,
+        "maxMin": 10,
+        "guidance": "Move from product-level metrics to specific team goals. Bridge strategy and execution, and defend the number you pick.",
+        "whatGoodLooksLike": "A specific, defensible target for a specific team with a stated rationale for the size of the number.",
+        "pitfalls": [
+          "A goal with no rationale for its size",
+          "No link back to the North Star"
+        ]
+      }
+    ],
+    "rubric": [
+      {
+        "dimension": "Structured problem-solving",
+        "weak": "No stated scope; jumps between steps out of order.",
+        "solid": "States assumptions and follows a plan with minor drift.",
+        "strong": "Tight scoping and a plan executed cleanly end to end."
+      },
+      {
+        "dimension": "Product & ecosystem understanding",
+        "weak": "Misses the business model or major ecosystem players.",
+        "solid": "Names the main players and a reasonable mission statement.",
+        "strong": "Precise framing of business model, competitive position, and mission that later choices trace back to."
+      },
+      {
+        "dimension": "Metric rigour",
+        "weak": "Vague metrics with no timeframe or owner.",
+        "solid": "Specific, implementable metrics with timeframes.",
+        "strong": "Specific metrics tied explicitly to named ecosystem players' value propositions."
+      },
+      {
+        "dimension": "North Star & guardrail judgment",
+        "weak": "North Star is an average/ratio, or no guardrails named.",
+        "solid": "A countable North Star with at least one guardrail.",
+        "strong": "A defensible North Star with guardrails that specifically catch its known failure modes."
+      },
+      {
+        "dimension": "Goal-setting and execution bridge",
+        "weak": "No goal stated, or a goal disconnected from the metrics above.",
+        "solid": "A reasonable team goal loosely tied to the North Star.",
+        "strong": "A specific, defended goal explicitly bridging the North Star to one team's execution."
+      }
+    ]
+  },
+  "rca": {
+    "label": "Root Cause Analysis",
+    "totalMin": 45,
+    "source": "authored for PM Case Lab, kept consistent in language with the product-sense and analytical-thinking frameworks",
+    "stages": [
+      {
+        "key": "clarify",
+        "name": "Clarify & Quantify",
+        "minMin": 4,
+        "maxMin": 6,
+        "guidance": "Pin down the exact metric definition, the magnitude of the change, the time window, when it started, and whether it is still falling.",
+        "whatGoodLooksLike": "A precise restatement: which metric, by how much, over what window, starting when, and its current trajectory.",
+        "pitfalls": [
+          "Investigating before the drop is even precisely defined"
+        ]
+      },
+      {
+        "key": "validity",
+        "name": "Is It Real?",
+        "minMin": 4,
+        "maxMin": 6,
+        "guidance": "Rule out an instrumentation or logging change, a data pipeline delay, a metric definition change, or a bot-filtering change before treating the drop as real.",
+        "whatGoodLooksLike": "A candidate who checks data validity before segmenting, and can name the specific check that would confirm or rule out each artefact.",
+        "pitfalls": [
+          "Skipping straight to root-causing a drop that might be a data artefact"
+        ]
+      },
+      {
+        "key": "segment",
+        "name": "Segment the Drop",
+        "minMin": 6,
+        "maxMin": 8,
+        "guidance": "Cut the drop by platform, geography, cohort (new vs existing users), acquisition channel, device, and app version. A localised drop points to an internal cause; a uniform drop points to an external one.",
+        "whatGoodLooksLike": "A short list of cuts run in a sensible order, with an explicit statement of what a localised vs uniform result would each imply.",
+        "pitfalls": [
+          "Guessing causes before segmenting the drop"
+        ]
+      },
+      {
+        "key": "internal",
+        "name": "Internal Causes",
+        "minMin": 5,
+        "maxMin": 7,
+        "guidance": "Consider a release or config change, an experiment ramp, a pricing or policy change, or a broken upstream funnel step.",
+        "whatGoodLooksLike": "A shortlist of internal causes ranked by how well each fits the segmentation pattern already found.",
+        "pitfalls": [
+          "Listing internal causes generically, without tying them to the segmentation cut"
+        ]
+      },
+      {
+        "key": "external",
+        "name": "External Causes",
+        "minMin": 5,
+        "maxMin": 7,
+        "guidance": "Consider seasonality, a competitor move, a platform or OS change, macro conditions, or a news event.",
+        "whatGoodLooksLike": "External causes weighed against the same segmentation evidence, not raised as an afterthought.",
+        "pitfalls": [
+          "Reaching for an external cause to avoid internal accountability"
+        ]
+      },
+      {
+        "key": "converge",
+        "name": "Converge",
+        "minMin": 4,
+        "maxMin": 6,
+        "guidance": "State the leading hypothesis, the single query that would confirm it, and what evidence would disconfirm it.",
+        "whatGoodLooksLike": "One named hypothesis, one concrete confirming query, and one falsifying signal — not a list of untested possibilities.",
+        "pitfalls": [
+          "Refusing to commit to a leading hypothesis"
+        ]
+      },
+      {
+        "key": "act",
+        "name": "Act",
+        "minMin": 4,
+        "maxMin": 6,
+        "guidance": "Propose an immediate mitigation, the durable fix, and the guardrail metric that would have caught the issue earlier.",
+        "whatGoodLooksLike": "A short-term stop-gap distinct from the long-term fix, plus a specific guardrail metric to prevent recurrence.",
+        "pitfalls": [
+          "Conflating the immediate mitigation with the durable fix"
+        ]
+      }
+    ],
+    "rubric": [
+      {
+        "dimension": "Clarify & quantify",
+        "weak": "Starts investigating before the drop is defined in numbers.",
+        "solid": "Gets the metric, magnitude, and window right.",
+        "strong": "Also nails the start date and current trajectory, framing the rest of the analysis around it."
+      },
+      {
+        "dimension": "Data validity",
+        "weak": "Never questions whether the drop is real.",
+        "solid": "Asks whether it's a data artefact, in general terms.",
+        "strong": "Names specific instrumentation, pipeline, or definition checks before proceeding."
+      },
+      {
+        "dimension": "Segmentation rigour",
+        "weak": "Jumps to a cause without segmenting.",
+        "solid": "Segments by 2-3 sensible cuts.",
+        "strong": "Segments broadly and explicitly reasons from localised vs uniform patterns to internal vs external causes."
+      },
+      {
+        "dimension": "Hypothesis discipline",
+        "weak": "Lists causes without narrowing down.",
+        "solid": "Narrows to a plausible shortlist.",
+        "strong": "Commits to one leading hypothesis with a concrete confirming query and a disconfirming signal."
+      },
+      {
+        "dimension": "Convergence & action",
+        "weak": "No action proposed, or mitigation and fix are conflated.",
+        "solid": "Proposes a mitigation and a fix.",
+        "strong": "Separates mitigation from durable fix and adds a guardrail metric to catch recurrence."
+      }
+    ]
+  },
+  "ai-product": {
+    "label": "AI Product",
+    "totalMin": 45,
+    "source": "authored for PM Case Lab; stages 1-2 deliberately mirror the product-sense and analytical-thinking frameworks",
+    "stages": [
+      {
+        "key": "assumptions",
+        "name": "Assumptions & Game Plan",
+        "minMin": 2,
+        "maxMin": 4,
+        "guidance": "Scope the surface, the user, and the constraints, and preview your game plan.",
+        "whatGoodLooksLike": "A tight scope statement covering surface, user, and constraints, followed by a one-breath plan.",
+        "pitfalls": [
+          "Skipping scope and diving straight into a model choice"
+        ]
+      },
+      {
+        "key": "why-ai",
+        "name": "Product Motivation & Why AI",
+        "minMin": 4,
+        "maxMin": 6,
+        "guidance": "Start with the user problem, not the model. State what a deterministic, rules-based, or classical-ML solution would already achieve, then state what AI uniquely unlocks beyond that. Answering \"don't use AI here\" is a pass, not a fail, when justified.",
+        "whatGoodLooksLike": "A candidate who can articulate the non-AI baseline before arguing for AI, and who is willing to say AI is the wrong tool when the baseline is good enough.",
+        "pitfalls": [
+          "Reaching for AI without stating the non-AI baseline",
+          "Treating 'don't use AI here' as automatically a failing answer"
+        ]
+      },
+      {
+        "key": "segmentation",
+        "name": "Segmentation & Error Tolerance",
+        "minMin": 5,
+        "maxMin": 7,
+        "guidance": "Identify which user segment tolerates which failure mode, and the cost of a wrong answer for each segment.",
+        "whatGoodLooksLike": "Segments distinguished by their tolerance for false positives vs false negatives, each with a stated cost of being wrong.",
+        "pitfalls": [
+          "Treating all users as having the same error tolerance"
+        ]
+      },
+      {
+        "key": "system-design",
+        "name": "System Design Choices",
+        "minMin": 6,
+        "maxMin": 8,
+        "guidance": "Choose between prompt engineering, RAG, fine-tuning, an agentic approach, or classical ML. Address data sources and rights, the feedback loop that improves the system over time, and the latency budget.",
+        "whatGoodLooksLike": "A reasoned choice among the architecture options tied to the specific problem, plus a named feedback loop and a latency budget.",
+        "pitfalls": [
+          "Picking an architecture (e.g. fine-tuning) by default rather than by fit",
+          "No mention of data rights or a feedback loop"
+        ]
+      },
+      {
+        "key": "ux",
+        "name": "UX for Probabilistic Output",
+        "minMin": 6,
+        "maxMin": 8,
+        "guidance": "Design for transparency, confidence signalling, citations, easy correction and undo, graceful fallback, human-in-the-loop where warranted, and an explicit answer for what happens on the bad 5% of outputs.",
+        "whatGoodLooksLike": "A concrete plan for the bad 5%: what the user sees, how they recover, and where a human enters the loop.",
+        "pitfalls": [
+          "Designing only for the happy path",
+          "No answer for what happens when the model is wrong"
+        ]
+      },
+      {
+        "key": "evals",
+        "name": "Evals & Quality Bar",
+        "minMin": 5,
+        "maxMin": 7,
+        "guidance": "Define a golden set, offline evals, online metrics, the role and limits of LLM-as-judge, and regression gates before shipping.",
+        "whatGoodLooksLike": "A specific golden set and offline eval, paired with an honest statement of where LLM-as-judge breaks down.",
+        "pitfalls": [
+          "Relying solely on vibes or spot-checks instead of a golden set",
+          "Treating LLM-as-judge as infallible"
+        ]
+      },
+      {
+        "key": "metrics",
+        "name": "Metrics, Guardrails & Economics",
+        "minMin": 5,
+        "maxMin": 7,
+        "guidance": "Propose North Star candidates (task completion, acceptance rate, containment rate, edit distance), guardrails (hallucination rate, escalation rate, p95 latency, cost per successful task, gross margin), and name the risks: safety, privacy/DPDP, model or vendor dependency, cost drift.",
+        "whatGoodLooksLike": "A North Star candidate paired with guardrails that would catch it being gamed, plus at least one named risk with a mitigation.",
+        "pitfalls": [
+          "No guardrail for cost or latency",
+          "Ignoring vendor lock-in or privacy risk"
+        ]
+      }
+    ],
+    "rubric": [
+      {
+        "dimension": "Communication",
+        "weak": "No stated scope; jumps around between stages.",
+        "solid": "States scope and a plan, follows it with minor drift.",
+        "strong": "Tight scoping executed cleanly end to end."
+      },
+      {
+        "dimension": "Why-AI judgment",
+        "weak": "Assumes AI is the answer without stating the baseline.",
+        "solid": "States the non-AI baseline and a reasonable case for AI.",
+        "strong": "Clearly articulates the baseline and what AI uniquely unlocks, and would say no to AI when warranted."
+      },
+      {
+        "dimension": "System design",
+        "weak": "Picks an architecture with no stated reasoning.",
+        "solid": "Reasoned architecture choice, light on data rights or feedback loop.",
+        "strong": "Architecture fit to the problem, with data rights, a feedback loop, and a latency budget all addressed."
+      },
+      {
+        "dimension": "AI UX & trust",
+        "weak": "Happy-path only; no plan for wrong answers.",
+        "solid": "Some mention of confidence or correction.",
+        "strong": "A concrete, end-to-end plan for the bad 5% including human-in-the-loop and graceful fallback."
+      },
+      {
+        "dimension": "Eval rigour",
+        "weak": "No golden set or offline eval mentioned.",
+        "solid": "A golden set and basic offline eval.",
+        "strong": "Golden set, offline and online evals, and an honest account of LLM-as-judge's limits."
+      },
+      {
+        "dimension": "Metrics & economics",
+        "weak": "No North Star or guardrails named.",
+        "solid": "A North Star candidate with at least one guardrail.",
+        "strong": "North Star, guardrails, and named risks (safety, privacy, vendor dependency, cost) with mitigations."
+      }
+    ]
+  },
+  "cross-cutting": {
+    "label": "Cross-Cutting",
+    "inherits": "product-sense",
+    "totalMin": 45,
+    "source": "reuses the product-sense stages and rubric; cases tagged cross-cutting typically span multiple products or a platform decision that doesn't fit neatly into a single track",
+    "passNote": "A solid score on each dimension passes. Excellence in one area cannot compensate for weakness in another."
+  }
+}

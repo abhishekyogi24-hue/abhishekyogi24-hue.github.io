@@ -1,0 +1,1129 @@
+{
+  "pack": "an-01",
+  "cases": [
+    {
+      "id": "an-metrics-002",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for IRCTC's Tatkal ticket booking window",
+      "company": ["IRCTC"],
+      "region": "india",
+      "industry": "travel-rail",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "IRCTC is the sole authorized platform for booking Indian Railways tickets online, and its Tatkal quota opens a fixed booking window each day for last-minute travel. How would you measure the success of the Tatkal booking system?",
+      "context": [
+        "IRCTC is a Government of India enterprise and the only authorized online booking channel for Indian Railways tickets, publicly listed on the NSE.",
+        "The Tatkal quota opens at a fixed time the day before travel (historically 10am for AC classes, 11am for non-AC), creating a short, extremely high-concurrency booking window.",
+        "IRCTC has publicly discussed site slowdowns during Tatkal hours and capacity upgrades intended to handle the traffic spike."
+      ],
+      "assumptions": [
+        "assumed: Tatkal seats represent a small fixed percentage of total seats on a given train, set by Indian Railways policy",
+        "assumed: IRCTC's backend can log booking attempts and completions at a per-second granularity during the Tatkal window"
+      ],
+      "followUps": [
+        "Your North Star counts successful bookings in the first two minutes of the window. How do you separate genuine demand from bot/agent-driven touts?",
+        "How would you detect that the system degraded for a specific region or train route rather than uniformly?",
+        "Which guardrail would you escalate on fastest during the Tatkal window itself, in real time?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the Tatkal quota specifically, not general advance booking. I'll assume Tatkal seats are a small, policy-fixed share of each train's inventory, and that IRCTC can log booking attempts, not just completions, at fine time granularity during the window, since that granularity is what any real-time system needs to detect a slowdown. My plan: frame the product and its stakes, name the ecosystem, build the metric framework with a North Star and guardrails, then set a goal for the platform team."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "IRCTC isn't optimizing for growth in the normal sense -- it's a monopoly utility, so its 'product' is reliability under a predictable, extreme daily spike rather than acquisition or retention. The business model is transaction-based (a small convenience fee per ticket) layered on a public-service mandate, and the competitive question isn't 'which app wins' but 'does the system stay up long enough for real travelers to get seats before they're gone.' The mission is effectively: give every traveler a fair, working shot at a Tatkal seat within the fixed window."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem has three players: travelers (value = a fair chance at a seat without the app crashing), Indian Railways (value = accurate seat allocation and revenue capture), and IRCTC's platform team (value = system stability they can defend to the ministry). Implementable metrics: booking-attempt-to-confirmation completion rate in the first 5 minutes of the window (from server request logs), median and p99 time-to-confirmation for a completed booking (from booking event timestamps), and page/API error rate during the window (from application logs). I'd avoid an average like 'average booking time' as North Star since a handful of fast agent-assisted bookings could mask a broken experience for most real users; instead I'd choose 'Tatkal bookings confirmed within the first 5 minutes of window-open, per day' -- a countable daily event tied directly to the system doing its job under load. Guardrails: seat-inventory accuracy rate (percentage of confirmed bookings that don't later get flagged as double-booked or reversed, catching a North Star inflated by a buggy allocation engine), and share of successful bookings attributable to known automated/tout patterns (catching a North Star that's technically high but captured by bots rather than genuine travelers)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the platform engineering team, I'd set a quarterly goal to raise the 5-minute confirmation rate by a specific number of percentage points, defended by the gap between current capacity-tested throughput and the known peak concurrent-user counts IRCTC has publicly discussed hitting during major festival travel periods. This is directly actionable through infrastructure scaling and queueing logic, while the bot-share guardrail stays jointly owned with the fraud/security team so the fix doesn't just funnel more capacity to touts."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Choosing 'average confirmation time' as North Star, which averages over both real travelers and fast automated bookings",
+        "Treating this like a growth product and ignoring that IRCTC's real challenge is fairness and stability under a fixed, predictable spike"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-003",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Substack's paid newsletter business",
+      "company": ["Substack"],
+      "region": "global",
+      "industry": "creator-economy",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Substack lets writers publish free and paid newsletters directly to subscribers' inboxes, taking a cut of paid subscription revenue. Define a metric framework for Substack's core paid-subscription business, including a North Star and guardrails.",
+      "context": [
+        "Substack lets any writer start a newsletter with free and optional paid subscription tiers, and takes a cut of paid subscription revenue.",
+        "Substack added a social feed called Notes in 2023, aimed at helping writers gain discovery and readers find new newsletters.",
+        "Substack has publicly emphasized that writers own their subscriber list and can export it, distinguishing itself from closed platforms."
+      ],
+      "assumptions": [
+        "assumed: Substack's take rate is a fixed percentage of paid subscription revenue regardless of newsletter size",
+        "assumed: Substack can attribute a new paid subscriber to the specific newsletter and acquisition channel (Notes, external link, referral) they converted from"
+      ],
+      "followUps": [
+        "Your North Star counts newly converted paid subscriptions. How would you stop it from being gamed by short-lived promotional discounts that churn immediately after?",
+        "How would the framework differ for the free-newsletter side of the ecosystem, where there's no direct revenue signal?",
+        "Which guardrail matters most to a struggling mid-size writer versus a top writer, and how would you reconcile them?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the paid-subscription core business rather than free newsletters or Notes as a standalone product, and assume Substack can trace a paid conversion back to the newsletter and channel that produced it, since that traceability is what any subscription funnel needs. Plan: frame what Substack is and how it makes money, map the ecosystem, build metrics with a North Star and guardrails, then set a team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Substack is a publishing platform with a subscription-commerce layer bolted on: writers get tools to publish and monetize, readers get direct access to writers they choose to pay, and Substack takes a cut for handling payments, hosting, and discovery. It competes less with traditional media and more with a writer's alternative of self-hosting via email or other creator tools, so its edge has to be discovery and ease of monetization. The mission is to build a viable, direct economic relationship between writers and readers outside of ad-supported and algorithm-gated platforms."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Three ecosystem players: readers (value = access to writing they want, in exchange for money or attention), writers (value = a sustainable income and a subscriber relationship they own), and Substack (value = a share of subscription revenue, which only grows if writers succeed). Implementable metrics: new paid subscriptions started per week (from the subscription-events table), 90-day paid-subscriber retention rate for newsletters above a minimum subscriber count (from billing cycle data), and writer earnings distribution across the platform (from payout records). I'd reject 'average revenue per writer' as North Star since it's an average dominated by top writers and hides whether the broad base is healthy; instead I'd pick 'total active paid subscriptions platform-wide, net of cancellations, per month' -- a countable stock metric that only rises if writers are both acquiring and keeping paying readers. Guardrails: writer churn rate -- the share of writers who stop publishing within 90 days of their first paid subscriber (catching a North Star propped up by acquisition without writer-side sustainability), and refund/dispute rate on paid subscriptions (catching subscriptions goosed by aggressive discounting that readers quickly regret)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the growth/discovery team, I'd set a quarterly goal on net new active paid subscriptions attributable to in-product discovery surfaces like Notes, sized against the current share of conversions coming from external links versus on-platform discovery -- if discovery is underperforming its share of total traffic, that gap is the target. This is actionable because the team controls ranking and surfacing logic in Notes, while the writer-churn guardrail stays with the writer-success team so discovery gains don't come at the cost of a revolving door of burned-out writers."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Picking 'average revenue per writer' as North Star, an average dominated by a handful of top earners",
+        "Optimizing new subscriptions without a writer-retention guardrail, missing that the platform's health depends on writers sticking around, not just readers converting once"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-004",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for BookMyShow's live events ticketing business",
+      "company": ["BookMyShow"],
+      "region": "india",
+      "industry": "ticketing-entertainment",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "BookMyShow, historically known for movie ticketing, has expanded into ticketing for large-scale live events and concerts in India. Define a metric framework for the live-events side of the business, including a North Star and guardrails.",
+      "context": [
+        "BookMyShow (Bigtree Entertainment) is India's largest online ticketing platform, originally built around movie ticket bookings.",
+        "BookMyShow has expanded into ticketing major live events and concerts, including large international artist tours in India, alongside its BookMyShow Live vertical.",
+        "High-demand event sales in India have publicly drawn scrutiny over queue systems, bot-driven buying, and resale/scalping of tickets."
+      ],
+      "assumptions": [
+        "assumed: BookMyShow earns a convenience/booking fee per ticket sold, separate from the face-value ticket price paid to the event organizer",
+        "assumed: BookMyShow can distinguish a likely genuine fan account from a bot or reseller account using device, payment, and behavioral signals at checkout"
+      ],
+      "followUps": [
+        "Your North Star is tickets sold to verified genuine fans. How would you actually implement the 'genuine fan' distinction without blocking real customers?",
+        "How would this framework change for a mid-size local event versus a single massive international tour date?",
+        "Which guardrail would you present first to the events partnerships team, and why?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to live events/concerts specifically, separate from the older movie-ticketing business, and assume BookMyShow earns a per-ticket fee distinct from face value, plus that it has checkout-time signals to flag likely bot/resale activity, since large on-sales have publicly drawn scrutiny over exactly that problem. Plan: context, ecosystem and mission, metric framework with North Star and guardrails, then a team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Live-events ticketing is a fundamentally different business from movie ticketing: inventory is fixed and one-time per event rather than recurring across thousands of showtimes, demand is extremely spiky around on-sale moments, and the platform's reputation risk from a broken on-sale for a major tour is much higher-profile than a slow weekday movie booking. BookMyShow's edge here is scale and existing payments/checkout trust built from movies, competing against dedicated event platforms and, increasingly, organizers' own direct-sale channels. The mission is to be the trusted, fair front door for India's biggest live experiences."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: fans (value = a fair shot at a ticket at face value without a broken checkout), event organizers/artists (value = tickets reaching real fans, protecting brand and future demand), and BookMyShow (value = booking-fee revenue and platform trust that keeps organizers choosing it for the next tour). Implementable metrics: on-sale completion rate -- tickets successfully purchased versus tickets added to cart within the first 10 minutes of an on-sale (from checkout event logs), median and p99 checkout latency during an on-sale (from server timestamps), and secondary-market listing rate for tickets sold through the platform within 48 hours (matched against known resale listings). I'd avoid 'average time to sell out' as North Star since it's a single number per event that says nothing about fairness or breakage; instead I'd choose 'tickets confirmed to verified individual buyers per major on-sale event' -- a countable outcome tied to the actual goal of getting tickets to real fans. Guardrails: bot/multi-account detection rate at checkout (catching a North Star inflated by automated buying that later resells), and organizer-reported on-sale technical failure rate (catching outages that would otherwise just show up as 'sold out fast' in the raw numbers)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the platform reliability and trust & safety teams jointly, I'd set a target for the next two major on-sales: reduce the secondary-market listing rate within 48 hours by a defined amount, sized against the current gap versus organizer-reported acceptable resale levels for comparable past tours. This is actionable through stronger identity checks and purchase-limit enforcement at checkout, while the checkout-latency guardrail stays with infrastructure so anti-bot measures don't themselves slow down real fans out of the sale."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Using 'average time to sell out' as North Star, which rewards fast bot-driven sellouts as much as fair ones",
+        "Building anti-bot metrics without a corresponding checkout-latency guardrail, risking friction that hurts real fans more than bots"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-005",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Oura Ring's Sleep Score feature",
+      "company": ["Oura"],
+      "region": "global",
+      "industry": "wearables-health",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Oura's ring tracks biometric signals overnight and surfaces a daily Sleep Score in the app. How would you measure the success of the Sleep Score feature specifically?",
+      "context": [
+        "The Oura Ring is a wearable that tracks sleep, temperature, heart rate, and activity, surfacing daily scores including a Sleep Score in its companion app.",
+        "Oura requires an ongoing membership subscription for full access to its app's scores and insights alongside the one-time ring purchase.",
+        "Oura has publicly positioned Sleep Score and Readiness Score as signature daily engagement features that bring users back to the app each morning."
+      ],
+      "assumptions": [
+        "assumed: Sleep Score is computed nightly from ring sensor data and is viewable by any subscribed user the next morning",
+        "assumed: Oura can log whether a user actually opens the app and views their Sleep Score, not just whether the score was computed"
+      ],
+      "followUps": [
+        "Your North Star is users who open the app and view their score each morning. How would you avoid this being gamed by a notification badge people dismiss without reading?",
+        "How would you know if the Sleep Score itself is inaccurate rather than just unengaging?",
+        "What guardrail would you watch to catch users who check the score obsessively in an unhealthy way?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this narrowly to the Sleep Score feature, not the whole Oura app, and assume a score is computed nightly for every subscribed, ring-wearing user, with app-open events logged separately from score computation, since 'the score existed' and 'the user saw it' are different things. Plan: quick product context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Oura's business model is hardware-plus-subscription: the ring is a one-time purchase, but ongoing app access and insights require membership revenue, so daily-return features like Sleep Score are what justify that recurring fee. It competes with other sleep and fitness wearables, where the daily 'here's your number' habit loop is often the main differentiator users can feel. The mission for this feature specifically is to give people an immediate, motivating reason to open the app every single morning."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players here are simpler since it's a single-feature question: users (value = a quick, trustworthy signal about how they slept) and Oura (value = a daily habit loop that justifies the subscription). Implementable metrics: morning app-open rate within 3 hours of waking, measured against users with a computed score available (from app session logs joined to score-computation timestamps), average time from app-open to viewing the Sleep Score detail screen (from screen-view events), and correlation between Sleep Score and user-reported subjective sleep quality when surveyed (from in-app feedback prompts). I'd avoid 'average Sleep Score across users' as North Star since it's an average that says nothing about engagement and could rise or fall for reasons unrelated to the feature's job; instead I'd choose 'daily active users who view their Sleep Score within 3 hours of waking' -- a countable daily behavior directly tied to the feature doing what it's meant to do. Guardrails: subscription cancellation rate among users whose Sleep Score viewing drops for two consecutive weeks (catching disengagement before it becomes churn), and self-reported score-accuracy disagreement rate from user feedback (catching a North Star that rises even as trust in the score's accuracy falls)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the mobile app team, I'd set a goal to raise the 3-hour morning-view rate by a specific number of percentage points this quarter, defended by the gap between it and Oura's push-notification open rate for the same cohort -- if notification opens are meaningfully higher than organic morning opens, that gap is addressable through better in-app prompting and score-reveal design. The score-accuracy guardrail stays jointly owned with the data science team so engagement gains aren't chased by inflating scores rather than improving genuine sensing."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Choosing 'average Sleep Score' as North Star, an average that doesn't measure engagement with the feature at all",
+        "Optimizing morning opens without a trust/accuracy guardrail, risking a habit loop built on a score users stop believing"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-006",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Zepto's dark store delivery network",
+      "company": ["Zepto"],
+      "region": "india",
+      "industry": "quick-commerce",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Zepto promises grocery delivery in around 10 minutes using a network of local dark stores. Define a metric framework for the dark store network itself, including a North Star and guardrails.",
+      "context": [
+        "Zepto is an Indian quick-commerce company founded in 2021 that delivers groceries from local 'dark stores' -- small warehouses not open to walk-in customers.",
+        "Zepto's core value proposition, publicly stated, is delivery within roughly 10 minutes of order placement in the areas it serves.",
+        "Zepto reached unicorn status in 2023 and has continued expanding its dark store footprint across Indian cities."
+      ],
+      "assumptions": [
+        "assumed: each dark store serves a fixed small delivery radius, and orders outside that radius are either rejected or routed to a farther store with a longer promised time",
+        "assumed: Zepto tracks order-to-doorstep timestamps at the individual order level for every delivery"
+      ],
+      "followUps": [
+        "Your North Star is orders delivered within the promised window. How would you stop stores from gaming this by narrowing their effective delivery radius quietly?",
+        "How would you know if a dark store is unprofitable versus just new and still ramping?",
+        "Which guardrail would you escalate on first if delivery speed and rider safety started trading off against each other?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the dark store fulfillment network, not the consumer app or marketing, and assume per-order timestamp tracking exists end to end plus that each store has a defined delivery radius, since quick-commerce's whole model depends on both. Plan: business context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Zepto's business model is thin-margin, high-frequency grocery retail where the entire value proposition is speed -- it competes directly with other quick-commerce players on the same promise, so the dark store network isn't a supporting feature, it's the product. Unlike a typical marketplace, Zepto controls inventory and fulfillment end to end, which means network performance metrics are really business performance metrics. The mission is to make ultra-fast delivery reliable enough that customers stop comparing it to traditional grocery shopping at all."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: customers (value = groceries delivered fast and complete), delivery riders (value = fair, achievable delivery targets and safe routes), and Zepto (value = order volume and delivery-cost efficiency per dark store). Implementable metrics: percentage of orders delivered within the promised time window, measured per store per day (from order-timestamp data), order fulfillment accuracy -- orders delivered complete without missing items (from order-vs-manifest reconciliation), and revenue per dark store per day relative to that store's fixed operating cost (from store-level financial logs). I'd reject 'average delivery time' as North Star since an average can be pulled down by a store over-promising on paper while missing its window regularly; instead I'd choose 'orders delivered within the promised window, per store, per day' -- a countable, store-attributable event that reflects whether the network is actually keeping its promise. Guardrails: rider-reported unsafe or unreasonable delivery-time pressure incidents (catching a North Star chased by pushing riders past safe limits), and order accuracy/complaint rate (catching speed gains bought by rushing picking and shipping incomplete orders)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For a regional operations team, I'd set a quarterly goal to bring the on-time delivery rate for underperforming stores up to the network median, sized against the current spread between the best- and worst-performing stores in that region -- since that gap indicates an operational fix (staffing, layout, inventory placement) rather than a structural speed ceiling. The rider-safety guardrail is jointly owned with the safety/operations policy team so speed gains aren't achieved by loosening delivery-time pressure on riders."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Picking 'average delivery time' as North Star, an average that can hide a meaningful share of orders missing the promised window entirely",
+        "Chasing delivery speed without a rider-safety guardrail, ignoring that the metric can be gamed at real human cost"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-007",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for GitHub Copilot",
+      "company": ["GitHub"],
+      "region": "global",
+      "industry": "developer-tools",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "GitHub Copilot is an AI pair-programming tool that suggests code completions inside a developer's editor. Define a metric framework for measuring the success of Copilot, including a North Star and guardrails.",
+      "context": [
+        "GitHub Copilot, built on OpenAI models, launched publicly in 2022 as an AI code-completion tool integrated into editors like VS Code.",
+        "Copilot is sold as a subscription add-on across individual, business, and enterprise tiers, separate from GitHub's core hosting product.",
+        "GitHub has publicly discussed suggestion acceptance rate as a metric it tracks for Copilot's usefulness."
+      ],
+      "assumptions": [
+        "assumed: Copilot can log every suggestion shown to a developer and whether that suggestion was accepted, modified-then-accepted, or rejected",
+        "assumed: accepted code can be tracked forward to see whether it persists in the codebase after a subsequent commit, not just accepted in the moment"
+      ],
+      "followUps": [
+        "Your North Star counts suggestions that survive in the codebase. How would you handle code that's accepted, then heavily refactored, but the underlying logic is still Copilot's?",
+        "How would this framework differ for an enterprise customer worried about code quality and security versus an individual hobbyist?",
+        "Which guardrail would you present to engineering leadership as the one that matters most for developer trust?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the core code-completion product, not Copilot Chat or other surfaces, and assume suggestion-level accept/reject events are logged along with a way to check whether accepted code survives past the next commit, since 'accepted in the moment' and 'kept in the codebase' are different signals. Plan: product context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Copilot's business model is a subscription layered onto GitHub's existing developer relationship, monetizing time saved rather than storage or collaboration like GitHub's core product. It competes with other AI coding assistants and, more fundamentally, with a developer's default behavior of writing code unassisted, so its value has to be felt suggestion-by-suggestion, not just claimed in marketing. The mission is to make AI-assisted coding fast enough and trustworthy enough that developers default to using it rather than turning it off."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: individual developers (value = faster, less repetitive coding without sacrificing correctness), engineering organizations paying for seats (value = measurable productivity gain that justifies the subscription cost), and GitHub (value = seat retention and expansion revenue). Implementable metrics: suggestion acceptance rate at the point of suggestion (from editor-extension telemetry), code churn rate on Copilot-originated code -- how often it's rewritten or deleted within a week versus human-written code (from commit-history diffing), and active-seat retention month over month (from subscription/usage-join data). I'd avoid 'average acceptance rate' as North Star since a developer could accept suggestions reflexively without them actually surviving or helping, hiding low real value behind a high raw number; instead I'd choose 'suggestions accepted and still present in the codebase after 7 days, per active developer, per week' -- a countable, durable-value event. Guardrails: post-merge bug rate on Copilot-originated code versus human-written code in the same repos (catching a North Star inflated by code that survives but introduces defects), and developer-reported trust/satisfaction score from periodic in-product surveys (catching silent frustration that wouldn't show up in acceptance data alone)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the Copilot product team, I'd set a quarterly goal to raise the 7-day-durable acceptance rate by a defined amount for a specific language/framework segment where current durability lags the platform average, sized against the gap to that platform average, since that gap points to a fixable suggestion-quality issue rather than a fundamental limit. The bug-rate guardrail stays jointly owned with a sample of enterprise customers' engineering leads so gains aren't claimed without confirming code quality holds."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Using raw 'acceptance rate' as North Star, which can be high even when accepted code gets deleted or rewritten almost immediately",
+        "Ignoring code-quality guardrails, mistaking fast acceptance for genuine productivity gain when it might just be reflexive tab-completion"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-008",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Urban Company's service-professional side",
+      "company": ["Urban Company"],
+      "region": "india",
+      "industry": "services-marketplace",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Urban Company connects customers with trained, background-verified beauty and home-service professionals. Define a metric framework focused specifically on the service-professional ('partner') side of the marketplace, including a North Star and guardrails.",
+      "context": [
+        "Urban Company (formerly UrbanClap) is an Indian marketplace connecting customers with service professionals for categories like salon, cleaning, and appliance repair, with standardized pricing and provider training.",
+        "Urban Company publicly emphasizes background verification and skill training for the service professionals on its platform as a core trust element.",
+        "Urban Company has publicly faced scrutiny and protests from service professionals over platform policies like ratings, penalties, and earnings structures."
+      ],
+      "assumptions": [
+        "assumed: a service professional's app shows them a queue of available job requests they can accept or decline within a time window",
+        "assumed: Urban Company can attribute each completed job, cancellation, and professional-side rating to a specific individual professional"
+      ],
+      "followUps": [
+        "Your North Star is professionals earning above a defined weekly income floor. How would that framework differ across cities with very different costs of living?",
+        "How would you distinguish a professional leaving because of low earnings from one leaving for unrelated personal reasons?",
+        "Which guardrail would you bring to a meeting with the professionals' own representative groups, given the public friction mentioned in the prompt?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this specifically to the professional/partner side of the marketplace rather than the customer side, and assume job requests are queued to professionals with an accept/decline window, with every job and rating attributable to an individual professional, since that attribution is what any partner-health metric depends on. Plan: context and why this side matters, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Urban Company's business model depends on a stable, motivated supply of trained professionals just as much as customer demand -- unlike a pure e-commerce marketplace, service quality is delivered by a person in someone's home, so professional churn directly threatens customer trust. It competes for professional supply against informal local service providers and other platforms, where the pitch is standardized customers, training, and more predictable earnings. The mission on this side specifically is to make platform work a genuinely better livelihood than the informal alternative, not just a source of leads."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players on this side: service professionals (value = predictable, sufficient earnings and fair treatment), customers (value = reliable, high-quality service, which depends on professional retention and morale), and Urban Company (value = enough active, high-quality supply to meet demand without over-relying on a shrinking pool). Implementable metrics: weekly active professionals completing at least a minimum number of jobs (from job-completion logs), job acceptance rate versus decline/timeout rate per professional (from queue-response events), and professional-side churn -- professionals inactive for 60+ days after being previously active (from activity-status tables). I'd avoid 'average earnings per professional' as North Star since an average is easily distorted by a small group of top earners in premium categories while median professionals struggle; instead I'd choose 'professionals earning at or above a defined weekly income floor, counted weekly' -- a countable, threshold-based metric that reflects whether the platform is actually delivering a livable outcome broadly, not just on average. Guardrails: professional-reported unfair-penalty or rating-dispute rate (catching a North Star propped up by professionals accepting jobs under pressure from punitive policies), and 60-day churn rate among newly onboarded professionals (catching supply health issues before they show up as an income-floor shortfall)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the supply/partner-success team, I'd set a quarterly goal to increase the share of professionals meeting the weekly income floor by a defined number of percentage points in categories currently below the platform average, sized against that specific category gap, since it points to fixable issues like job-matching density or pricing rather than an unfixable market limit. The rating-dispute guardrail stays jointly owned with policy/trust & safety so earnings gains aren't achieved by loosening standards that erode customer trust, given the public friction already seen over penalty policies."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Choosing 'average earnings per professional' as North Star, an average that can look healthy while typical professionals struggle",
+        "Building supply-side metrics without a fairness/dispute guardrail, ignoring the platform's own public history of friction with professionals over exactly these policies"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-009",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Peloton's live class leaderboard feature",
+      "company": ["Peloton"],
+      "region": "global",
+      "industry": "connected-fitness",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Peloton's live and on-demand classes include a leaderboard showing riders' real-time ranking and output during a workout. How would you measure the success of the leaderboard feature specifically?",
+      "context": [
+        "Peloton sells connected exercise bikes and treadmills alongside a subscription for live and on-demand classes.",
+        "During a class, Peloton displays a leaderboard ranking participants by output/effort in real time, and lets users see when friends are taking the same class.",
+        "Peloton has publicly described social and competitive features like the leaderboard as core to what differentiates its classes from unconnected home workout equipment."
+      ],
+      "assumptions": [
+        "assumed: the leaderboard is visible by default during every live and on-demand class a subscriber joins",
+        "assumed: Peloton can log whether a user actively glances at or interacts with the leaderboard during a session, not just whether it was rendered on screen"
+      ],
+      "followUps": [
+        "Your North Star is classes where a user actively engages with the leaderboard. How would you separate genuine motivation from anxiety-driven checking that could hurt the experience?",
+        "How would you know if the leaderboard is actually driving harder workouts, versus just being glanced at without behavior change?",
+        "What guardrail would catch the leaderboard demotivating a user rather than motivating them?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the leaderboard specifically, not the whole class experience, and assume it's shown by default with interaction (not just render) events logged separately, since a feature being on-screen isn't the same as a user actually using it. Plan: context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Peloton's business model is hardware-plus-subscription, and its differentiation from a plain treadmill or bike is entirely in the software experience -- the leaderboard is one of the clearest examples of a feature that exists purely to make working out feel social and competitive rather than solitary. It competes with both unconnected home equipment and other connected-fitness apps that lack real-time social ranking. The mission for this feature is to turn a workout from a solo chore into a motivating, semi-social event."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players, kept simple for a single feature: riders (value = motivation and a sense of accomplishment relative to others) and Peloton (value = a stickier, harder-to-replicate experience that supports subscription retention). Implementable metrics: leaderboard interaction rate -- the share of class sessions where a user taps/scrolls the leaderboard at least once (from in-app interaction events), output (Peloton's tracked effort metric) for sessions with leaderboard interaction versus without (from workout performance data), and leaderboard-related mentions in cancellation exit surveys (from exit-survey text tagging). I'd reject 'average leaderboard rank' as North Star since it's a relative ranking that's meaningless in aggregate -- someone is always last regardless of platform health; instead I'd choose 'class sessions per week with at least one active leaderboard interaction, per subscriber' -- a countable behavior tied directly to the feature being used, not just displayed. Guardrails: negative-sentiment mentions of the leaderboard in exit surveys or support tickets (catching a North Star that rises while some users feel discouraged or demotivated by ranking), and completion rate of classes with high leaderboard interaction versus low (catching a case where engagement with the leaderboard correlates with people quitting the workout early, not finishing stronger)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the product team owning in-class social features, I'd set a quarterly goal to raise leaderboard interaction rate by a defined number of percentage points among subscribers who currently never interact with it, sized against the current share of subscribers in that 'never interacts' segment, since converting even a fraction of them is a clear, boundable win. The negative-sentiment guardrail stays with the customer research team so the team doesn't chase interaction at the cost of alienating riders who find ranking discouraging."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Picking 'average leaderboard rank' as North Star, a relative measure that's structurally meaningless in aggregate",
+        "Treating higher interaction as automatically positive without a sentiment guardrail for riders who find competitive ranking demotivating"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-010",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Practo's online doctor consultation feature",
+      "company": ["Practo"],
+      "region": "india",
+      "industry": "healthtech",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Practo lets patients search for doctors and book both in-clinic appointments and online video consultations. Define a metric framework for the online consultation feature specifically, including a North Star and guardrails.",
+      "context": [
+        "Practo is an Indian healthtech platform that started with doctor discovery and appointment booking, and added online video consultations (Practo Consult) as a feature.",
+        "Practo connects patients with doctors across many specialties and cities, and doctors set their own consultation fees and availability on the platform.",
+        "Online consultation usage in India grew significantly during the COVID-19 pandemic, and Practo has publicly positioned teleconsultation as a core part of its offering since."
+      ],
+      "assumptions": [
+        "assumed: a completed online consultation is logged as a discrete event distinct from a booked-but-not-completed appointment",
+        "assumed: Practo can link a consultation to whether the patient later books a follow-up with the same or a different doctor on the platform"
+      ],
+      "followUps": [
+        "Your North Star is completed consultations that don't need an unplanned repeat visit. How would you verify a resolved issue without over-relying on doctors self-reporting it?",
+        "How would this framework need to change for a chronic-condition follow-up consultation versus a first-time acute complaint?",
+        "Which guardrail matters most for patient trust in a market where teleconsultation quality varies a lot by doctor?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the online video consultation feature, separate from in-clinic booking or doctor discovery generally, and assume completed consultations are logged distinctly from bookings, with follow-up bookings traceable back to a prior consultation, since that link is what tells you if a consultation actually resolved something. Plan: context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Practo's business model on this feature is a mix of consultation-fee share and doctor-side subscription/tools revenue, and teleconsultation is Practo's way of extending a doctor's reach beyond geography and clinic hours. It competes with dedicated telehealth apps and, increasingly, hospital systems building their own video consultation tools, so its edge has to be the combined discovery-plus-consultation experience in one place. The mission for this feature is to make a trustworthy doctor consultation available to anyone within minutes, not just during clinic hours."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: patients (value = fast, trustworthy access to a doctor without travel), doctors (value = additional consultation volume and flexible-hours income), and Practo (value = consultation-fee revenue share and platform stickiness for both sides). Implementable metrics: completed-consultation rate versus booked appointments (from appointment-status logs), consultation-to-followup rate within 30 days for the same complaint (from linked booking records), and patient-reported consultation satisfaction score collected post-call (from in-app rating prompts). I'd avoid 'average consultation rating' as North Star since it's an average easily inflated by doctors who game ratings or by patients rating out of politeness rather than outcome; instead I'd choose 'completed online consultations per week that don't need an unplanned repeat consultation for the same issue within 7 days' -- a countable, outcome-oriented event that reflects the consultation actually resolving something. Guardrails: doctor-side no-show/cancellation rate (catching a North Star propped up by only counting the consultations that happen to go smoothly while overall reliability suffers), and patient-reported technical-quality issues, like dropped calls or audio failure (catching resolution being undermined by platform reliability rather than doctor quality)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the teleconsultation product team, I'd set a quarterly goal to reduce the 7-day unplanned-repeat-consultation rate by a defined number of percentage points for the specialties currently furthest above the platform median, sized against that specific gap, since it points to fixable issues like consultation length or doctor guidance quality in those specialties. The technical-quality guardrail stays jointly owned with engineering so outcome gains aren't undermined by call reliability issues that have nothing to do with the doctor."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Using 'average consultation rating' as North Star, an average vulnerable to politeness bias and doctor-side gaming",
+        "Measuring consultation volume without a reliability/no-show guardrail, missing failures that never make it into the outcome data at all"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-011",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Calendly's core scheduling product",
+      "company": ["Calendly"],
+      "region": "global",
+      "industry": "productivity-saas",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Calendly lets people share a booking link so others can schedule time on their calendar without back-and-forth emails. How would you measure the success of Calendly's core scheduling product?",
+      "context": [
+        "Calendly is a scheduling automation tool that generates a shareable booking link reflecting a user's real-time calendar availability.",
+        "Calendly operates on a freemium model, with free accounts limited in features like number of event types or integrations, and paid tiers unlocking more.",
+        "Calendly integrates with calendar providers like Google Calendar and Outlook to sync availability automatically."
+      ],
+      "assumptions": [
+        "assumed: every booking made through a Calendly link is logged as a discrete event tied to the link owner's account",
+        "assumed: Calendly can distinguish a booking that was later cancelled or rescheduled from one that was kept as originally scheduled"
+      ],
+      "followUps": [
+        "Your North Star counts kept meetings booked through Calendly. How would you handle a meeting that's rescheduled twice but still eventually happens?",
+        "How would this framework differ for an individual free user versus a sales team using Calendly across dozens of reps?",
+        "Which guardrail would you watch most closely for a user who sets up a link and then never gets a single booking?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the core scheduling-link product, not team/enterprise routing features, and assume every booking event is logged and tied to an account, with cancellations/reschedules distinguishable from kept meetings, since 'booked' and 'actually happened' are different things worth measuring separately. Plan: context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Calendly's business model is freemium SaaS, monetizing power users and teams who need more event types, integrations, or routing logic than the free tier allows. It competes with the default alternative of manual back-and-forth email scheduling, so its entire value proposition is time saved and friction removed, which should show up directly in behavior, not just sentiment. The mission is to eliminate scheduling back-and-forth as a category of wasted time."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: link owners (value = fewer scheduling emails and fewer no-shows through automated reminders), invitees/bookers (value = a fast, low-friction way to grab time without an email chain), and Calendly (value = usage deep enough to convert free accounts to paid as their needs grow). Implementable metrics: bookings completed per active link owner per week (from booking-event logs), booking-to-kept-meeting rate -- bookings that aren't cancelled or no-showed (from status-change logs), and time from link share to first booking for new users (from account and link-creation timestamps). I'd avoid 'average bookings per user' as North Star since it's an average skewed by high-volume team accounts that says little about whether typical individual users are getting real value; instead I'd choose 'kept meetings booked through Calendly per week, platform-wide' -- a countable event that reflects the product's actual job (getting real meetings to happen) rather than just link clicks. Guardrails: cancellation/no-show rate on Calendly-booked meetings (catching a North Star inflated by bookings that never actually happen), and share of new users who create a link but get zero bookings within 14 days (catching an activation failure that a pure volume metric would hide since it only counts existing successful users)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the growth/activation team, I'd set a quarterly goal to cut the 14-day zero-booking rate among new signups by a defined number of percentage points, sized against the current share of signups landing in that segment, since it's a clear, boundable activation gap the team can act on directly through onboarding flow and link-sharing prompts. The cancellation/no-show guardrail stays with the core product team so activation gains aren't chased by pushing users toward low-commitment bookings that just get cancelled."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Choosing 'average bookings per user' as North Star, an average dominated by heavy team accounts that obscures individual-user activation problems",
+        "Counting raw bookings without a kept-meeting guardrail, missing that a booking that gets cancelled delivered no real value"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-012",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Policybazaar's insurer-partner side",
+      "company": ["Policybazaar"],
+      "region": "india",
+      "industry": "insurance-marketplace",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Policybazaar lets customers compare and buy insurance policies from multiple insurers on one platform. Define a metric framework focused on the insurer-partner side of the marketplace, including a North Star and guardrails.",
+      "context": [
+        "Policybazaar, operated by PB Fintech, is India's largest online insurance marketplace, letting customers compare policies across insurers for categories like life, health, and motor insurance.",
+        "PB Fintech went public on the NSE and BSE in 2021.",
+        "Policybazaar earns commission from insurers on policies sold through the platform, and has publicly discussed policy renewal/persistency as a business priority."
+      ],
+      "assumptions": [
+        "assumed: Policybazaar earns a commission percentage from each insurer on both initial sale and subsequent renewal of a policy",
+        "assumed: Policybazaar can track whether a policy sold through the platform is still active (not lapsed) at each renewal date"
+      ],
+      "followUps": [
+        "Your North Star is policies still active at their first renewal. How would that differ for a one-year motor policy versus a multi-decade life policy?",
+        "How would you know if an insurer is a bad match for the platform (e.g., high mis-selling complaints) before it shows up in the North Star?",
+        "Which guardrail would you present to an insurance regulator if asked to defend how Policybazaar avoids mis-selling?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the insurer-partner side of the marketplace, not the customer-facing comparison UI, and assume Policybazaar earns a commission on both initial sale and renewal, with the ability to track whether a sold policy stays active through each renewal date, since persistency is what actually determines whether a sale was healthy. Plan: context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Policybazaar's business model is commission-based aggregation: it doesn't underwrite risk itself, it earns for connecting customers to the right insurer and, critically, for policies that stay in force rather than lapsing. It competes with insurers' own direct sales channels and traditional agents, so its pitch to insurers has to be that platform-sourced customers are at least as good, ideally better-matched and more likely to renew. The mission is to make insurance comparison-shopping the norm in a market historically dominated by push-sold policies from agents."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: customers (value = finding a policy that actually fits their needs at a fair price), insurers (value = a stream of well-matched customers who renew rather than lapse, since a policy that lapses in year one is a loss for the insurer), and Policybazaar (value = commission revenue that's sustainable because it's tied to policies staying active, not just initial sales it can churn through fast). Implementable metrics: policies sold per week by category and insurer (from transaction records), first-year persistency rate -- policies still active and premium-paid at the one-year mark (from policy-status data synced with insurers), and mis-selling complaint rate per policy sold (from complaint/support logs). I'd reject 'average commission per policy' as North Star since it's an average that rewards pushing higher-commission policies regardless of fit, exactly the mis-selling risk the business needs to avoid; instead I'd choose 'policies sold through the platform that remain active at first renewal, counted per month' -- a countable outcome that only rises if the platform is actually matching people well. Guardrails: mis-selling/complaint rate per policy sold (catching a North Star gamed by aggressive upfront selling that doesn't hold up), and insurer-reported claim rejection rate for platform-sourced policies versus their overall book (catching customers being sold policies that don't actually cover their real needs)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the category team owning a specific insurance line (say, term life), I'd set a quarterly goal to raise first-year persistency by a defined number of percentage points for the insurers currently below the category average, sized against that gap, since it points to fixable issues in matching or advisory quality for those specific insurer relationships. The mis-selling guardrail stays jointly owned with compliance so persistency gains aren't chased by only counting easy renewals while pushing complaint-prone policies elsewhere."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Choosing 'average commission per policy' as North Star, which directly incentivizes the mis-selling risk the business most needs to guard against",
+        "Measuring sales volume without a persistency or complaint guardrail, missing whether sold policies actually serve the customer long-term"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-013",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Atlassian's internal support-ticket triage tool",
+      "company": ["Atlassian"],
+      "region": "global",
+      "industry": "internal-tools-saas",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Atlassian, maker of Jira and Confluence, is known for using its own products internally, including for its own customer support ticket triage. Define a metric framework for an internal tool that routes and triages incoming customer support tickets to the right support agent. Include a North Star and guardrails.",
+      "context": [
+        "Atlassian builds Jira, Confluence, and Jira Service Management, and has publicly described using its own tools internally for functions like IT and customer support.",
+        "Atlassian supports a large global customer base across its product suite, requiring incoming support requests to be triaged and routed to agents with the right product expertise.",
+        "Atlassian publishes public service-level targets for support response times on its paid support plans."
+      ],
+      "assumptions": [
+        "assumed: every incoming support ticket is logged with a timestamp, product area, and eventual resolving agent",
+        "assumed: the internal triage tool assigns a ticket to an agent queue automatically based on rules or a model, rather than fully manual routing"
+      ],
+      "followUps": [
+        "Your North Star is tickets correctly routed on the first attempt. How would you define 'correctly routed' in a way a data scientist could actually measure?",
+        "How would you know if the tool is failing silently -- misrouting tickets in a way that doesn't show up as an obvious complaint?",
+        "Which guardrail would you watch most closely if you added an AI model to the routing logic?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the internal ticket-triage tool specifically, not the customer-facing support experience broadly, and assume every ticket is logged with a timestamp, product area, and resolving agent, with routing itself automated by rules or a model rather than done manually, since that's what makes 'triage quality' something you can actually measure. Plan: context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "This is an internal tool, so its 'business model' is cost and quality, not revenue: a well-functioning triage tool reduces the time and headcount needed to resolve tickets while keeping Atlassian's published support SLAs intact. It competes internally against the counterfactual of manual routing by a dispatcher, or a simpler keyword-based system, so its case for existing has to be measurably faster and more accurate routing. The mission is to get every support ticket to the agent best equipped to resolve it, on the first attempt."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: support agents (value = receiving tickets that match their actual expertise, not needing to reroute), customers (value = fast, correct resolution without being bounced between agents), and the support operations team (value = throughput and SLA compliance without overstaffing). Implementable metrics: first-attempt correct-routing rate -- tickets not reassigned to a different queue within the first hour (from ticket-reassignment event logs), time from ticket creation to first agent response by routing path (from timestamp data), and reassignment rate per product area (from queue-change logs). I'd avoid 'average time to resolution' as North Star since resolution time depends heavily on ticket complexity, not just routing quality, and an average conflates the two; instead I'd choose 'tickets routed correctly on the first attempt, per week' -- a countable event isolating what this specific tool is responsible for. Guardrails: agent-reported routing-accuracy feedback rate (catching misroutes that get silently absorbed by an agent rerouting without logging a complaint), and SLA breach rate for tickets that were correctly routed (catching a scenario where routing looks great but downstream response time still suffers)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the support engineering team that owns the triage tool, I'd set a quarterly goal to raise first-attempt correct-routing rate by a defined number of percentage points for the product areas with the worst current reassignment rates, sized against that specific gap, since it's the most fixable segment through better routing rules or model retraining. The SLA-breach guardrail stays jointly owned with support operations so routing improvements are validated against actual customer-facing outcomes, not just internal reassignment counts."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Using 'average time to resolution' as North Star, which conflates ticket complexity with routing quality and isn't isolatable to what the tool controls",
+        "Measuring routing accuracy without an SLA guardrail, missing cases where correct routing still doesn't translate into a fast customer-facing response"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-014",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for cult.fit's hybrid membership",
+      "company": ["cult.fit"],
+      "region": "india",
+      "industry": "fitness-wellness",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "cult.fit (CureFit) offers a hybrid membership that gives access to both physical fitness centers and an at-home workout app. Define a metric framework for the hybrid membership product, including a North Star and guardrails.",
+      "context": [
+        "cult.fit, operated by CureFit, is an Indian fitness and wellness company offering both physical gym/fitness centers (cult centers) and an app with at-home workout content.",
+        "cult.fit sells subscription memberships that can include access to physical centers, the app, or both depending on the plan.",
+        "cult.fit has publicly expanded its center footprint across multiple Indian cities alongside its digital fitness offering."
+      ],
+      "assumptions": [
+        "assumed: a membership plan explicitly defines whether it includes center access, app access, or both",
+        "assumed: cult.fit can log a completed workout session, whether it happened at a physical center (check-in) or through the app, tied to a specific member"
+      ],
+      "followUps": [
+        "Your North Star is members completing a workout through either channel each week. How would you weight a center visit differently from an app-only session, if at all?",
+        "How would you know if the app is cannibalizing center visits rather than complementing them?",
+        "Which guardrail would you watch to catch a member who's paying but never showing up in either channel?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll scope this to the hybrid membership specifically, covering both channels together rather than treating the app and centers as separate products, and assume plan type (center, app, or both) and channel-specific workout completion are both logged per member, since the whole point of 'hybrid' is measuring engagement across both. Plan: context, ecosystem, metric framework, team goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "cult.fit's business model is subscription-based, and the hybrid structure exists because fitness engagement is inherently inconsistent -- a member might go to a center most weeks but travel and need the app, or vice versa, so the hybrid plan is a retention hedge against any single channel's friction. It competes with standalone gyms on one side and pure digital fitness apps on the other, positioning itself as the option that doesn't force a choice. The mission is to make it so a member always has a way to work out that fits that day, keeping the subscription relevant year-round."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players: members (value = a workout option that fits wherever they are, keeping the habit going), center staff/trainers (value = attendance and engagement that justifies the center's footprint), and cult.fit (value = subscription retention across both channels, which is stickier than either alone). Implementable metrics: weekly active members with at least one completed session across either channel (from combined check-in and app-session logs), channel mix per member -- share of sessions at centers versus app, tracked monthly (from the same combined logs), and membership renewal rate segmented by whether a member used one channel or both (from subscription and session data). I'd avoid 'average sessions per member' as North Star since it's an average dominated by highly active members and hides members who've gone fully dormant; instead I'd choose 'members completing at least one workout, through either channel, per week' -- a countable weekly-active behavior tied to the hybrid model's actual purpose. Guardrails: renewal rate for members active in only one channel versus both (catching a North Star that rises even as single-channel members, who are more churn-prone, go unaddressed), and center-visit rate among members who recently increased app usage (catching engagement shifting channels rather than genuinely growing)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the retention/lifecycle team, I'd set a quarterly goal to raise the share of members active in both channels by a defined number of percentage points among currently single-channel members, sized against that segment's size and its historically lower renewal rate, since converting single-channel members to hybrid usage is the most direct lever against churn. The channel-cannibalization guardrail stays jointly owned with the centers operations team so digital growth isn't celebrated if it's just quietly emptying centers."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Picking 'average sessions per member' as North Star, an average that hides fully dormant paying members",
+        "Growing app engagement without a cannibalization guardrail, missing that gains in one channel might just be losses in the other"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-001",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the drop-off in Etsy's cart-to-purchase checkout funnel",
+      "company": ["Etsy"],
+      "region": "global",
+      "industry": "ecommerce-marketplace",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Etsy is a global marketplace for handmade, vintage, and craft goods sold by independent sellers. Product data shows a meaningful share of shoppers add an item to their cart but never complete checkout. Walk me through how you'd analyze this funnel and find where the leak actually is.",
+      "context": [
+        "Etsy is a global online marketplace connecting buyers with independent sellers of handmade, vintage, and craft items.",
+        "Etsy charges sellers listing and transaction fees, and buyers typically purchase from many small, individual sellers rather than one storefront.",
+        "Etsy has publicly discussed cart abandonment and checkout friction as an area of ongoing product investment."
+      ],
+      "assumptions": [
+        "assumed: Etsy logs a discrete event for each funnel step -- item view, add-to-cart, checkout-start, payment-info-entered, order-confirmed -- tied to a session and, where logged in, a user",
+        "assumed: a cart can contain items from multiple sellers, and checkout must resolve shipping and totals across all of them before payment"
+      ],
+      "followUps": [
+        "You find the biggest drop is between checkout-start and payment-info-entered. What are the top three hypotheses you'd test first, and how?",
+        "How would you segment this funnel differently for a cart with one seller's items versus a cart spanning five different sellers?",
+        "If the leak turned out to be concentrated on mobile web specifically, how would that change your fix?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume every funnel step -- item view, add-to-cart, checkout-start, payment-info-entered, order-confirmed -- is logged as a discrete, session-tied event, and that a multi-seller cart has to resolve combined shipping and totals before payment, since that's a structural complexity unique to a marketplace like Etsy. My plan: quickly frame the product and why checkout is uniquely hard here, then work step by step through the funnel to find where the drop is sharpest, and end with a specific fix and a way to measure it."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Etsy's business model takes a cut of each seller's sale plus listing fees, so checkout completion directly drives revenue, but the marketplace structure -- many small independent sellers, unlike a single-retailer checkout -- makes checkout structurally more complex: shipping costs and times can vary per seller in the same cart. Etsy competes with both larger marketplaces and each seller's potential to sell directly elsewhere, so a smooth checkout is part of the pitch to sellers, not just buyers. This context matters because the funnel's weak point is plausibly the multi-seller complexity itself, not a generic checkout bug."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Working through the funnel step by step: item-view to add-to-cart tells you if product pages are convincing; add-to-cart to checkout-start tells you if the cart itself creates hesitation (price shock from combined shipping, say); checkout-start to payment-info-entered is where account/shipping-address friction usually lives; payment-info-entered to order-confirmed isolates pure payment failures. I'd pull conversion rate at each step from the event logs, segmented by cart composition (single-seller vs multi-seller) and by new vs returning buyer, because I'd expect multi-seller carts to show a sharper drop specifically at add-to-cart-to-checkout-start, where combined shipping costs get revealed. If that's where the data shows the biggest step-over-step decline, and it's disproportionately concentrated in multi-seller carts, that's strong evidence the leak is shipping-cost surprise rather than a generic checkout bug -- I'd confirm by checking whether abandoned multi-seller carts have a higher average shipping-to-item-price ratio than completed ones. The fix I'd propose is surfacing estimated combined shipping earlier, at add-to-cart rather than at checkout, so the cost is known before the user is deep in the flow. I'd track recovered checkout-starts among multi-seller carts week over week as the target metric, with guardrails on overall order value (make sure earlier shipping visibility doesn't just shrink cart sizes) and on seller-reported order cancellation rate (make sure we're not just moving the abandonment point earlier without net completions rising)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the checkout team, I'd set a goal to close a defined share of the gap between multi-seller and single-seller cart-to-checkout-start conversion rates within the quarter, sized against that specific measured gap rather than an arbitrary number. This is actionable because the team owns the cart and checkout-start UI directly, while the order-value and cancellation guardrails stay jointly owned with the sellers/marketplace-health team so the fix doesn't inadvertently shrink basket sizes or cancellations."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Jumping straight to 'add a payment option' without first confirming which specific step has the sharpest drop",
+        "Ignoring that Etsy's multi-seller cart structure is a plausible root cause distinct from a generic single-retailer checkout funnel"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-002",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the signup-to-first-order funnel for DoorDash",
+      "company": ["DoorDash"],
+      "region": "global",
+      "industry": "food-delivery",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "DoorDash connects consumers, delivery drivers (Dashers), and restaurants. A meaningful share of new users who download the app and create an account never place a first order. Walk me through how you'd analyze this funnel and find where the leak is.",
+      "context": [
+        "DoorDash is a food and local delivery platform connecting consumers, restaurants/merchants, and delivery workers called Dashers.",
+        "DoorDash operates in markets with varying restaurant selection and delivery availability depending on local Dasher supply and merchant density.",
+        "DoorDash charges consumers delivery and service fees on top of the menu price, and has offered subscription options (DashPass) that reduce or waive delivery fees."
+      ],
+      "assumptions": [
+        "assumed: DoorDash logs discrete events for app-download/install, account-creation, first restaurant-browse session, cart-add, checkout-start, and order-confirmed, tied to a user",
+        "assumed: DoorDash can determine the local restaurant selection and estimated delivery time shown to a specific user at the moment they browsed, not just in aggregate"
+      ],
+      "followUps": [
+        "You find new users in low-Dasher-supply zip codes convert far worse than average. What would you test first to confirm supply, not something else, is the cause?",
+        "How would you separate a user who churns because of price shock at checkout from one who churns because delivery time estimates were too long?",
+        "If DashPass trial users convert to first order at a much higher rate than non-trial users, how would that change your funnel-fix priorities?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume every step from install through account creation, browsing, cart-add, checkout-start, and order-confirmed is logged as a discrete user-tied event, and that DoorDash can reconstruct what restaurant selection and delivery-time estimate a specific new user actually saw, since that's needed to test supply-side hypotheses. Plan: frame why this funnel is unusually three-sided, then step through it to isolate the leak, then propose a fix and how I'd measure it."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "DoorDash's funnel is unusual because a new consumer's experience depends on a market condition they don't control -- local Dasher supply and restaurant density -- so the same funnel step can convert very differently by zip code for reasons that have nothing to do with the app itself. The business model takes fees on both consumers and merchants, so a stalled first-order funnel directly stalls revenue on both sides. This matters because 'fix the funnel' could mean a UX fix, a marketplace-liquidity fix, or both, and conflating them would misdirect the team."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Stepping through the funnel: install-to-account-creation isolates onboarding friction; account-creation-to-first-browse isolates activation intent; browse-to-cart-add isolates whether the shown restaurant selection and estimated delivery times are compelling; cart-add-to-checkout-start isolates cart-page friction; checkout-start-to-order-confirmed isolates payment/fee-related abandonment. I'd pull step-over-step conversion segmented by local Dasher-supply density and by delivery-time estimate shown, because I'd expect the sharpest drop to be at browse-to-cart-add specifically in low-supply zip codes, where a long estimated delivery time is shown even before checkout. If that segment shows a materially worse browse-to-cart-add rate than high-supply zips, while checkout-to-confirmation rates look similar across both, that isolates the problem to a supply/estimate issue rather than a checkout UX issue -- confirmed by checking whether the low-supply segment's abandoned sessions cluster around restaurant listings showing delivery estimates above a threshold. The fix in that case isn't a UI tweak; it's a Dasher-supply or restaurant-selection problem, which the funnel data correctly points toward marketplace liquidity rather than checkout. I'd track first-order conversion among new users in previously low-supply zip codes as the recovery metric, guardrailed by average Dasher pay per delivery in those zips (make sure liquidity fixes aren't just cutting Dasher pay to lower estimates) and by restaurant fulfillment/cancellation rate (make sure new demand isn't being pushed onto merchants who can't handle it)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the marketplace operations team (not the app product team, since the diagnosis points to supply, not UX), I'd set a goal to raise first-order conversion in the bottom-quartile-supply zip codes by a defined number of percentage points this quarter, sized against the conversion gap already observed versus top-quartile-supply zips. This is actionable through Dasher incentive spend and merchant onboarding targeted at those specific zips, while the Dasher-pay and merchant-fulfillment guardrails stay with operations finance and merchant success respectively so the fix doesn't just externalize the cost onto Dashers or restaurants."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating this as a single checkout-UX problem and missing that the biggest driver is a supply-side marketplace issue specific to certain zip codes",
+        "Proposing a fix (like incentive spend) without a guardrail on Dasher pay or merchant fulfillment capacity, which could just shift the cost elsewhere"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-003",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the signup-to-first-trade funnel for Robinhood",
+      "company": ["Robinhood"],
+      "region": "global",
+      "industry": "fintech-trading",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Robinhood offers commission-free stock trading through its app, but new users must complete identity verification before they can place their first trade. Walk me through how you'd analyze the signup-to-first-trade funnel and find where the drop-off is concentrated.",
+      "context": [
+        "Robinhood is a commission-free stock and options trading app that requires identity verification (KYC) and account funding before a user can place their first trade.",
+        "Robinhood is a publicly listed company (NASDAQ: HOOD) following its 2021 IPO.",
+        "Robinhood has publicly discussed simplifying onboarding as a product priority, given the multi-step verification and funding process required by financial regulation before trading can begin."
+      ],
+      "assumptions": [
+        "assumed: Robinhood logs discrete events for app-download, account-creation, identity-verification-submitted, identity-verification-approved, funding-initiated, funding-completed, and first-trade-placed, tied to a user",
+        "assumed: identity-verification approval can be delayed (pending manual review) rather than instant for a meaningful share of users"
+      ],
+      "followUps": [
+        "You find identity-verification-submitted to approved is where users disappear, and that step sometimes takes days. What would you test to see if delay length, not the requirement itself, is the driver?",
+        "How would you distinguish a user who abandons because of the verification requirement from one who abandons because they never intended to fund the account?",
+        "Which guardrail matters most here given this is a regulated identity-verification step, not an optional UX flow?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume every step -- account creation, identity-verification submission, verification approval, funding initiation, funding completion, and first trade -- is logged as a discrete timestamped event per user, and that verification approval isn't always instant, since manual review delays are a known feature of KYC processes. Plan: frame why this funnel has a regulatory step baked in, then isolate the leak step by step, then propose a fix with an appropriate guardrail given the regulated nature of the step."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Robinhood's business model depends on funded, active accounts generating trading and other revenue, but unlike a typical consumer app funnel, a mandatory identity-verification step sits in the middle of it -- this isn't optional UX friction Robinhood can simply remove, it's a regulatory requirement. That distinction matters enormously for diagnosis: a drop at the verification step could be a UX problem (confusing instructions) or a structural one (approval processing time), and only one of those is fixable by the product team alone."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Stepping through the funnel: account-creation-to-verification-submitted isolates whether users understand and attempt the required step; verification-submitted-to-approved isolates processing time and any resulting drop-off during the wait; approved-to-funding-completed isolates whether users follow through on connecting a bank and moving money; funding-completed-to-first-trade isolates whether funded users actually trade or stall at the last step. I'd pull step-over-step conversion segmented by time-to-verification-approval (e.g., approved within an hour versus approved after 24+ hours), because I'd expect a sharp additional drop in verification-approved-to-funding-completed specifically among users whose approval took longer, as delay erodes intent between submission and approval. If that segment shows meaningfully lower follow-through than the fast-approval segment while the underlying documents submitted look similar, that points to delay itself, not the verification requirement, as the driver -- confirmed by checking whether re-engagement (push notification opens) drops off the longer a user waits post-submission. The fix would be proactive status updates and faster routing for straightforward verifications, not removing or weakening the check itself, since it's regulatory. I'd track funding-completion rate among verification-approved users as the recovery metric, guardrailed by verification-approval accuracy (false approvals or rejections, to make sure faster processing doesn't compromise compliance) and by average time-to-approval for the hardest-risk-tier applications (to make sure the fix doesn't just speed up easy cases while hard cases wait even longer)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the onboarding/compliance-ops joint team, I'd set a goal to reduce median verification-approval time by a defined amount for the segment of straightforward, low-risk applications, sized against the current gap between that segment's approval time and the platform median. This is actionable through better routing of low-risk cases for faster automated review, while the approval-accuracy guardrail stays with compliance so speed gains never come at the cost of verification quality, which is non-negotiable in a regulated product."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating the identity-verification step as a removable UX friction point rather than recognizing it as a non-negotiable regulatory requirement",
+        "Proposing to speed up verification without a compliance-accuracy guardrail, risking weakened checks in a regulated trading product"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-004",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the onboarding-to-first-match funnel for Hinge",
+      "company": ["Hinge"],
+      "region": "global",
+      "industry": "online-dating",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Hinge, marketed as \"designed to be deleted,\" asks new users to build a detailed profile with photos and prompts before they start seeing potential matches. Walk me through how you'd analyze the onboarding-to-first-match funnel and find where users drop off.",
+      "context": [
+        "Hinge is a dating app owned by Match Group, known for its detailed profile-building onboarding involving photos and written prompts rather than a swipe-only setup.",
+        "Hinge's public brand positioning is 'designed to be deleted,' emphasizing helping users find a relationship rather than maximizing time spent in the app.",
+        "Hinge offers both a free tier and a paid subscription tier (Hinge+/Preferred) with additional features."
+      ],
+      "assumptions": [
+        "assumed: Hinge logs discrete events for app-download, account-creation-start, profile-photo-upload, prompt-completion, profile-published, and first-match, tied to a user",
+        "assumed: a profile must meet a minimum completeness threshold (a minimum number of photos and prompts) before it's shown to other users for matching"
+      ],
+      "followUps": [
+        "You find the sharpest drop is during prompt-completion, before profile-published. What would you test to see if it's prompt quantity or prompt quality (the specific questions) driving it?",
+        "How would you know if users who abandon during onboarding are different in intent from users who never opened the app after downloading?",
+        "Given Hinge's 'designed to be deleted' positioning, how would you make sure a fix to increase first-match rate doesn't just optimize for app engagement instead?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume every onboarding step -- account creation start, photo upload, prompt completion, profile publish, and first match -- is logged per user, and that a profile needs to hit a minimum completeness bar before it's eligible for matching, since that's core to how Hinge's onboarding is designed. Plan: quick context on why onboarding is unusually heavy here, step through the funnel, propose a fix with a guardrail tied to Hinge's stated mission."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Hinge's business model is subscription-based, but its differentiation from swipe-first apps is entirely in the onboarding: detailed prompts are meant to signal real intent and produce better matches, which supports the 'designed to be deleted' positioning of finding a relationship rather than endless swiping. That heavier onboarding is a deliberate trade-off, so some drop-off during profile-building is expected and not automatically bad -- the question is whether the drop reflects healthy self-selection or fixable friction."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Stepping through the funnel: account-creation-start to photo-upload isolates whether the initial ask is too heavy up front; photo-upload to prompt-completion isolates friction in the more effortful written-answer step; prompt-completion to profile-published isolates any final review/approval friction; profile-published to first-match isolates whether the matching algorithm and available user pool deliver a match in reasonable time. I'd pull step-over-step conversion, and I'd expect the sharpest drop to be within prompt-completion itself, since it's the most effortful step, so I'd also look at completion rate per individual prompt to see if specific prompts (versus prompt-writing in general) are the sticking point. If a small number of specific prompts show disproportionately high abandonment compared to others of similar length, that points to those prompts' framing being the fixable issue, not the concept of prompts overall -- confirmed by checking if users who abandon on those prompts return later and complete different ones instead. The fix would be revising or replacing the worst-performing prompts, not shortening onboarding overall, since shortening it risks undermining the intent-signaling that differentiates Hinge. I'd track profile-published rate among users who reach prompt-completion as the recovery metric, guardrailed by first-match rate for published profiles (make sure lighter-effort profiles aren't published and then perform worse in matching) and by the share of exit-survey responses citing 'found a match' among users who delete the app within 6 weeks (making sure the fix serves Hinge's actual mission, not just funnel completion)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the onboarding/profile-quality team, I'd set a goal to raise prompt-completion rate for the worst-performing prompts by a defined number of percentage points this quarter, sized against the completion-rate gap between those prompts and the platform's better-performing prompts. This is directly actionable through prompt copy and design changes, while the first-match-rate and deletion-for-good-reason guardrails stay jointly owned with the matching/algorithm team so onboarding gains don't come at the cost of match quality or the app's actual mission."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming all onboarding drop-off is bad and should be minimized, missing that Hinge's heavier onboarding is a deliberate quality filter",
+        "Fixing prompt-completion without a match-quality guardrail, risking easier onboarding that produces worse matches"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-005",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the cart-to-checkout funnel for Instacart",
+      "company": ["Instacart"],
+      "region": "global",
+      "industry": "grocery-delivery",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Instacart shoppers build a cart from a specific store's inventory, then a personal shopper picks and substitutes items before delivery. Walk me through how you'd analyze the cart-to-checkout funnel and find where users abandon.",
+      "context": [
+        "Instacart is a grocery delivery and pickup marketplace that connects customers with personal shoppers who pick items from a partner store's inventory.",
+        "Instacart charges delivery fees plus an optional service fee, and offers an Instacart+ membership with reduced fees.",
+        "Instacart's app shows estimated item availability and allows customers to pre-approve substitutions for out-of-stock items before checkout."
+      ],
+      "assumptions": [
+        "assumed: Instacart logs discrete events for store-selected, item-added-to-cart, checkout-started, fees-and-substitution-preferences-reviewed, and order-placed, tied to a session",
+        "assumed: cart abandonment is highest at the point fees and estimated total are first shown in full, based on how the checkout flow surfaces pricing"
+      ],
+      "followUps": [
+        "If the drop is concentrated at the fee-reveal step, how would you separate 'sticker shock at the total' from 'sticker shock specifically at the service/delivery fee line items'?",
+        "How would you test whether showing the full estimated total earlier in the flow (before cart-building) helps or hurts conversion?",
+        "A cohort of users abandons after setting substitution preferences rather than before — what would you hypothesize, and how would you check it?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume the funnel is logged step by step from store selection through order placement, and that fee visibility is a likely friction point given how delivery/marketplace apps typically structure checkout. Plan: quick context on Instacart's two-sided model, walk the funnel steps, isolate the leak, propose a test-backed fix with a guardrail." },
+          { "stage": "Product Rationale", "walkthrough": "Instacart's business model depends on fees layered onto a marketplace transaction — delivery fee, service fee, and often a markup on item prices versus in-store — which makes checkout price transparency a real tension: reveal too late and you get cart abandonment, reveal too early and you may deter cart-building altogether. The company's strategic bet with Instacart+ is to convert price-sensitive high-frequency users into a flat-fee membership, so understanding whether checkout abandonment is fee-driven directly informs both funnel fixes and membership positioning." },
+          { "stage": "Metric Framework", "walkthrough": "Stepping through the funnel: store-selected to first-item-added isolates browsing friction; item-added to checkout-started isolates cart-building intent; checkout-started to fees-reviewed isolates the pricing-reveal moment; fees-reviewed to order-placed isolates final commitment. I'd expect the sharpest drop between checkout-started and order-placed, and within that step I'd split by whether the fee total shown is above or below the user's typical historical order value — a good proxy for whether this order's fees feel unusually high relative to what they're used to paying. If abandonment concentrates among users whose fee-to-subtotal ratio is unusually high for a small cart, that points to fee structure discouraging small orders specifically, not price sensitivity in general — confirmed by checking if those same users complete larger orders at a normal rate. The fix would be a minimum-cart-size nudge or a fee cap for small orders rather than a blanket fee reduction. I'd track order-placed rate for small carts as the recovery metric, guardrailed by average order value platform-wide (make sure the nudge doesn't just shrink baskets to hit a threshold) and by Instacart+ membership conversion rate among affected users (the fee-sensitive segment is exactly who membership should convert)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the checkout/pricing team, I'd set a goal to raise order-placed rate for small-basket sessions by a defined percentage this quarter, sized against the current gap between small-cart and large-cart conversion. This is directly actionable through fee structure or threshold nudges, jointly owned with the growth team on the Instacart+ guardrail so the fix also feeds the membership funnel rather than just patching one-time orders." }
+          ]
+      },
+      "pitfalls": [
+        "Concluding 'fees are too high' without segmenting by cart size, missing that the issue may be fee-to-subtotal ratio on small orders specifically",
+        "Fixing checkout abandonment with a blanket fee cut that erodes margin instead of a targeted small-cart intervention"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-006",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the signup-to-first-trade funnel for Coinbase",
+      "company": ["Coinbase"],
+      "region": "global",
+      "industry": "crypto-exchange",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Coinbase requires identity verification before a new user can fund an account and place their first trade. Walk me through how you'd analyze the signup-to-first-trade funnel and find where the biggest leak is.",
+      "context": [
+        "Coinbase is a publicly traded cryptocurrency exchange that requires identity verification (KYC) as part of account setup, consistent with financial-services regulatory requirements.",
+        "Coinbase supports multiple funding methods, including bank transfer and debit card, which typically carry different processing times and fees.",
+        "Coinbase offers both a simpler 'buy/sell' interface and a more advanced trading interface (Coinbase Advanced Trade) aimed at different user segments."
+      ],
+      "assumptions": [
+        "assumed: Coinbase logs discrete events for signup-started, identity-verification-submitted, identity-verification-approved, funding-method-added, funds-available, and first-trade-placed, tied to a user",
+        "assumed: identity verification has a meaningfully higher abandonment or delay rate than other steps, given it depends on a third-party or manual review process outside Coinbase's direct control"
+      ],
+      "followUps": [
+        "If identity-verification-submitted to approved has a long tail (some users waiting days), how would you distinguish a systemic review bottleneck from a small number of genuinely flagged cases?",
+        "How would you measure whether users who abandon after approval but before funding are blocked by their bank's own restrictions on crypto-related transfers, versus losing intent?",
+        "Regulatory requirements mean you can't simply remove or shorten identity verification — what levers are actually available to you here?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume each step from signup through first trade is logged, and that identity verification is a likely bottleneck given it depends on external review rather than a Coinbase-controlled UI flow. Plan: brief context on why this funnel is regulatorily constrained in ways a typical app isn't, step through it, isolate the biggest controllable leak, propose a fix with a compliance-aware guardrail." },
+          { "stage": "Product Rationale", "walkthrough": "Coinbase operates under securities and financial-services regulation, so identity verification isn't optional friction to be designed away — it's a compliance requirement, and Coinbase's business depends on maintaining that trust with regulators to keep operating. That constraint reframes the exercise: the goal isn't removing verification, it's making the parts of the funnel that ARE within Coinbase's control (funding, first-trade UX) as smooth as possible so verification isn't compounded by avoidable friction elsewhere." },
+          { "stage": "Metric Framework", "walkthrough": "Stepping through the funnel: signup-started to verification-submitted isolates whether the initial ask is clear; verification-submitted to approved isolates the (largely external) review step; approved to funding-method-added isolates whether users return promptly after approval; funding-added to funds-available isolates payment-method processing time; funds-available to first-trade isolates final execution friction. Since verification timing isn't fully controllable, I'd focus analysis on approved-to-funding-added, since a real drop there means users who cleared the hardest step still don't come back — I'd segment by time-since-approval-notification and by whether the user received a push/email at approval, since a delayed or missing notification is a plausible, fixable cause distinct from lost intent. If users notified immediately convert to funding-added at a much higher rate than users with delayed notifications, that isolates a notification-timing fix rather than a funding-UX fix. I'd track funding-added rate within 24 hours of approval as the recovery metric, guardrailed by verification approval rate itself (make sure no change pressures the compliance team to approve faster at the cost of rigor) and by first-trade completion rate among funded users (confirm the fix converts all the way through, not just to a funded-but-idle account)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the activation/lifecycle team, I'd set a goal to raise the share of approved users who fund an account within 24 hours by a defined percentage this quarter, sized against the current same-day conversion rate. This is achievable through notification timing and reminder design without touching the verification process itself, and I'd keep the compliance team as a required reviewer on the goal so no proposed change is read as pressure to relax verification rigor." }
+          ]
+      },
+      "pitfalls": [
+        "Treating the identity-verification step as a normal UX problem to optimize, ignoring that it's a regulatory requirement outside product's control",
+        "Proposing a fix to verification speed that could be read as pressuring compliance to cut corners"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-007",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the signup-to-first-order funnel for Swiggy",
+      "company": ["Swiggy"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "A new Swiggy user downloads the app, browses restaurants, but a large share never place a first order. Walk me through how you'd analyze this signup-to-first-order funnel and find the leak.",
+      "context": [
+        "Swiggy is a food and grocery delivery platform operating across Indian cities, with restaurant listings that vary by the user's delivery location.",
+        "Swiggy shows estimated delivery time and a delivery fee that can vary based on distance and demand at the time of ordering.",
+        "Swiggy offers a loyalty/membership program (Swiggy One) that reduces or waives delivery fees for subscribers."
+      ],
+      "assumptions": [
+        "assumed: Swiggy logs discrete events for app-opened, location-set, restaurant-viewed, item-added-to-cart, checkout-started, and order-placed, tied to a user",
+        "assumed: the funnel varies meaningfully by city tier, with a lower first-order conversion rate in newly launched or lower-density service areas"
+      ],
+      "followUps": [
+        "If first-order conversion is meaningfully lower in newer/lower-density cities, how would you distinguish 'fewer restaurant options' from 'higher delivery fees due to distance' as the driver?",
+        "How would you check if users are comparing prices against a competing app in another tab/app before deciding, versus abandoning outright?",
+        "What early signal, before order-placed, would predict whether a new user is likely to become a repeat orderer?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume the funnel from app-open through order-placed is logged per user, and that first-order conversion likely varies by city tier given how delivery marketplaces scale unevenly across geographies. Plan: context on Swiggy's location-dependent model, step through the funnel, isolate whether the leak is options, pricing, or something else, propose a fix with a guardrail." },
+          { "stage": "Product Rationale", "walkthrough": "Swiggy's marketplace is fundamentally supply-constrained by geography — restaurant selection, delivery fees, and delivery time all depend on how dense Swiggy's restaurant and rider network is in a given user's exact location, which means a first-order funnel problem in one city might be a completely different problem in another. Since customer acquisition cost is a real business cost, understanding whether new users fail to convert due to genuinely thin supply versus a fixable UX issue determines whether the fix is a product change or a supply/ops investment." },
+          { "stage": "Metric Framework", "walkthrough": "Stepping through the funnel: app-opened to location-set isolates onboarding friction; location-set to restaurant-viewed isolates whether listings load and look appealing; restaurant-viewed to cart-added isolates menu/price friction; cart-added to order-placed isolates checkout and fee friction. I'd segment every step by city tier and by restaurant count within the user's delivery radius, since a thin-supply area will show a drop specifically at restaurant-viewed to cart-added (nothing appealing to order) while a thick-supply area with a drop at cart-added to order-placed points to fee or checkout friction instead. If new-city users show a large restaurant-viewed to cart-added drop that correlates with low restaurant density in their pincode, that's a supply problem, not a product one, and no checkout redesign will fix it. I'd track first-order conversion rate segmented by restaurant-density tier as the primary metric, guardrailed by average delivery fee shown (make sure any supply-side subsidy to increase restaurant count doesn't just push up fees elsewhere) and by 30-day repeat-order rate for new converts (confirm the fix produces real customers, not one-time discount-chasers)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the supply/expansion team in low-density cities, I'd set a goal to raise first-order conversion in the bottom restaurant-density tier by a defined percentage this quarter, tied to a specific restaurant-onboarding target for those pincodes rather than a product-only fix. Guardrails on delivery fee and repeat-order rate stay jointly owned with the pricing and retention teams so supply growth doesn't just shift the problem into a fee or quality issue." }
+          ]
+      },
+      "pitfalls": [
+        "Treating a low first-order conversion rate as a single problem, missing that its cause differs by city tier and restaurant density",
+        "Proposing a checkout/UX fix for what is actually a restaurant-supply gap in newer cities"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-008",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the signup-to-first-SIP funnel for Groww",
+      "company": ["Groww"],
+      "region": "india",
+      "industry": "fintech-investing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Groww lets users set up a recurring Systematic Investment Plan (SIP) into mutual funds, which requires KYC and linking a bank account via mandate before the first SIP installment can be debited. Walk me through how you'd analyze the signup-to-first-SIP-installment funnel.",
+      "context": [
+        "Groww is an Indian investment platform offering mutual funds, stocks, and other instruments, requiring KYC (identity verification) under Indian financial regulations before a user can invest.",
+        "Setting up a SIP requires linking a bank account and authorizing a recurring auto-debit mandate (commonly via NACH or UPI Autopay), separate from the KYC step.",
+        "Groww provides fund-comparison tools and risk-profiling questionnaires to help users select mutual funds before committing to a SIP."
+      ],
+      "assumptions": [
+        "assumed: Groww logs discrete events for signup-completed, KYC-submitted, KYC-approved, fund-selected, SIP-mandate-setup-started, mandate-approved, and first-installment-debited, tied to a user",
+        "assumed: the mandate-authorization step (approving the auto-debit in a separate banking app or via OTP) has a materially lower completion rate than the in-app steps, since it requires leaving Groww's own flow"
+      ],
+      "followUps": [
+        "If mandate-approval has a lower completion rate for UPI Autopay versus NACH, what would that suggest, and how would you confirm it?",
+        "How would you tell apart users who never intended to complete the mandate from users who tried and had it rejected by their bank?",
+        "What would you test to improve the specific step of leaving Groww's app to approve a mandate elsewhere?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume the funnel from signup through first-installment is logged per user, and that the mandate-approval step — which requires the user to leave Groww's app and confirm in their banking app or via a separate flow — is a likely leak given it's outside Groww's direct UI control. Plan: brief context on why SIP setup is a multi-hop regulated flow, step through the funnel, isolate the leak, propose a fix with a compliance-aware guardrail." },
+          { "stage": "Product Rationale", "walkthrough": "Groww's SIP product depends on two separate regulated steps — KYC and a recurring-debit mandate — that both involve leaving the core app experience at some point, which is unusual friction for a consumer app but non-negotiable under Indian financial regulation. Groww's growth strategy relies on converting India's large under-invested population into regular investors, so a leak specifically at the hand-off-to-another-app step directly limits how many first-time investors actually start investing versus merely browsing funds." },
+          { "stage": "Metric Framework", "walkthrough": "Stepping through the funnel: signup to KYC-submitted isolates the initial documentation ask; KYC-submitted to approved isolates the (partly external) verification step; KYC-approved to fund-selected isolates whether users engage with fund-selection tools; fund-selected to mandate-setup-started isolates initial SIP commitment; mandate-started to mandate-approved isolates the external hand-off; mandate-approved to first-installment-debited isolates final execution. I'd expect the sharpest drop at mandate-started to mandate-approved specifically, since it requires leaving Groww's app, and I'd segment that step by mandate type (NACH vs UPI Autopay) since they have different user flows and bank-side friction. If UPI Autopay shows meaningfully lower completion than NACH despite being the newer, supposedly-faster method, that points to a specific UX or bank-compatibility issue in that hand-off rather than mandate-setup being inherently leaky. I'd track mandate-approved rate segmented by mandate type as the recovery metric, guardrailed by KYC approval rate (confirm no upstream change is pressuring compliance) and by 3-month SIP-continuation rate (make sure a smoother mandate flow doesn't just produce first-installment conversions that lapse immediately after)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the payments/mandate team, I'd set a goal to close the completion-rate gap between UPI Autopay and NACH mandates by a defined percentage this quarter, since that gap is the most specific and actionable signal in the funnel. I'd keep KYC-approval rate and 3-month SIP-continuation as guardrails jointly owned with compliance and retention so the fix doesn't trade one problem for another." }
+          ]
+      },
+      "pitfalls": [
+        "Treating the mandate-approval hand-off as unfixable because it happens outside the app, missing that mandate-type UX still varies and is addressable",
+        "Optimizing for first-installment conversion without checking that those installments continue past month one"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-009",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the free-to-Super trial conversion funnel for Duolingo",
+      "company": ["Duolingo"],
+      "region": "global",
+      "industry": "edtech",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Duolingo offers a free trial of its ad-free, unlimited-hearts Super subscription, often triggered by hitting the daily lesson-mistake limit on the free tier. Walk me through how you'd analyze the trial-start-to-paid-conversion funnel.",
+      "context": [
+        "Duolingo is a language-learning app with a free ad-supported tier and a paid Super subscription that removes ads and the 'hearts' mistake-limit mechanic.",
+        "Duolingo commonly prompts free users to start a Super trial at moments of friction, such as running out of hearts mid-lesson.",
+        "Duolingo's free tier limits how many mistakes a user can make before being blocked from further lessons until hearts refill or are purchased/earned."
+      ],
+      "assumptions": [
+        "assumed: Duolingo logs discrete events for trial-started, trial-day-1-session, trial-mid-trial-session, trial-ended, and paid-conversion, tied to a user",
+        "assumed: trial-starters who hit the hearts limit as their trigger convert to paid at a different rate than trial-starters who opted in proactively from a settings/upsell screen"
+      ],
+      "followUps": [
+        "If hearts-limit-triggered trials convert lower than proactive trials, does that mean the trigger is a worse acquisition channel, or that it's reaching a less-committed segment that would churn regardless of trial design?",
+        "How would you test whether reminding users of remaining trial days affects conversion, without the reminder itself feeling like nagging?",
+        "What early-trial behavior (in the first 2-3 days) would you use as a leading indicator of eventual conversion?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume each trial-lifecycle event is logged with the trigger type (hearts-limit vs proactive opt-in), since that distinction seems central to interpreting conversion differences. Plan: brief context on why the trigger matters for Duolingo's model, step through the trial funnel, isolate where and for whom it leaks, propose a fix with a guardrail against manipulative framing." },
+          { "stage": "Product Rationale", "walkthrough": "Duolingo's core free experience is built around light friction (the hearts mechanic) that's meant to nudge engagement and, incidentally, create natural moments to introduce Super — but the company's stated brand identity leans on being encouraging rather than punitive, so a trial funnel fix that leans too hard on frustration-driven upsells risks working against that brand positioning even if it lifts short-term conversion." },
+          { "stage": "Metric Framework", "walkthrough": "Stepping through the funnel: trial-started to day-1-session isolates immediate engagement; day-1 to mid-trial-session isolates sustained usage; mid-trial to trial-ended isolates whether the trial period itself is used fully; trial-ended to paid-conversion isolates the final decision. I'd segment every step by trigger type (hearts-limit vs proactive), since I'd expect proactive trial-starters to have higher intrinsic motivation and convert better regardless of trial experience, while hearts-limit-triggered users are more likely to be reacting to momentary frustration. If hearts-limit trials show lower day-1-session engagement specifically (not just lower eventual conversion), that suggests the trigger itself produces a less-engaged trial cohort from the start, not just a harder final decision — meaning the fix is in what happens right after trial-start (a clearer explanation of what Super removes), not in the final upsell screen. I'd track day-1 and day-3 trial engagement rate segmented by trigger as the leading metric, guardrailed by trial-to-annoyance signals like app-uninstall-during-trial rate (make sure the trigger itself isn't driving people away entirely) and by long-term (6-month) retention of converted subscribers by trigger type (confirm hearts-limit conversions aren't lower-quality, high-churn subscribers)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the monetization team, I'd set a goal to raise day-3 trial engagement specifically for hearts-limit-triggered trials by a defined percentage this quarter, since that's the earliest and most diagnostic point in the gap between trigger types. I'd keep uninstall-during-trial rate and 6-month subscriber retention as guardrails jointly owned with the core-engagement and retention teams, given the brand risk of a trigger that reads as punitive rather than encouraging." }
+          ]
+      },
+      "pitfalls": [
+        "Treating hearts-limit-triggered trials as simply 'worse' without checking whether the issue is trial-experience design or a genuinely less-committed acquisition source",
+        "Optimizing the trial funnel toward short-term conversion in a way that risks Duolingo's encouraging brand positioning"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-funnel-010",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "funnel",
+      "title": "Diagnose the search-to-booking funnel for MakeMyTrip flights",
+      "company": ["MakeMyTrip"],
+      "region": "india",
+      "industry": "online-travel",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "A user searches for a flight on MakeMyTrip, sees a results list, but a large share never complete a booking. Walk me through how you'd analyze the search-to-booking funnel and find the leak.",
+      "context": [
+        "MakeMyTrip is an Indian online travel platform offering flight, hotel, and train bookings, aggregating fares from multiple airlines for a given route and date.",
+        "MakeMyTrip's flight search results commonly show filters for price, duration, number of stops, and airline, along with fare-type options (e.g., refundable vs non-refundable).",
+        "MakeMyTrip offers a loyalty program (MyPartner/MyBiz for business travel, and a general loyalty program for consumers) and travel insurance add-ons at checkout."
+      ],
+      "assumptions": [
+        "assumed: MakeMyTrip logs discrete events for search-submitted, results-viewed, flight-selected, passenger-details-entered, add-ons-reviewed, and payment-completed, tied to a session",
+        "assumed: a meaningful share of searches are comparison-shopping (the same route/date searched across multiple travel sites in parallel) rather than single-platform intent, based on how price-comparison behavior typically works in this category"
+      ],
+      "followUps": [
+        "If flight-selected to passenger-details-entered has the sharpest drop, how would you distinguish 'price went up between search and selection' from users simply comparison-shopping elsewhere?",
+        "How would you test whether showing fewer, more curated results (versus a long sortable list) changes selection and completion rates?",
+        "Add-ons like travel insurance are reviewed at checkout — how would you check if they're perceived as helpful or as unwanted checkout friction?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume the funnel from search through payment is logged per session, and that a meaningful share of traffic is comparison-shopping across multiple travel sites rather than committed single-platform intent, which matters for interpreting any drop-off as fixable versus inherent to the category. Plan: brief context on why travel booking funnels have unusually high comparison-shopping noise, step through the funnel, isolate the leak, propose a fix with a guardrail." },
+          { "stage": "Product Rationale", "walkthrough": "MakeMyTrip aggregates fares across airlines rather than selling its own inventory, so its core value proposition is comparison and convenience, not price control — meaning some 'abandonment' is actually users successfully using MakeMyTrip to find the best option and then booking directly or on a competitor, which the product can influence through UX and trust but can't fully eliminate. That distinction matters because a fix aimed at the wrong cause (assuming pure UX friction when it's actually competitive price-shopping) would waste effort." },
+          { "stage": "Metric Framework", "walkthrough": "Stepping through the funnel: search-submitted to results-viewed isolates whether results load reliably; results-viewed to flight-selected isolates whether the list is navigable and a choice gets made; flight-selected to passenger-details isolates fare-lock friction (a price or availability change between selection and entry); passenger-details to payment-completed isolates final checkout friction including add-ons. I'd expect the most diagnostic drop to be flight-selected to passenger-details, and within that I'd check the rate of price-change-between-selection-and-entry, since airline fares can shift in real time — if a large share of that drop coincides with a shown price increase, that's a fare-volatility problem, not a UX problem, and no checkout redesign fixes it. If instead the drop happens with no price change shown, that points to genuine checkout-entry friction (e.g., mandatory fields, unclear add-on framing) worth fixing directly. I'd track passenger-details-to-payment completion rate, segmented by whether a price change occurred, as the primary diagnostic split, guardrailed by average add-on attach rate (make sure any checkout simplification doesn't just strip out legitimately useful options) and by post-booking cancellation rate (confirm faster checkout isn't producing more mistaken bookings)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the checkout team, I'd set a goal to raise passenger-details-to-payment completion specifically for sessions with no price change by a defined percentage this quarter, since that isolates the genuinely fixable portion of the drop from fare-volatility noise. Add-on attach rate and post-booking cancellation stay as guardrails jointly owned with the monetization and customer-experience teams so a faster checkout doesn't trade completion for downstream quality." }
+          ]
+      },
+      "pitfalls": [
+        "Treating every unit of search-to-booking drop-off as a fixable UX problem, ignoring that comparison-shopping across travel sites is inherent to the category",
+        "Simplifying checkout by stripping add-ons without checking their attach rate or usefulness first"
+      ],
+      "related": []
+    }
+  ]
+}

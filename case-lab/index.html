@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PM Case Lab — daily interview practice</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="container">
+    <header class="masthead">
+      <p class="eyebrow">PM Case Lab · practice</p>
+      <h1 class="title">One case a day, with a rubric that keeps you honest</h1>
+      <p class="subtitle">A rolling 45-minute PM interview drill: <b>product sense, analytical thinking, root-cause, AI product, and cross-cutting</b> cases, plus a behavioural bank and a story library. Everything below is scored and saved on this device.</p>
+      <div class="stats" id="stats"></div>
+    </header>
+  </div>
+
+  <nav class="controls">
+    <div class="container controls-row">
+      <div class="seg" role="tablist" aria-label="Sections" id="tab-nav">
+        <button data-tab="today" role="tab" aria-selected="true">Today</button>
+        <button data-tab="cases" role="tab" aria-selected="false">Cases</button>
+        <button data-tab="behavioural" role="tab" aria-selected="false">Behavioural</button>
+        <button data-tab="stories" role="tab" aria-selected="false">Stories</button>
+        <button data-tab="progress" role="tab" aria-selected="false">Progress</button>
+      </div>
+      <div class="spacer"></div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section id="view-today" class="view"></section>
+    <section id="view-cases" class="view" hidden></section>
+    <section id="view-behavioural" class="view" hidden></section>
+    <section id="view-stories" class="view" hidden></section>
+    <section id="view-progress" class="view" hidden></section>
+    <section id="view-practice" class="view" hidden></section>
+
+    <footer>
+      <div class="stamp" id="footer-stamp">PM Case Lab · data loads from ./data/*.json · your progress lives only in this browser's localStorage.</div>
+    </footer>
+  </div>
+</div>
+
+<button class="themebtn" id="theme" title="Toggle theme" aria-label="Toggle light/dark theme">◐</button>
+
+<script src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,474 @@
+{
+  "pack": "seed",
+  "cases": [
+    {
+      "id": "ps-improve-001",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "improve-existing",
+      "title": "Improve repeat usage for Swiggy Instamart's one-time orderers",
+      "company": ["Swiggy Instamart"],
+      "region": "india",
+      "industry": "quick-commerce",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Swiggy Instamart wants to increase repeat usage among users who have placed exactly one order in the last 90 days. How would you improve retention for this cohort?",
+      "context": [
+        "Swiggy Instamart is Swiggy's quick-commerce grocery vertical, delivering in roughly 10-20 minutes, launched in 2020.",
+        "Swiggy listed on Indian stock exchanges in November 2024, with Instamart cited by the company as a key growth driver.",
+        "Instamart competes primarily with Zepto and Blinkit (owned by Eternal, formerly Zomato) in India's quick-commerce market."
+      ],
+      "assumptions": [
+        "assumed: focusing on Instamart's top-6 metro markets where dark-store density is highest",
+        "assumed: one-time-in-90-days orderers make up roughly a quarter of the active base in a given quarter",
+        "assumed: the first order for most of this cohort was prompted by a discount or a specific need (e.g. a party, a one-off grocery gap) rather than a habit"
+      ],
+      "followUps": [
+        "How would you tell a user who churned because the product failed them apart from one who simply didn't need it again?",
+        "Your solution assumes users don't know Instamart can serve daily staples cheaply and fast. How would you test that assumption before building anything?",
+        "If your top solution requires discounting, how do you avoid attracting only deal-seekers who never convert to habitual use?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume we're optimizing for India's top metro markets, where dark-store density supports the fastest delivery promise, and that a 'one-time orderer' means exactly one completed order in the trailing 90 days, not a lapsed frequent user. I'll also assume we have order-level and app-open telemetry for this cohort. My plan: connect Instamart's value to a real need, segment this cohort by what triggered their first order, map their journey to find where the habit-forming loop breaks, then propose a solution."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Instamart's value isn't 'fast delivery' as a feature, it's removing the friction of unplanned need -- running out of milk mid-week, a guest arriving in an hour, forgetting an ingredient while cooking. The deeper human need is confidence that a small, urgent gap can be filled without derailing your day. My mission statement: 'help people handle the small things they didn't plan for, the moment they realize they need to.' Strategically, Swiggy's existing food-delivery rider network and merchant relationships give Instamart a cost and speed advantage that a pure grocery app lacks, and that strength should shape any retention fix."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Ecosystem players here are the orderer, the dark-store picker, the delivery rider, and Swiggy's core food-delivery app that often first exposes users to Instamart. Within one-time orderers, I'd segment by trigger behaviour, not demographics: (1) discount-triggered first-timers who used a promo code and never returned, (2) emergency-triggered users who had a one-off urgent need and have no reason to return yet, (3) curious cross-sell users who tapped Instamart from the Swiggy food app once out of curiosity. Plotting reach x how underserved each group is, I'd prioritize the emergency-triggered segment: they're proven to have a genuine need Instamart solved well, they're likely a large share of one-time orders, and they're underserved because nothing today reminds them Instamart exists again until their next emergency."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this persona's journey: they have an urgent need, discover or recall Instamart, place one successful order, then re-enter their normal routine with no further touchpoint from Instamart. The problem isn't a bad product experience -- it's that Instamart has no presence in their mind for planned, non-emergency needs like weekly staples, so the next 'small thing' either gets solved by walking to a local store out of habit or doesn't trigger a return visit until another emergency happens, which could be months away. This is a problem, not a need, because it's specific and structural: zero re-engagement signal between the first order and the next urgent moment, prioritized highly since it's both frequent (every user eventually has another small need) and severe (each gap is a full re-acquisition, not a retention save). This ties back to the mission: if Instamart is only remembered in emergencies, it never becomes the default answer to 'I need something small, now.'"
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three distinct angles: (1) habit-seeding -- send a single, well-timed nudge a set number of days after the first order, framed around a plausible next need (e.g. 'running low on milk again?') rather than a generic discount blast; (2) staples subscription -- let a user mark 2-3 items from their first order as 'usual', with a one-tap reorder surfaced on the Swiggy food app home screen where they already have daily presence; (3) cross-app anchoring -- show a lightweight Instamart module inside the food-delivery app's order-tracking screen, since that's a moment the same user is already engaged. Plotting impact x effort, cross-app anchoring wins for V1: it's low-effort since it reuses an existing high-traffic surface, and high-impact since it converts an already-open app moment into Instamart discovery, rather than relying on push notifications people ignore. Risk: notification fatigue or module clutter degrading the core food-ordering experience, mitigated by capping frequency and only showing it to users who've already tried Instamart once. This directly serves the mission of making Instamart the default answer by putting it back in view at a moment of attention, not just at moments of manufactured urgency."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Defaulting to a blanket discount to bring back the whole cohort instead of first separating why each sub-group didn't return",
+        "Treating 'one order in 90 days' as churn when for the emergency-triggered segment it may simply mean no new need has arisen yet"
+      ],
+      "related": []
+    },
+    {
+      "id": "ps-compare-001",
+      "track": "product-sense",
+      "framework": "product-sense",
+      "type": "comparative",
+      "title": "Why WhatsApp and Instagram made opposite calls on deleting a sent message",
+      "company": ["WhatsApp", "Instagram"],
+      "region": "global",
+      "industry": "messaging",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "WhatsApp's 'Delete for Everyone' leaves a 'This message was deleted' placeholder behind; Instagram's Direct message unsend removes the message with no trace. Both products are owned by Meta. Why might they have made opposite design calls here, and which behaviour would you choose for a new messaging feature?",
+      "context": [
+        "WhatsApp launched 'Delete for Everyone' in November 2017; when used, the recipient sees a 'This message was deleted' placeholder in the thread rather than nothing at all.",
+        "Instagram's Direct messages support 'unsend', which removes a sent message entirely from the recipient's view, with no placeholder shown.",
+        "Both WhatsApp and Instagram are owned by Meta."
+      ],
+      "assumptions": [
+        "assumed: comparing 1:1 chats only, not group threads, since group dynamics could change the answer",
+        "assumed: the interviewer wants a recommendation for a new, unnamed messaging surface being built today, not a retrofit of either existing product"
+      ],
+      "followUps": [
+        "Would your answer change for a group chat instead of a 1:1?",
+        "WhatsApp added a time limit to Delete for Everyone that it has since relaxed. Why might a time limit exist at all?",
+        "How would you measure whether a tombstone vs silent-removal choice is working after you ship it?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll scope this to 1:1 conversations and assume I'm designing a delete-message feature for a new messaging surface, using WhatsApp and Instagram as reference points rather than trying to change either. My plan: establish what each product is fundamentally for, segment their user bases by messaging intent, identify the core problem a delete feature is solving for each, then recommend a design and defend it."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "WhatsApp is largely a utility for ongoing, often high-stakes personal and semi-official communication -- coordinating with family, confirming a payment, talking to a doctor's clinic -- where trust and accountability in the conversation history matter. Instagram DMs are largely social and expressive -- sending a meme, a flirt, a joke that didn't land -- where the emotional cost of an awkward message lingering is higher than the value of a tamper-evident record. WhatsApp's implicit mission is reliable, trustworthy communication; Instagram's is comfortable social expression. That difference in mission is the seed of the divergent design."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "On WhatsApp, a meaningful segment is people using it for something quasi-transactional or accountability-sensitive -- a landlord confirming a date, a small business confirming an order -- where both parties benefit from knowing a message existed and was retracted, not silently erased. On Instagram, the analogous segment is casual social senders sending something impulsive to a friend or crush, where the win condition is that the awkward moment disappears as completely as possible. These segments are mutually exclusive in what they need from 'delete': the WhatsApp segment wants integrity of the record, the Instagram segment wants a clean escape hatch."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the journey for the WhatsApp-style user: they send a message, realize it's wrong (wrong recipient, wrong number, mistaken info), and need to retract it -- but the other party may already suspect something happened, especially in an ongoing thread. The problem is 'I need to retract a message without breaking trust or making the other party think I'm hiding something' -- a tombstone answers this because it acknowledges the retraction happened. For Instagram, the persona's journey is sending something impulsively, immediately regretting it, and wanting the interaction to feel like it never happened; their problem is 'I need this social misstep to disappear completely,' since even a placeholder telegraphs 'something embarrassing was here.' Both are real problems, not just needs, because each is tied to a specific negative outcome (broken trust vs. lingering embarrassment) the product must prevent."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "For a new messaging surface, I'd choose based on the primary use case it optimizes for: if it leans utility/trust (payments, coordination, business), I'd copy WhatsApp's tombstone, since transparency about a retraction protects both parties and deters misuse for erasing accountability. If it leans social/expressive, I'd copy Instagram's silent removal, since the product's job is to keep interactions light and low-friction. If the surface serves both use cases at once, my V1 would default to a tombstone -- it's the more conservative, harder-to-abuse choice -- and I'd revisit silent removal only for specific low-stakes surfaces like disappearing-photo or reaction-only threads. The main risk with a tombstone is it can itself be read as passive-aggressive ('what did they say?'); the mitigation is keeping the placeholder minimal and never showing typing or preview hints for the deleted content. This choice serves the mission of making the product trustworthy by default, while carving out room for lighter, more expressive contexts as they're identified."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming one company must have simply 'gotten it right' and the other wrong, rather than recognizing both are correct for their own context",
+        "Ignoring that group threads change the calculus (a tombstone in a group signals to many people at once, raising the social stakes of the retraction itself)"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-metrics-001",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "define-metrics",
+      "title": "Define a metric framework for Spotify's audiobooks business",
+      "company": ["Spotify"],
+      "region": "global",
+      "industry": "audio-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Spotify added audiobooks to its platform, with Premium subscribers receiving a monthly allowance of listening hours. Define a metric framework for the audiobooks business, including a North Star metric and guardrails.",
+      "context": [
+        "Spotify launched audiobooks in 2022, initially in the US, letting users purchase audiobooks individually.",
+        "In 2023, Spotify began including a monthly allowance of listening hours (historically 15 hours) for Premium subscribers in several markets.",
+        "Unlike music's blanket per-stream royalty structure, audiobook licensing is typically paid per unit of consumption to publishers and rights holders."
+      ],
+      "assumptions": [
+        "assumed: the monthly hour allowance is priced so audiobook licensing costs stay under a target share of Premium subscription revenue",
+        "assumed: Spotify already has hour-level listening telemetry in place from its existing podcast infrastructure"
+      ],
+      "followUps": [
+        "Your North Star candidate counts hours listened. How would you stop that from being gamed by auto-play or background listening?",
+        "How would this metric framework need to change for a market where audiobooks are sold a la carte rather than bundled into Premium?",
+        "What's the single guardrail you'd escalate on fastest if it moved in the wrong direction?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume we're building this framework for the bundled-into-Premium version of audiobooks, that the monthly hour allowance is a fixed cost lever Spotify controls, and that we have reliable per-user, per-title listening-hour data already, since podcasts required similar telemetry. My plan: cover the product and business context, define the ecosystem and its metrics, propose a North Star and guardrails, then translate that into a team-level goal."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Audiobooks extend Spotify from a pure streaming subscription into content ownership-adjacent territory, competing with Audible's a-la-carte and subscription models. The business model shifts meaningfully here: audiobook rights holders are paid per-hour-consumed rather than the near-zero marginal cost of a music stream, so audiobooks are a genuinely different cost structure bolted onto the same Premium price. The mission connecting this to Spotify's broader vision is 'become the single place people go for any audio content,' with audiobooks closing the biggest remaining content gap versus dedicated audiobook apps."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem has three players: listeners (value = access to audiobooks without a separate subscription), publishers/authors (value = discoverability and royalty revenue), and Spotify itself (value = retention and reduced Premium churn). Specific metrics: hours listened per audiobook-active user per month (engagement), percentage of Premium subscribers who listen to at least one audiobook per quarter (adoption), and average royalty cost per audiobook-hour by publisher (cost control). For a North Star, I'd avoid an average like 'average hours per user' since it hides distribution and is easy to game with a handful of power listeners; instead I'd choose 'monthly audiobook-active Premium subscribers' -- a countable, implementable event (at least one audiobook session of meaningful length in the month) that reflects real ecosystem health: publishers get more listeners, Spotify gets a stickier subscriber. Guardrails against this North Star's weaknesses: churn rate among Premium subscribers who exhaust their monthly hour allowance (catches frustration from the cap), and royalty cost as a percentage of Premium ARPU (catches the North Star being 'bought' by unsustainable allowance increases)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "Translating this to a team goal: the Audiobooks growth team should own a specific quarterly target for monthly audiobook-active Premium subscribers, say a defined percentage-point increase, defended by the size of the addressable Premium base that has never sampled an audiobook and the conversion rate seen from past onboarding nudges into other Spotify content types like podcasts. This bridges strategy to execution because the team can directly act on it via onboarding prompts, curated audiobook shelves, and allowance-usage reminders, while the royalty-cost guardrail is jointly owned with finance so growth in adoption doesn't silently erode margin."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Picking 'average hours listened per user' as the North Star, which is an average and easy to distort with outliers",
+        "Ignoring that audiobooks have a real per-hour cost, unlike music, so an adoption-only North Star without a cost guardrail is incomplete"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-define-001",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "goal-setting",
+      "title": "Set a quarterly goal for Duolingo's Streaks team",
+      "company": ["Duolingo"],
+      "region": "global",
+      "industry": "edtech",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Duolingo publicly reports Daily Active Users (DAU) and DAU/MAU ratio each quarter, and has attributed engagement gains to its streak mechanic. As PM for the Streaks team, what quarterly goal would you set, and how would you defend the number?",
+      "context": [
+        "Duolingo has disclosed Daily Active Users (DAU) and the DAU/MAU ratio each quarter in its public earnings reports since its 2021 IPO.",
+        "Duolingo has publicly attributed a meaningful share of its engagement gains to streak mechanics and reminder notifications."
+      ],
+      "assumptions": [
+        "assumed: the Streaks team owns streak-repair, streak-freeze, and streak-reminder notification features",
+        "assumed: current DAU/MAU sits in the low-to-mid 30% range for the purpose of this exercise",
+        "assumed: the team can ship notification and in-app nudge changes within a quarter without needing a platform migration"
+      ],
+      "followUps": [
+        "If your goal is a DAU/MAU lift, how do you make sure the Streaks team doesn't just chase notification volume to hit it?",
+        "How would you defend this goal to a skeptical exec who thinks streak mechanics only affect already-engaged users, not the DAU/MAU ratio broadly?",
+        "What would make you recommend a smaller goal than the one you just proposed?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume the Streaks team owns streak-repair, streak-freeze, and reminder notifications, and that DAU/MAU today sits in the low-to-mid 30% range. My plan: frame the product and business context briefly, define the ecosystem and metric logic, confirm the North Star is DAU/MAU-oriented, then propose and defend a specific quarterly goal for this team."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Duolingo's core loop is a daily language lesson gamified with streaks, leaderboards, and reminders; its business model is freemium with a Super Duolingo subscription monetizing power users. Competitively it sits against both dedicated language apps and the broader graveyard of habit apps people abandon within weeks, so daily habit formation is close to Duolingo's entire moat. The mission connecting company vision to this team's purpose: 'make showing up every day feel too costly to skip,' which is exactly what a streak is designed to do psychologically."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "Ecosystem players are the learner (value = visible progress and habit reinforcement), Duolingo (value = retention feeding both ad and subscription revenue), and content/curriculum teams (value = a stable, returning audience to build lessons for). DAU/MAU is the sensible company-level North Star here since it's a ratio Duolingo already discloses and it directly captures 'does a monthly user come back daily,' though as a ratio it must be paired with guardrails: raw DAU growth (so the ratio isn't 'improved' by MAU shrinking) and streak-freeze usage rate (so repair/freeze features don't quietly weaken the habit they're meant to protect)."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the Streaks team specifically, I'd set a goal on 7-day streak retention rate -- the percentage of users who start a streak and are still active on day 7 -- rather than DAU/MAU directly, since DAU/MAU is a lagging, company-wide metric too far from what this team alone controls. I'd target a defined percentage-point improvement in 7-day streak retention this quarter, defended by the size of the 'streak breaks in the first week' drop-off Duolingo has previously flagged as its steepest, and by the direct causal chain from better repair/reminder UX to fewer early streak losses to higher DAU/MAU over subsequent quarters. This bridges strategy to execution because it's a number the team can move through concrete shipped features (smarter reminder timing, a more forgiving but not free streak-freeze), while raw DAU and freeze-usage guardrails stop them from hitting the target by making the streak trivially easy to maintain."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Setting the team's goal directly on the company-wide DAU/MAU North Star instead of a metric the team can actually move",
+        "Ignoring that making streaks 'too easy' to keep (via generous free freezes) could improve the team's raw number while eroding the habit-forming mechanic it's meant to protect"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-001",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a watch-time drop in YouTube Shorts",
+      "company": ["YouTube"],
+      "region": "global",
+      "industry": "video-streaming",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "YouTube Shorts' average watch time per user in a major market dropped 12% week-over-week starting last Tuesday, and it hasn't recovered since. Walk me through your root-cause analysis.",
+      "context": [
+        "YouTube Shorts is YouTube's short-form vertical video feed, launched globally in 2021.",
+        "YouTube periodically reports aggregate Shorts viewership figures in earnings calls and public blog posts, though granular market-level watch-time data is not publicly disclosed."
+      ],
+      "assumptions": [
+        "assumed: the 12% drop is specific to one country, and Shorts' global average watch time is roughly flat over the same week",
+        "assumed: there is no public statement from YouTube acknowledging an incident or outage that week",
+        "assumed: the metric in question is average watch-time minutes per daily active Shorts viewer"
+      ],
+      "followUps": [
+        "Your leading hypothesis is a ranking-model regression from a recent release. What's the fastest way to confirm or kill that theory?",
+        "How would your investigation change if the drop had instead happened gradually over three weeks rather than overnight?",
+        "What guardrail metric would you propose so this kind of drop is caught within hours, not a week later?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "First I'd pin down exactly what moved: average watch-time minutes per daily active Shorts viewer, down 12% week-over-week in this one market, starting precisely last Tuesday, and still depressed rather than recovering -- which rules out a single-day blip and points to something that changed state and stayed changed. I'd also check whether the drop is a step-change (sudden, flat before and after at the new lower level) or a continued slide, since a step-change strongly suggests a discrete triggering event on that Tuesday."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "Before chasing a cause, I'd rule out that this is a measurement artifact: check whether a logging or event-schema change shipped around that Tuesday, whether the data pipeline that computes this metric had a delayed or partial load that week, whether the metric's definition (e.g. what counts as a 'Shorts view') changed, and whether a bot-filtering or spam-detection update started excluding a chunk of previously-counted watch time. If any of these lines up with the exact Tuesday timing, I'd resolve that before treating the drop as a real user-behaviour change."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "Assuming the drop is real, I'd cut it by device (Android vs iOS), app version, acquisition channel, and new vs existing users within that market. If the drop is concentrated on one app version or one OS, that points to a client-side release issue; if it's spread evenly across every cut, that points to something external to the product, like a market-wide event. I'd also check whether other YouTube surfaces (long-form watch time) in the same market moved at all, which would suggest a broader platform or connectivity issue rather than something Shorts-specific."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "If the drop is localized to a specific app version or rolled out gradually to a percentage of users, I'd suspect a recent Shorts ranking-model release, a new feed-ranking experiment ramping into that market, or a UI change (e.g. altered swipe behaviour or ad load) that shipped that week. I'd check the release and experiment logs for that market for anything that started exactly on that Tuesday."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "If the drop is uniform across app versions and platforms, I'd look outside: a competing short-form app's major update or viral moment in that market, a national holiday or major live event pulling attention elsewhere that week, a mobile network or OS-level change (e.g. a background-video-throttling update from a device manufacturer), or a local news event dominating attention. I'd check whether the timing lines up with any publicly known event in that market."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the drop is concentrated on the latest Android app version and coincides with a ranking-model release that Tuesday, my leading hypothesis would be that the new ranking model is serving a lower-engagement mix of Shorts to that segment. The confirming query: compare per-session average watch time for users on the new vs old ranking-model arm within the same app version and market. The disconfirming signal: if watch time is equally depressed for users still on the old ranking arm, the ranking model isn't the cause and I'd look elsewhere in that release."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: roll back the ranking-model change for that market, or cap its rollout percentage, while the investigation continues, to stop further watch-time loss. Durable fix: add a pre-launch watch-time regression check to the ranking-model release process, gated on a canary population before any broader rollout. Guardrail metric going forward: a real-time, per-market watch-time anomaly alert with an hours-not-days detection window, so a 12% drop is caught the same day rather than a week into a stalled metric."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Jumping straight to 'the algorithm changed' without first ruling out a data or instrumentation artifact",
+        "Treating a single market's drop as a global problem before checking whether it's localized",
+        "Proposing a fix before committing to and testing a specific leading hypothesis"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-0to1-001",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Design a 0-to-1 AI feature for Notion",
+      "company": ["Notion"],
+      "region": "global",
+      "industry": "productivity-software",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Design a 0-to-1 AI feature for a workspace and notes product like Notion, where a large share of the existing value already comes from letting people organize freeform text and databases themselves.",
+      "context": [
+        "Notion AI launched in February 2023 as an in-editor writing assistant embedded directly in Notion pages.",
+        "Notion later added AI-powered Q&A that answers questions using a workspace's own existing content.",
+        "Notion AI has been offered as a paid add-on on top of the base Notion subscription."
+      ],
+      "assumptions": [
+        "assumed: designing for a workspace containing a mix of docs, wikis, and lightweight databases, not just plain notes",
+        "assumed: most workspace content is private company or personal data rather than public web content",
+        "assumed: the feature must respect existing per-page and per-database permissions"
+      ],
+      "followUps": [
+        "How would your system design change for a workspace with 50,000 pages versus one with 50?",
+        "What's your fallback when the AI answer draws on a page the asking user doesn't have permission to see?",
+        "How would you know, within the first month, whether this feature is actually good or just impressive in a demo?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions & Game Plan",
+            "walkthrough": "I'll scope this to a workspace with a real mix of docs, wikis, and databases, mostly private content, where any AI feature must respect existing page and database permissions. My plan: state why AI belongs here at all, identify which users tolerate which kind of AI mistake, choose a system design, design for the cases where the AI is wrong, define how we'd evaluate quality, and close with metrics and risks."
+          },
+          {
+            "stage": "Product Motivation & Why AI",
+            "walkthrough": "The underlying user problem is that as a workspace grows, finding a specific fact buried in some page from months ago becomes slower than just asking a coworker who might remember. A deterministic solution -- full-text search with filters -- already solves the case where the user knows the right keyword; it doesn't solve 'I know we decided this somewhere but I don't remember the words used.' That's what AI uniquely unlocks: answering a natural-language question by synthesizing across pages the user couldn't have keyword-searched their way to. If the workspace is small or the user always remembers exactly where things live, a better search or a pinned-pages feature would suffice and I'd say don't build AI for that case -- the value only shows up at real workspace scale with imperfect recall."
+          },
+          {
+            "stage": "Segmentation & Error Tolerance",
+            "walkthrough": "A knowledge-worker doing a quick recall check ('what did we decide about the pricing tier last quarter?') tolerates an occasional wrong or incomplete answer as long as it's clearly sourced, since they'll verify before acting. A new employee onboarding, using this as their primary way to learn how the company works, has much lower tolerance for confident wrong answers, since they have no independent way to catch an error. An engineer or ops person asking for something that will directly drive an action (e.g. 'what's our current refund policy') needs near-zero tolerance for a wrong answer, since it could cause a real operational mistake."
+          },
+          {
+            "stage": "System Design Choices",
+            "walkthrough": "I'd use retrieval-augmented generation: index workspace pages respecting existing permissions, retrieve the most relevant chunks for a given question, and have the model answer only from that retrieved context rather than fine-tuning a model on workspace data, since fine-tuning would be costly per-workspace and wouldn't handle constantly changing content. Data rights are straightforward since it's the customer's own workspace content, but the retrieval index must be re-permissioned in real time whenever page-sharing settings change. The feedback loop is a thumbs up/down on each answer feeding back into retrieval-ranking tuning. Latency budget: a few seconds is acceptable since this replaces a manual multi-page search that would take longer."
+          },
+          {
+            "stage": "UX for Probabilistic Output",
+            "walkthrough": "Every answer should show which pages it drew from, as clickable citations, so a user can verify before trusting it, and should visibly hedge ('I found this in three pages, but they don't fully agree') when the underlying content conflicts. Correction should be one click to 'this was wrong' with an easy jump to search instead. For the bad 5% -- clearly wrong or ungrounded answers -- the fallback is to explicitly say 'I couldn't find a confident answer' and drop to plain search results, rather than guessing; for the onboarding-user segment identified above, I'd add a visible disclaimer nudging them to confirm anything policy-related with a teammate."
+          },
+          {
+            "stage": "Evals & Quality Bar",
+            "walkthrough": "I'd build a golden set of real historical questions with known-correct answers pulled from actual workspace content across a handful of customer workspaces (with permission), and run an offline eval measuring whether the retrieved citations actually contain the right answer, separate from whether the generated text reads well. LLM-as-judge is useful for scoring answer fluency and whether citations are actually used, but it's unreliable for judging factual correctness against a private workspace it hasn't seen, so factual correctness has to be checked against the golden set's known answers, not by another model's opinion. I'd gate any model or prompt change behind this golden-set eval not regressing before it ships."
+          },
+          {
+            "stage": "Metrics, Guardrails & Economics",
+            "walkthrough": "North Star candidate: task completion rate, meaning the share of questions where the user did not immediately fall back to manual search afterward. Guardrails: hallucination rate (answers with no supporting citation), p95 latency, and cost per successful answer, since RAG calls involve both retrieval and generation cost that scales with workspace size. Key risks: privacy (the retrieval index must never leak content across permission boundaries, which is the single most damaging failure mode for a workspace product), vendor dependency on the underlying model provider, and cost drift as workspaces grow their page count over time, which I'd mitigate with incremental re-indexing rather than full re-indexing on every query."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Building this as fine-tuning on workspace content instead of retrieval, which doesn't scale per-customer and goes stale immediately",
+        "Ignoring that a retrieval index can leak content across permission boundaries if not re-checked on every query"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-evals-001",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-evals",
+      "title": "Define the quality bar for Intercom's Fin AI support agent",
+      "company": ["Intercom"],
+      "region": "global",
+      "industry": "customer-support-software",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "You're the PM for an AI customer-support agent like Intercom's Fin, priced per resolved conversation. Define the eval and quality bar you'd require before increasing the share of support traffic routed to the bot.",
+      "context": [
+        "Intercom launched Fin, an AI customer-support agent trained on a company's help-center articles, in 2023.",
+        "Intercom has publicly marketed Fin on a pricing model tied to successful resolutions rather than a flat per-seat fee."
+      ],
+      "assumptions": [
+        "assumed: a conversation is credited as 'resolved' only if the user does not re-contact support on the same topic within 24 hours",
+        "assumed: the underlying help-center content is reasonably complete and kept reasonably up to date",
+        "assumed: the bot can escalate to a human agent mid-conversation when it is not confident"
+      ],
+      "followUps": [
+        "A customer complains Fin confidently gave a wrong refund policy answer. Walk me through how that should have been caught before it shipped.",
+        "How would your quality bar differ for a customer in fintech support versus one in e-commerce order-status support?",
+        "The resolution-rate metric is also the billing metric. How does that change how carefully you need to define it?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions & Game Plan",
+            "walkthrough": "I'll assume resolution means no repeat contact on the same topic within 24 hours, the help-center content is reasonably current, and the bot can escalate to a human when uncertain. My plan: state why AI is the right tool here, identify which support topics tolerate which failure modes, cover the design choices that follow from that, then focus most of the time on the eval and quality bar itself, since that's the crux of the question."
+          },
+          {
+            "stage": "Product Motivation & Why AI",
+            "walkthrough": "The user problem is that most support questions are repetitive and already answered somewhere in the help center, but customers don't want to search -- they want to ask in their own words and get a direct answer. A deterministic FAQ chatbot with fixed decision trees already handles a narrow set of exact-match questions; what AI uniquely unlocks is handling the long tail of differently-phrased versions of the same underlying question, and synthesizing across multiple help articles when no single one has the full answer. For a narrow, high-stakes domain with only a handful of possible questions, a scripted flow might still beat an AI agent, and saying so would be the right call there."
+          },
+          {
+            "stage": "Segmentation & Error Tolerance",
+            "walkthrough": "A customer asking 'where is my order' tolerates a wrong or incomplete AI answer reasonably well since it's low-stakes and easily corrected by a human follow-up. A customer asking about a refund eligibility or billing dispute has much lower tolerance, since a confidently wrong answer can cause real financial harm or a broken promise the company must honor. A customer asking a security- or account-access-related question needs near-zero tolerance for a wrong answer, since it risks either a security exposure or a locked-out user."
+          },
+          {
+            "stage": "System Design Choices",
+            "walkthrough": "Fin-style agents are best built as retrieval-augmented generation over the help center, not fine-tuning, since help content changes constantly and per-customer fine-tuning wouldn't scale. Feedback loop: every escalation to a human, plus every reopened ticket, feeds back as a labeled 'the bot failed here' example for retrieval and prompt improvement. Latency budget: a few seconds per response is acceptable in a chat context, well within what a human agent would take to type a reply."
+          },
+          {
+            "stage": "UX for Probabilistic Output",
+            "walkthrough": "The bot should state its confidence implicitly by offering an easy 'talk to a person' escape at every turn, and should cite the specific help article it drew from so a customer can independently verify a policy claim. For topics identified as high-stakes (refunds, billing, account access), I'd force a lower auto-resolution threshold so the bot escalates to a human sooner rather than answering confidently. On the bad 5%, the fallback must never be silence -- it should hand off to a human with the full conversation context, not make the customer repeat themselves."
+          },
+          {
+            "stage": "Evals & Quality Bar",
+            "walkthrough": "The golden set should be several hundred real historical support conversations across topics, each labeled with the correct resolution and, separately, its stakes tier (low/medium/high). Offline eval measures answer correctness against that golden set per stakes tier, since a single blended accuracy number would hide a dangerous failure concentrated in the high-stakes tier. Before increasing traffic share, I'd require the offline eval to clear a materially higher correctness bar on high-stakes topics than on low-stakes ones, and I'd require online metrics (real resolution rate, real reopen rate) to hold for at least one full week at the current traffic share before increasing it further. LLM-as-judge is useful for scoring tone and whether the answer actually addresses the question asked, but it cannot be trusted alone to judge factual correctness of a specific refund policy -- that needs to be checked against the actual current policy document, which is exactly the kind of check a regression gate should automate before any prompt or model change ships."
+          },
+          {
+            "stage": "Metrics, Guardrails & Economics",
+            "walkthrough": "North Star: resolution rate, defined strictly as no repeat contact on the same topic within 24 hours, not merely 'the bot sent a final message.' Because this metric is also the billing metric, I'd insist on it being computed by an independent measurement path from whatever triggers billing, to avoid the same code both deciding a case is 'resolved' and getting paid for that decision. Guardrails: escalation rate (too low might mean the bot is answering when it shouldn't), reopen rate within 7 days (catches resolutions that don't actually stick), and hallucination rate on the high-stakes tier specifically. Key risks: safety and reputational risk from a wrong billing or refund answer, and the perverse incentive risk that a resolution-based pricing model created for the vendor to under-escalate in order to inflate billed resolutions -- which is exactly why an independent audit of the resolution definition matters."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Using one blended accuracy number across all topics instead of separating by stakes tier",
+        "Letting the same metric definition serve as both the quality bar and the billing trigger without an independent check",
+        "Treating LLM-as-judge output as sufficient proof of factual correctness for policy-sensitive answers"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-pricing-001",
+      "track": "cross-cutting",
+      "framework": "cross-cutting",
+      "type": "pricing",
+      "title": "Figma's 2023 Dev Mode seat introduction",
+      "company": ["Figma"],
+      "region": "global",
+      "industry": "design-software",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "At its Config 2023 conference, Figma introduced 'Dev Mode' as a distinct, separately-priced seat type alongside its existing Editor and free Viewer seats. Walk through how you would have approached this pricing and packaging decision.",
+      "context": [
+        "Figma is a browser-based collaborative design tool used primarily by designers, with developers increasingly inspecting design files during handoff.",
+        "At Config 2023, Figma announced Dev Mode, a developer-focused mode with its own seat type priced separately from a standard Editor seat.",
+        "Before Dev Mode, Figma's seat types were full Editor seats and free View-only access for collaborators."
+      ],
+      "assumptions": [
+        "assumed: most developers previously relied on a free Viewer seat or an Editor seat's inspect panel to read CSS values and export assets",
+        "assumed: a Dev Mode seat is priced below a full Editor seat",
+        "assumed: the decision was driven partly by wanting a dedicated revenue line from a large user group (developers) that previously paid nothing"
+      ],
+      "followUps": [
+        "How would you have measured whether free Viewer-seat developers were actually a monetizable segment before building this?",
+        "What's the risk of a developer team lead deciding Dev Mode isn't worth paying for and just keeping developers on free Viewer seats?",
+        "How does this pricing decision interact with Figma's broader collaboration-across-roles mission?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume most developers previously used a free Viewer seat or an Editor's inspect panel, that Dev Mode is priced below a full Editor seat, and that a goal here is monetizing a large previously-free user group. My plan: connect this to Figma's mission, segment the people involved, identify the underlying problem being solved, then evaluate the packaging solution Figma actually chose."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Figma's value proposition is real-time collaboration across everyone touching a design, not just designers -- its mission is closing the gap between 'what was designed' and 'what gets built.' Developers reading a Figma file to grab measurements, colors, and assets are a core part of that value chain even though they don't create the design. Strategically, Figma's browser-based, real-time-collaboration architecture is a strength most standalone dev-handoff tools (like older static export plugins) lack, so building a developer-specific mode plays directly to that strength."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes designers (Editor seats), developers doing handoff (previously free Viewer seats), and Figma's own business (revenue and seat economics). Developers themselves split into two behavioural segments: those who occasionally glance at a file for one value, tolerant of a slower workflow, and those who inspect Figma files as a regular part of their daily job, needing fast access to specs, code snippets, and asset export. These are mutually exclusive because the occasional-glancer's needs are met by a free viewer, while the daily-user's needs justify paying for a faster, developer-native workflow -- prioritizing the daily-user segment makes sense since they're the ones whose time savings translate into a credible willingness to pay."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the daily-inspecting developer's journey: they open a Figma file, hunt through layers not organized for their needs, manually note down spacing and color values, and often ask the designer to clarify. The problem isn't 'developers can't view designs' (a need already met for free) -- it's 'the free viewing experience isn't built for the specific, repeated workflow developers actually have,' which is a real problem tied to lost time and back-and-forth, prioritized as both frequent (daily, for active dev teams) and moderately severe (friction, not a blocker). This connects to the mission of closing the design-to-build gap: if developers are still manually translating values, the handoff gap Figma claims to close isn't actually closed."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Figma had a few options: keep dev-focused features free within the existing Viewer seat (maximizes goodwill, generates no new revenue), build dev features as a bolt-on paid plugin (lower commitment, but fragmented from the core product), or create a dedicated Dev Mode seat, priced between free and a full Editor seat, bundling code-snippet generation, better asset export, and layer organization tuned for developers. Figma chose the third option, which on an impact x effort 2x2 makes sense: it's higher effort than a plugin but captures a genuinely new revenue line from value already being delivered for free, while a dedicated seat type (versus a feature flag on Viewer) also lets Figma price it independently of the Editor seat rather than being forced into an all-or-nothing upgrade. The key risk is a team lead deciding the daily-use developer segment isn't different enough from occasional viewers to justify a new paid seat, keeping developers on free Viewer access and eroding the revenue case; the mitigation is making Dev Mode's time-saving features visibly and specifically valuable only to the daily-workflow segment, so the seat sells itself to the people who actually feel the friction, rather than being pushed on everyone with viewer access."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating all developers touching a Figma file as one segment, ignoring that occasional viewers and daily-workflow developers have very different willingness to pay",
+        "Assuming a new paid seat type is automatically justified just because a feature is valuable, without checking whether teams will simply avoid the seat and keep using free access"
+      ],
+      "related": []
+    }
+  ]
+}

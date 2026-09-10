@@ -1,0 +1,650 @@
+{
+  "pack": "ai-01",
+  "cases": [
+    {
+      "id": "ai-0to1-002",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Design Amazon's AI shopping assistant, Rufus",
+      "company": ["Amazon"],
+      "region": "global",
+      "industry": "e-commerce",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Amazon launched Rufus, a generative-AI shopping assistant that answers product questions and comparisons inside the app. Design what a 0-to-1 version of this should do and how you'd know it's working.",
+      "context": [
+        "Amazon launched Rufus, a generative-AI-powered shopping assistant, rolling it out in the Amazon app starting in 2024.",
+        "Rufus is trained to answer questions using Amazon's product catalog, customer reviews, and community Q&A, and can compare products in response to a query.",
+        "Rufus appears as a chat-style interface accessible from within the Amazon shopping app."
+      ],
+      "assumptions": [
+        "assumed: most Rufus queries are comparison ('which of these is better for X') or clarification ('will this fit my Y') questions rather than open-ended browsing",
+        "assumed: Rufus's answers are grounded only in Amazon's own catalog and review data, not general web knowledge"
+      ],
+      "followUps": [
+        "How would you prevent Rufus from confidently recommending a product based on fake or manipulated reviews?",
+        "How would you measure whether Rufus is actually helping people decide, versus just being a novelty they try once?",
+        "What's your fallback when a user asks something Rufus's grounding data can't answer, like real-time stock availability at a specific warehouse?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll scope this to comparison and clarification questions grounded strictly in Amazon's own catalog, reviews, and Q&A data, not general web knowledge. Plan: justify why AI belongs here versus existing search and filters, segment by error tolerance, choose a system design, design for wrong answers, define evals, close with metrics and risk." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "The problem is that Amazon's keyword search and filter system works when a shopper knows what attributes matter, but breaks down for 'which of these two blenders is actually better for smoothies with ice' — a synthesis question across specs and reviews that filters can't answer. A deterministic comparison table already helps for structured specs, but it can't summarize hundreds of reviews into 'people say the lid leaks when overfilled.' That synthesis-across-unstructured-text is what AI uniquely unlocks here; if the question were purely structured (price, brand, size), a smarter filter UI would suffice without any generative AI." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A shopper doing early browsing for a low-stakes, cheap item tolerates an imperfect Rufus answer since the downside of a bad purchase is small and returns are easy. A shopper making a higher-consideration purchase (electronics, appliances) has much lower tolerance, since a wrong comparison could lead to a costly mistake they only discover after delivery. A shopper asking a safety-relevant question (like whether a product is compatible with a specific use, e.g. a car seat's weight limit) needs near-zero tolerance for a confidently wrong answer." },
+          { "stage": "System Design Choices", "walkthrough": "Retrieval-augmented generation over Amazon's own product catalog, listing content, and review corpus, not a fine-tuned model, since the catalog changes constantly and per-product fine-tuning wouldn't scale. Data rights are Amazon's own first-party content, though reviews need spam/fake-review filtering before being trusted as grounding. Feedback loop: thumbs up/down per answer, plus tracking whether the user added an item to cart after a Rufus interaction. Latency budget of a couple seconds is fine since this replaces manual multi-tab comparison shopping." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Every comparison claim should link to the specific reviews or listing details it drew from, so a skeptical shopper can verify. For safety-relevant questions (fit, compatibility, weight limits), Rufus should show a visible lower-confidence flag and point to the manufacturer's own spec sheet rather than synthesizing an answer, given the segment's zero error tolerance identified above. On the bad 5% where grounding data is thin or contradictory, the fallback is to say so explicitly and surface the raw reviews rather than force a confident-sounding synthesis." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of real comparison questions with a correct answer verifiable against the actual catalog and review data, run as an offline eval before any prompt or retrieval change ships. LLM-as-judge helps score whether an answer used its citations coherently, but factual correctness against the golden set can't be judged by another model since it needs to match real catalog facts. Online, I'd track post-answer add-to-cart rate and a manual audit sample of safety-relevant question answers specifically, given their zero-tolerance segment." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: task-completion rate, meaning the share of Rufus sessions that end in an add-to-cart or a saved comparison, not raw query volume, which would reward chatty but unhelpful sessions. Guardrails: hallucination rate on safety-relevant questions specifically (weighted higher than general hallucination rate), return-rate for items purchased after a Rufus interaction (catch bad recommendations before they show up as brand damage), and cost per successful session, since RAG inference cost scales with usage. Vendor dependency and cost drift as usage grows are the main structural risks to watch." }
+        ]
+      },
+      "pitfalls": [
+        "Letting fake or manipulated reviews feed unfiltered into Rufus's grounding data, laundering bad information into confident-sounding answers",
+        "Measuring success by raw usage or query volume instead of whether sessions actually lead to a confident purchase decision"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-0to1-003",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Design Google Search's AI Overviews",
+      "company": ["Google"],
+      "region": "global",
+      "industry": "search",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Google added AI-generated summary answers, called AI Overviews, above traditional search results for many queries. Design what a 0-to-1 version of this should do and where it should and shouldn't appear.",
+      "context": [
+        "Google rolled out AI Overviews, AI-generated summaries shown above the traditional \"ten blue links\" search results, expanding this to all signed-in US users in 2024.",
+        "AI Overviews typically cite and link to a small set of source pages alongside the generated summary.",
+        "Google has publicly stated it restricts AI Overviews from certain sensitive query categories, such as some medical and financial topics, based on internal policy."
+      ],
+      "assumptions": [
+        "assumed: query intent can be classified in advance into categories like factual-lookup, comparison, how-to, and sensitive/high-stakes topics",
+        "assumed: Google's own web index and page-ranking signals are used as the retrieval source rather than the raw open web at generation time"
+      ],
+      "followUps": [
+        "How would you decide, query by query, whether to show an AI Overview at all versus just the traditional results?",
+        "Publishers whose content is summarized (and may lose the click) are a real stakeholder here — how does that affect your design?",
+        "How would you catch a case where the AI Overview confidently states something false that a top-ranked source doesn't actually say?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume queries can be classified into intent categories in advance and that generation is grounded in Google's own ranked web index rather than open, ungrounded generation. Plan: justify why AI belongs on top of search results at all, segment by error tolerance and query type, choose a system design, design the UX for a wrong answer, define evals, close with metrics, risk, and the publisher stakeholder." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "For many queries, the traditional ten-blue-links result already answers the question perfectly well once a user clicks through — the problem AI Overviews solves is queries that require synthesizing across multiple sources (\"compare X and Y for Z use case\") where no single page has the full answer. For a simple factual-lookup query with one authoritative source, a direct featured snippet (already a solved, deterministic problem) is a better and cheaper answer than a generated summary, so I would NOT show an AI Overview there — this is exactly the class of query where the non-AI solution already wins and adding generation only adds hallucination risk for no benefit." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A user researching a low-stakes comparison (best hiking trail near me) tolerates an imperfect synthesis since the cost of acting on it is low and easily corrected. A user researching a medical symptom or a financial decision has extremely low tolerance for a confidently wrong summary, since acting on it could cause real harm — this is exactly the category Google has said it restricts. A user doing a quick factual lookup with one clear right answer has effectively zero use for a generated summary at all; showing one just adds unnecessary risk of paraphrase error." },
+          { "stage": "System Design Choices", "walkthrough": "Retrieval-augmented generation grounded in Google's already-ranked web index, not open web generation, so the summary only synthesizes from pages the ranking system has already vetted for relevance and quality. A query-classification layer runs first to route sensitive-topic queries away from generation entirely (per Google's stated restriction) and to skip generation for single-source factual lookups. Feedback loop: click-through to cited sources and explicit feedback controls. Latency budget must stay near-instant since this sits on the core search results page." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Every AI Overview should show its source links prominently and clearly separated from the generated text, so users can verify against the original page. For queries near the sensitive-topic boundary, the system should default to NOT generating an overview rather than generating a hedged one, since the cost of a wrong medical/financial answer outweighs the convenience. On the bad 5% where sources conflict or are thin, the fallback is to show fewer or no AI-generated claims and fall back to the traditional results list." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of query-answer pairs where the correct answer is independently verifiable against the cited sources, used as an offline gate before any generation-model change ships, specifically weighted toward the sensitive-topic boundary cases since that's where failure cost is highest. LLM-as-judge can help score whether the summary faithfully reflects its cited sources (a groundedness check), but real-world factual correctness still needs to be checked against the golden set, not another model's opinion. Online, I'd sample and manually audit a slice of live overviews weekly, again over-weighted toward higher-risk query categories." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: query-satisfaction rate without a reformulation or fallback click to traditional results, not raw AI Overview impression count, which would reward showing overviews everywhere regardless of quality. Guardrails: groundedness rate (every generated claim traceable to a cited source), rate of overviews shown on sensitive-topic queries (should trend toward the policy-defined near-zero), and publisher click-through rate, since an overview that fully answers a question can suppress the traffic publishers depend on — that's a real stakeholder cost this design has to weigh, not just an engagement metric. Cost per served overview matters too, since generation is far more expensive than serving a cached ranked list at Google's query volume." }
+        ]
+      },
+      "pitfalls": [
+        "Showing a generated summary for simple single-source factual queries where a deterministic featured snippet already works better and more cheaply",
+        "Optimizing for AI Overview engagement without accounting for the real cost to publishers whose traffic the summary can suppress"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-0to1-004",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Should Zerodha add an AI investment research assistant?",
+      "company": ["Zerodha"],
+      "region": "india",
+      "industry": "fintech-investing",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "A product lead at Zerodha proposes an AI assistant that answers user questions about stocks and suggests what to research next. You're the PM asked to evaluate whether this should be built as an AI feature.",
+      "context": [
+        "Zerodha is an Indian discount brokerage regulated by SEBI (Securities and Exchange Board of India), offering stock, derivatives, and mutual fund trading.",
+        "SEBI regulates who can provide investment advice in India, requiring registration as an Investment Adviser (RIA) to give personalized buy/sell recommendations.",
+        "Zerodha already provides market data, charting tools (via Kite), and educational content (via Varsity) without giving personalized investment advice."
+      ],
+      "assumptions": [
+        "assumed: any AI feature that could be interpreted as recommending a specific buy/sell action would require Zerodha or its AI output to comply with SEBI's investment-adviser regulations",
+        "assumed: users asking stock-related questions are a mix of pure information-seeking (\"what does P/E ratio mean\") and implicitly advice-seeking (\"should I buy this stock\")"
+      ],
+      "followUps": [
+        "If you decided some assistant-like feature was safe to build, what would it be allowed to say and not say?",
+        "How would you detect, at the product level, when a user's question is implicitly asking for advice even if phrased as a factual question?",
+        "What would change your recommendation if Zerodha later became a registered Investment Adviser?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume any AI output that reads as a personalized buy/sell recommendation would trigger SEBI's investment-adviser registration requirement, and that user questions are a mix of pure education-seeking and implicit advice-seeking that's hard to cleanly separate. Plan: weigh AI against the regulatory reality first, since that's the deciding factor here, then show what a safe, narrower version could look like if any AI is used at all." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "The underlying user problem is real: retail investors on Zerodha often don't understand basic concepts or how to interpret the data already in front of them (a P/E ratio, a candlestick pattern), and a natural-language assistant could make that data more approachable. But the moment that assistant synthesizes an answer that reads as \"this stock looks good\" or \"you should buy this,\" it crosses into investment advice, which Zerodha is not licensed to give — and a generative model cannot be reliably constrained to never cross that line in an open-ended conversation, since the line depends on how a reasonable user would interpret the phrasing, not just the literal words used. Given that, I would NOT build an open-ended AI assistant for stock questions; the regulatory risk of an ambiguous generated answer being read as advice outweighs the convenience gained over existing static educational content (Varsity) and charting tools, which already serve the same user need without that risk. If AI is used at all, it should be scoped tightly to explaining terms and describing what data already on screen means, never synthesizing a view on a specific stock." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A new investor asking \"what does this P/E ratio mean\" is asking a pure-education question with low stakes if the AI mildly over-explains or under-explains. A user asking \"is this a good stock to buy\" — even if the AI is scoped to refuse a direct recommendation — has essentially zero tolerance for the AI generating anything that could be read as a recommendation, since Zerodha bears real regulatory and reputational risk if it does. Any ambiguity in how the AI phrases even a factual-sounding answer needs to be resolved toward the more conservative, non-advice-adjacent interpretation." },
+          { "stage": "System Design Choices", "walkthrough": "If limited to term-explanation and describing on-screen data, a narrow retrieval system grounded only in Zerodha's own Varsity educational content and static definitions (not generative synthesis about a specific stock's outlook) is safer than an open generative assistant, since it can be scoped to never produce a stock-specific view. This would explicitly not use retrieval over live market commentary or news, since that's exactly the input that tends to produce advice-like synthesis." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Any such feature would need a hard, visible boundary: a persistent disclaimer that it doesn't provide investment advice, and a designed refusal behavior for any question that implies \"should I buy/sell,\" redirecting to Varsity's educational content or a licensed adviser instead of attempting a hedged answer. Hedging language (\"this could be good, but...\") is exactly the failure mode to avoid, since it still reads as a lean toward a recommendation." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "The eval that matters most here isn't answer quality, it's a compliance-style red-team eval: an adversarial test set of advice-seeking questions phrased many different ways, gating any launch on the assistant reliably refusing all of them rather than on how well it explains terms. This should involve Zerodha's legal/compliance team directly in defining and reviewing the golden refusal set, not just the product team." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "If built narrowly, the only metric that matters as a hard guardrail is the rate of outputs that could plausibly be read as investment advice — targeting as close to zero as achievable, checked via ongoing sampled compliance review, not just at launch. A task-completion or engagement North Star is secondary and only relevant once that guardrail is trusted; the economics of even a narrow version have to include the fixed cost of continuous compliance review, not just inference cost." }
+        ]
+      },
+      "pitfalls": [
+        "Treating 'the AI just explains data, it doesn't recommend' as a safe design when a generative model can't reliably guarantee it never crosses that line in open-ended conversation",
+        "Building the feature and adding a disclaimer afterward instead of designing the compliance boundary as the primary constraint from the start"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-0to1-005",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Design Spotify's AI DJ feature",
+      "company": ["Spotify"],
+      "region": "global",
+      "industry": "music-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Spotify launched an AI DJ that curates a continuous playlist and narrates between songs in a synthesized voice. Design a 0-to-1 version of this feature.",
+      "context": [
+        "Spotify launched AI DJ in 2023, a feature that selects and plays a personalized stream of music with a synthesized voice introducing songs and artists between tracks.",
+        "Spotify DJ draws on the same personalization signals (listening history, existing playlists) used elsewhere in Spotify's recommendation systems.",
+        "AI DJ has been available to Spotify Premium subscribers."
+      ],
+      "assumptions": [
+        "assumed: the underlying song-selection recommendation model already existed at Spotify in some form before DJ launched, and the new work is primarily the narration layer and conversational framing",
+        "assumed: users can skip songs and give feedback (like/dislike) within a DJ session the same way they can in a normal playlist"
+      ],
+      "followUps": [
+        "How would you decide what the DJ voice should say about a song, and what happens when it has nothing genuinely interesting to say?",
+        "How would you tell whether users like the DJ specifically, versus just liking the underlying song recommendations regardless of narration?",
+        "What would you do if user feedback showed the narration felt repetitive after a few weeks of regular use?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume song-selection recommendation already exists as a solved deterministic/ML system, and that this exercise is mainly about the generative narration layer on top of it. Plan: justify why generative AI belongs in the narration specifically, segment by tolerance for narration missteps, choose a system design, design for a bad narration moment, define evals, close with metrics and risk." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "Spotify's existing recommendation system already solves song selection well; the problem DJ addresses is that a silent auto-generated playlist can feel impersonal, and a human radio host's context (\"here's a deep cut from an artist you loved last summer\") is part of what makes listening feel curated rather than algorithmic. That narration requires generating natural, varied language personalized to each listener's specific history, which a fixed set of pre-written templates could approximate crudely but not do well at real personalization scale — this is a case where AI adds genuine value on top of an already-solved recommendation problem, specifically in the generative narration layer, not in song selection itself." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A casual listener who mostly tunes out narration and focuses on the music has high tolerance for an occasional generic or slightly off comment, since it doesn't materially affect their experience. A listener who engages closely with the narration as part of the appeal has lower tolerance for repetitive, factually wrong (misattributing a song or artist fact), or oddly-toned commentary, since that's the specific value they're getting from the feature. Any listener has zero tolerance for narration that includes a real factual error about an artist (wrong band members, wrong genre) stated with confidence, since that undermines trust in the whole feature." },
+          { "stage": "System Design Choices", "walkthrough": "Narration generation grounded in Spotify's own verified artist and track metadata (not open web generation), combined with the user's own listening-history signals, using a text-to-speech voice model for delivery. This is closer to templated-generation-with-personalization than fully open generation, to keep factual grounding tight. Feedback loop: skip rate during narration segments specifically (versus during songs) as an implicit signal, plus any explicit feedback controls. Latency isn't as tight a constraint as for a chat interface since narration can be pre-generated slightly ahead of playback." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Narration should stay to verifiable metadata (release year, genre, artist facts) rather than speculative claims about an artist's intent or state of mind, which is where factual risk concentrates. Users should be able to skip a narration segment as easily as skipping a song, with that skip treated as a real quality signal, not noise. On repeated or clearly wrong narration, the fallback is to reduce narration frequency for that session rather than keep generating and risk more errors." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of artist/track facts to check narration for factual accuracy before shipping any change to the narration-generation prompt or model, since factual errors here are the highest-cost failure mode. LLM-as-judge can reasonably score tone and naturalness of the narration text, since that's more subjective, but factual claims still need to be checked against verified metadata, not a judge model's opinion. Online, I'd track narration-segment skip rate as a leading quality signal." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: session length or completion rate specifically for DJ sessions relative to standard algorithmic playlists, isolating whether DJ retains listeners better than song selection alone would. Guardrails: narration factual-error rate (checked via sampled audit), narration-segment skip rate (a proxy for narration quality independent of song quality), and cost per DJ session, since text-to-speech generation adds real inference cost beyond song streaming. The main structural risk is narration becoming repetitive at scale, which isn't a safety risk but is a genuine retention risk worth tracking separately from factual accuracy." }
+        ]
+      },
+      "pitfalls": [
+        "Letting narration speculate about an artist's intent or biography beyond verified facts, risking confident factual errors",
+        "Measuring DJ success by overall listening time without isolating whether narration itself adds value over the underlying song recommendations"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-0to1-006",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Should Swiggy add an AI chatbot for order-status questions?",
+      "company": ["Swiggy"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Swiggy's support team gets a high volume of \"where is my order\" questions. A colleague proposes building a generative AI chatbot to handle them. You're asked to evaluate the proposal.",
+      "context": [
+        "Swiggy is a food and grocery delivery platform that provides real-time order tracking, showing preparation status and the delivery partner's live location on a map within the app.",
+        "Swiggy's app already surfaces structured order-status data (e.g., 'order placed', 'being prepared', 'out for delivery', estimated arrival time) directly to the user.",
+        "Swiggy provides in-app customer support for order issues."
+      ],
+      "assumptions": [
+        "assumed: a large share of 'where is my order' contacts happen because the user didn't notice or trust the existing in-app status/map, rather than because the status information itself doesn't exist",
+        "assumed: order status is a single, unambiguous, already-computed piece of data per order at any moment"
+      ],
+      "followUps": [
+        "If a deterministic fix reduces most of these contacts, what's left over that might still benefit from a conversational interface?",
+        "How would you validate the assumption that most contacts are about visibility, not about the underlying delay itself, before building anything?",
+        "If the underlying issue turns out to be that delays are common and users want an explanation, not just a status, does that change your answer?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume most 'where is my order' contacts are about visibility into already-existing status data rather than the data not existing, and that order status itself is a single deterministic fact at any given moment. Plan: this is mainly a why-AI question, so I'll spend most of the time there, then briefly describe what a lighter non-AI fix would look like." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "Order status is not an ambiguous or unstructured question — it's a single fact Swiggy's own backend already computes and displays in the app. A generative AI chatbot answering 'where is my order' would just be a more expensive, slower, and riskier way of surfacing information that a deterministic lookup already provides instantly and with zero risk of hallucinating a wrong status. I would NOT build this as an AI feature: the right fix is making the existing structured status more prominent, proactive, and trustworthy (e.g., a push notification at each status change, a persistent status bar) rather than routing the same question through a chat interface that could occasionally state the wrong status with false confidence. AI would only earn its place here if the actual underlying problem were something unstructured — like explaining an unusual delay in natural language, or handling a genuinely ambiguous complaint — not the basic status lookup itself." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "Since the recommended path is a non-AI status-visibility fix, error tolerance here is about the deterministic system, not an AI model: it must be zero-tolerance for showing a stale or wrong status, since that's the exact trust problem prompting the extra contacts. If a narrower generative layer were added later — for example, generating a natural-language explanation only when a delay exceeds a threshold — that narrower segment (users hitting a genuine delay) would need higher accuracy specifically about the reason for delay, since a wrong or vague explanation there would add frustration rather than reduce it." },
+          { "stage": "System Design Choices", "walkthrough": "The recommended v1 is not an AI system at all: push notifications on every status change, a persistent in-app status indicator visible without navigating to a specific screen, and a live map that's easy to find from the home screen. If, after that ships, contact volume for genuine-delay explanations remains high, a narrowly-scoped generative layer that explains a specific delay (grounded only in the order's own real delay-cause data, e.g. 'restaurant prep took longer than usual') could be considered as a v2, not v1." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Not applicable to the recommended v1, since it's a deterministic status display, not a probabilistic system — that's the point. If a delay-explanation layer were added later, it would need to state uncertainty honestly ('the restaurant reported a delay, exact reason unavailable') rather than fabricate a specific cause it doesn't actually know." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "For the deterministic fix, 'evaluation' means measuring whether 'where is my order' contact volume drops after shipping better status visibility, not a model quality eval. That's the actual test of whether the underlying hypothesis (it's a visibility problem, not a data problem) was correct." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "Success metric: reduction in 'where is my order' support contacts as a share of total orders, following the visibility improvements — this directly tests the hypothesis without needing any AI infrastructure or its associated inference cost, hallucination risk, or eval overhead. If that metric doesn't move enough, the next investigation is understanding what's actually driving the residual contacts before reaching for AI as the default next step." }
+        ]
+      },
+      "pitfalls": [
+        "Reaching for a generative AI chatbot as the default fix for a support-volume problem before checking whether the underlying data is already structured and just poorly surfaced",
+        "Adding hallucination risk to a previously-deterministic, zero-error status lookup for no real user benefit"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-0to1-007",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-0to1",
+      "title": "Design a 0-to-1 version of Canva's Magic Studio",
+      "company": ["Canva"],
+      "region": "global",
+      "industry": "design-software",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Canva launched Magic Studio, a suite of generative AI tools for creating and editing designs (image generation, background removal, text-to-design). Design a 0-to-1 version of one of these tools for a non-designer user.",
+      "context": [
+        "Canva launched Magic Studio, a suite of AI-powered design tools including text-to-image generation, Magic Edit, Magic Eraser, and Magic Write, integrated directly into the Canva design editor.",
+        "Canva's core product lets non-designers create graphics using templates, drag-and-drop elements, and stock assets.",
+        "Magic Studio tools have been offered as part of Canva's paid subscription tiers, with usage limits on the free tier."
+      ],
+      "assumptions": [
+        "assumed: the primary target user for these tools is a non-professional designer (small business owner, social media manager, student) rather than a professional graphic designer",
+        "assumed: generated images and edits are used within Canva's existing template/design-editing environment rather than as a fully separate standalone tool"
+      ],
+      "followUps": [
+        "How would you handle a user who generates an image, doesn't like it, but doesn't know how to describe what's wrong to get a better one?",
+        "What's your approach to copyright and licensing risk for generated images used in commercial designs?",
+        "How would you know if a generated design tool is actually saving users time versus just being fun to play with once?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll scope this to a non-professional designer using text-to-image generation inside Canva's existing editor, generating assets for their own design rather than a standalone tool. Plan: justify AI here versus Canva's existing template/stock system, segment by error tolerance, choose a system design, design for a bad generation, define evals, close with metrics and risk." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "Canva's existing value proposition already solves 'I'm not a designer but need to make something that looks good' through templates and a large stock library — the gap this fills is when a user needs a specific image that doesn't exist in stock (a very particular scene, style, or combination), where searching stock libraries fails but describing what they want in words is easy. If a user's need is well served by existing stock or templates, generation adds unnecessary cost and licensing risk with no real benefit over the deterministic search Canva already has — so the feature should be positioned as a fallback for the specific-and-unavailable case, not a replacement for stock search." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A user generating a background or decorative element for a low-stakes personal project has high tolerance for a generation that's slightly off or needs a few retries. A small business user generating an image intended for commercial use (packaging, an ad) has much lower tolerance, both for visual quality and for latent copyright/licensing risk in the generated output, since that risk becomes their liability once published. A user generating an image containing recognizable text or a specific brand element has near-zero tolerance for the model getting text legibility or brand accuracy wrong, since that's an immediately visible flaw." },
+          { "stage": "System Design Choices", "walkthrough": "A text-to-image diffusion-style generation model integrated into the existing Canva canvas, with generated assets treated as regular editable design elements afterward (so no separate workflow is needed). Data and rights: this is the highest-risk area, since training data provenance and output licensing directly affect whether commercial users can safely use generated images — this needs a clear, product-visible commercial-use license statement, not just a backend legal decision. Feedback loop: regenerate/discard actions as an implicit quality signal, plus which generated images get kept in a final published design versus abandoned." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "The prompt interface should offer easy iteration (regenerate, adjust a specific attribute) rather than requiring a full new prompt each time, since most users won't get the ideal result on the first try and won't know how to write a better prompt from scratch. A visible commercial-use/licensing note should sit next to generated images specifically, addressing the low-tolerance business-user segment. On the bad output (text garbling, anatomically wrong details), the fallback is fast, cheap regeneration rather than trying to auto-correct a flawed generation." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "Offline evals on a golden set of prompts covering common use cases (product mockups, social graphics, generic backgrounds), scored on both visual quality and legibility of any requested text, since text rendering is a known weak point for generative image models. LLM-as-judge (or a vision-model judge) can help score general aesthetic quality and prompt-adherence, but known systematic weaknesses like text rendering need explicit, separate test cases rather than trusting a judge model's general score to catch them. Online, I'd track regenerate rate as a leading quality signal." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: rate of generated images actually used in a published/exported design, not raw generation count, which would reward high-volume regeneration without real usage. Guardrails: regenerate rate (a proxy for first-attempt quality), rate of flagged commercial-use licensing questions to support, and cost per used-image, since image generation is meaningfully more expensive per-asset than serving existing stock content — this cost structure needs to be reflected in how usage limits are set on free versus paid tiers." }
+        ]
+      },
+      "pitfalls": [
+        "Positioning generation as a full replacement for stock search rather than a fallback for the specific-and-unavailable case, adding cost and licensing risk where existing stock already worked fine",
+        "Treating a judge model's general aesthetic score as sufficient without explicit test cases for known weaknesses like text rendering"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-ux-001",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-ux-trust",
+      "title": "Design the trust and citation UX for Perplexity's answer engine",
+      "company": ["Perplexity"],
+      "region": "global",
+      "industry": "search",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Perplexity answers questions with a generated summary backed by cited web sources, positioned as an alternative to traditional search. Design the UX for how it should present answers and handle uncertainty.",
+      "context": [
+        "Perplexity is an AI-powered answer engine that generates a synthesized answer to a user's query along with numbered citations linking to the web sources used.",
+        "Perplexity's interface shows citations as clickable numbered references inline within the generated answer text, similar to footnotes.",
+        "Perplexity offers follow-up question suggestions after an initial answer to support continued, conversational search."
+      ],
+      "assumptions": [
+        "assumed: a meaningful share of queries touch current events or fast-changing information where source recency matters for correctness",
+        "assumed: users vary widely in whether they click through to verify citations versus trusting the generated summary at face value"
+      ],
+      "followUps": [
+        "How would you handle a query where the cited sources actually disagree with each other?",
+        "What would you do differently for a query where no source directly answers the question, but the model could still generate a plausible-sounding synthesis?",
+        "How would you measure whether citations are actually building trust, versus just being decorative and unclicked?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume recency matters for a meaningful share of queries and that users vary in how much they verify citations versus trust the summary directly. Plan: focus mainly on UX design for trust and uncertainty, briefly touch why-AI and system design, then evals and metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "Traditional search already solves 'give me a ranked list of pages that might answer this,' but leaves the synthesis work to the user; Perplexity's value is doing that synthesis across multiple sources automatically. This only earns its place because the citation mechanism keeps the synthesis checkable — an ungrounded, uncited generative answer would just be a less trustworthy version of what search already provides." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A user asking a low-stakes, easily-verifiable factual question has high tolerance for an occasional imperfect synthesis, since checking a citation is quick and low-cost. A user asking about a fast-moving current event has lower tolerance for a stale-but-confident answer, since currency itself is the point of the query. A user who never clicks through to citations (trusting the summary outright) has effectively zero built-in error-correction, making the summary's own honesty about uncertainty the only safeguard for that segment." },
+          { "stage": "System Design Choices", "walkthrough": "Retrieval over a live web index (not a static training-data snapshot) is essential specifically because of the recency-sensitive segment identified above; a model trained only on stale data would silently fail this use case. Citations should be generated as an explicit, verifiable mapping from each specific claim to its source passage, not just a general 'sources used' list, so groundedness can be checked at the level of individual claims." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Inline numbered citations tied to specific claims (not just listed at the end) let a skeptical user verify exactly which sentence came from where. When cited sources disagree, the answer should say so explicitly ('sources differ on this') rather than picking one silently, since silently resolving a real disagreement is a worse failure than admitting uncertainty. For the segment that doesn't click through, the summary's own language needs to hedge visibly when grounding is weak, since citations alone don't protect a user who never checks them." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of claims paired with their correct grounding sources, used to check that each inline citation actually supports the claim it's attached to — this is a groundedness eval distinct from general answer quality. LLM-as-judge is reasonably good at checking whether a citation's source passage actually supports the attached claim, but factual correctness of the underlying claim (versus just internal consistency with the source) still needs the golden set." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: answer-satisfaction rate without a reformulation or fallback to traditional search, not raw query volume. Guardrails: citation-groundedness rate (does the cited source actually support the claim), rate of answers on recency-sensitive queries using stale sources, and cost per answer, since retrieval-plus-generation is more expensive than serving a cached ranked list at scale." }
+        ]
+      },
+      "pitfalls": [
+        "Silently resolving a real disagreement between cited sources instead of surfacing the disagreement to the user",
+        "Assuming citations alone solve trust, ignoring the segment of users who never click through to verify them"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-ux-002",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-ux-trust",
+      "title": "Design the suggestion-acceptance UX for GitHub Copilot",
+      "company": ["GitHub"],
+      "region": "global",
+      "industry": "developer-tools",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "GitHub Copilot suggests code inline as a developer types, which they can accept, reject, or edit. Design the UX for how suggestions should be presented and corrected.",
+      "context": [
+        "GitHub Copilot is an AI coding assistant that suggests code completions inline in a developer's editor as they type, shown as grayed-out 'ghost text' that can be accepted with a keypress (commonly Tab).",
+        "Copilot also supports a chat interface for more open-ended coding questions, separate from the inline ghost-text suggestions.",
+        "Copilot's suggestions are generated based on the surrounding code context in the current file and, in some configurations, related files in the project."
+      ],
+      "assumptions": [
+        "assumed: most inline suggestions are short (a few lines or less) rather than large multi-function blocks",
+        "assumed: developers vary in experience level, from junior developers who may trust suggestions more readily to senior developers who scrutinize more"
+      ],
+      "followUps": [
+        "How would you design for a junior developer who accepts suggestions without fully understanding them?",
+        "What would change about your design for a security-sensitive codebase (handling payments or credentials) versus a general application?",
+        "How would you measure whether accepted suggestions are actually correct, not just accepted in the moment?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume most suggestions are short, in-context completions, and that developer experience level varies meaningfully in how much scrutiny suggestions get before acceptance. Plan: focus on UX design for the accept/reject/edit interaction and its risk by developer segment, briefly touch why-AI, then evals and metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "The problem is that writing boilerplate and pattern-following code (a for-loop over a known data structure, a standard error-handling block) is repetitive and slow to type even though the developer already knows exactly what it should look like — a deterministic template/snippet system already solves the fully-fixed-pattern case, but breaks down the moment the code needs to adapt to the specific surrounding context (variable names, types, project conventions), which is what a context-aware generative model uniquely handles." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A senior developer working in a familiar codebase has high tolerance for an occasional wrong suggestion, since they'll typically catch it during their own read-through before accepting. A junior developer or someone working in an unfamiliar language/framework has lower tolerance, since they're more likely to accept a subtly wrong suggestion without recognizing the flaw. Any developer working in a security-sensitive context (auth, payments, credential handling) needs near-zero tolerance for an accepted-but-wrong suggestion, since the cost of a subtle security bug is far higher than a normal logic bug." },
+          { "stage": "System Design Choices", "walkthrough": "Context window construction matters most here: pulling in the current file plus related project files (not just the current cursor position) improves relevance, but including a security-sensitive file's contents in the context sent to a model raises its own data-handling questions worth flagging even though it's the user's own code. Feedback loop: accept/reject/edit-after-accept as an implicit signal, since an immediate edit right after accepting is a strong sign the suggestion was subtly wrong rather than fully right." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Ghost-text presentation (visually distinct, non-committal until explicitly accepted) is itself a good trust pattern, since it never silently inserts code — the developer always makes an explicit choice. For security-sensitive files, I'd consider a visible flag or a brief second confirmation step on suggestions touching authentication/credential-handling code specifically, given that segment's zero error tolerance. On a suggestion the model has low internal confidence in, showing a shorter or more conservative completion is safer than showing a long, confident-looking block that's more likely to contain an error." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "Offline evals on a golden set of coding tasks with known-correct solutions, run against real test suites (not just 'looks plausible') to check functional correctness, not just whether generated code compiles. LLM-as-judge is weak here since code correctness is objectively checkable by running it — the eval should prioritize actually executing generated code against tests over a judge model's subjective read. Online, immediate-edit-after-accept rate is a strong proxy for suggestions that looked right but weren't." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: net-retained-suggestion rate (accepted and not substantially edited soon after), not raw acceptance rate, which rewards suggestions accepted reflexively and then fixed. Guardrails: rate of accepted suggestions in security-sensitive file paths that get edited shortly after (a proxy for subtle security-relevant errors slipping through), and cost per retained suggestion, since inference happens on every keystroke pause, at very high frequency." }
+        ]
+      },
+      "pitfalls": [
+        "Treating raw acceptance rate as a quality signal when a junior developer accepting a subtly wrong suggestion looks identical to a correct one in that metric",
+        "Not giving security-sensitive code paths any different treatment despite their much lower tolerance for a wrong-but-plausible suggestion"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-ux-003",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-ux-trust",
+      "title": "Design the human-handoff UX for Zomato's AI customer support",
+      "company": ["Zomato"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Zomato uses an AI-assisted chat interface for customer support before optionally routing to a human agent. Design the UX for when and how it should hand off to a human.",
+      "context": [
+        "Zomato is an Indian food delivery platform that offers in-app chat-based customer support for order issues such as missing items, late delivery, or refund requests.",
+        "Zomato's support flow, like many delivery platforms, uses a mix of automated self-serve options (e.g., pre-set issue categories) and the ability to escalate to a live agent.",
+        "Refunds and order-issue resolutions on Zomato typically require verifying details of the specific order in question."
+      ],
+      "assumptions": [
+        "assumed: a meaningful share of support contacts fall into a small number of common, well-defined categories (missing item, late delivery, wrong order) that could plausibly be automated end-to-end",
+        "assumed: some share of contacts involve unusual or emotionally charged situations (a safety concern, a dispute about fault) where automation should hand off quickly rather than attempt full resolution"
+      ],
+      "followUps": [
+        "How would you decide, in real time, that a conversation needs to escalate to a human before the user explicitly asks for one?",
+        "What would you do if a user is clearly frustrated but their issue is technically one of the 'simple' automatable categories?",
+        "How would you prevent the AI from over-promising a refund amount or timeline it can't actually guarantee?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume common issue categories (missing item, late delivery, wrong order) are automatable end-to-end, while unusual or emotionally charged situations should hand off quickly. Plan: focus on the handoff-timing and trust UX, briefly touch why-AI and system design, then evals and metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "A large share of support volume is genuinely repetitive and well-defined (the same handful of issue types, each resolvable by looking up the specific order and applying a known policy), which a deterministic rules engine already handles reasonably well for the clean cases. What AI adds is handling the natural-language variety in how people describe the same underlying issue and smoothing the conversational experience, plus recognizing ambiguous cases that don't cleanly fit a rule. If the issue distribution were entirely clean, well-defined categories, a simpler menu-driven self-serve flow might suffice without generative AI at all — the AI's real value is in the messier natural-language middle." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A user with a clear-cut, low-stakes issue (one missing side item) has high tolerance for a fully automated resolution, since the cost of a minor miscalculation is small and correctable. A user with an ambiguous or disputed issue (order arrived but user claims it was wrong, driver claims otherwise) has much lower tolerance for an AI attempting to adjudicate fault on its own, since a wrong automated judgment feels unfair and damages trust. A user showing signs of distress or describing a safety concern needs near-zero tolerance for continued automation; this should escalate immediately regardless of how 'simple' the underlying issue category looks." },
+          { "stage": "System Design Choices", "walkthrough": "A classification layer determines issue category and a risk/ambiguity score from the conversation, using that score (not just the stated category) to decide whether to proceed automated or route to a human — this means the escalation decision can't rely solely on a fixed list of 'complex categories,' since a nominally simple category can still carry an ambiguity or distress signal in how it's phrased. Order and policy lookups are grounded in Zomato's own backend order data, never generated freeform, since refund amounts and eligibility are deterministic facts, not something to synthesize." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "The chat should state plainly and early whether it's talking to an automated assistant, with an always-visible, low-friction 'talk to a person' option rather than requiring the user to find or ask for it. For the low-tolerance segments (disputed fault, distress signals), the system should proactively offer human handoff rather than waiting for the user to request it. Refund amounts and timelines should only ever be stated as retrieved facts from Zomato's policy/backend, never as a generated best-guess, since over-promising there directly damages trust when it doesn't hold." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of real (anonymized) past conversations labeled with the correct category and correct escalation decision, used to check the classification-and-escalation layer specifically, separate from evaluating the conversational quality of the automated responses. LLM-as-judge can help assess conversational tone and clarity, but the escalation decision itself needs to be checked against the labeled golden set, since a wrong escalation decision (failing to hand off a distressed user) is a more serious failure than an awkwardly-phrased response." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: resolved-without-reopen rate (the issue doesn't come back as a repeat contact), not raw containment rate, which would reward the AI simply not escalating even when it should. Guardrails: escalation-recall on the labeled ambiguous/distress categories (making sure those genuinely get handed off), refund-amount accuracy against actual policy, and cost per resolved contact including the cost of human agents for escalated cases." }
+        ]
+      },
+      "pitfalls": [
+        "Deciding escalation purely by issue category instead of by an ambiguity/distress signal in how the issue is actually described",
+        "Optimizing for raw containment rate, which rewards the AI simply not escalating rather than genuinely resolving issues well"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-ux-004",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-ux-trust",
+      "title": "Design the confidence and correction UX for Notion AI's Q&A",
+      "company": ["Notion"],
+      "region": "global",
+      "industry": "productivity-software",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Notion AI can answer questions using a workspace's own content, synthesizing across multiple pages. Design the UX for showing confidence and letting users correct a wrong answer.",
+      "context": [
+        "Notion AI includes a Q&A capability that answers natural-language questions by drawing on a workspace's own existing pages and content.",
+        "Notion AI has been offered as a paid add-on within Notion workspaces.",
+        "Notion workspaces commonly have varying levels of page permissions, restricting who can view specific pages or databases."
+      ],
+      "assumptions": [
+        "assumed: workspace content varies widely in how current and well-maintained it is, meaning some pages may contain outdated information that's technically still 'in the workspace'",
+        "assumed: users asking a question don't always know which pages might contain the answer, which is part of why they're using Q&A instead of manual search"
+      ],
+      "followUps": [
+        "How would you handle a case where two pages in the workspace directly contradict each other on the answer?",
+        "What would you do if the most relevant answer lives on an outdated page that's technically still 'live' in the workspace?",
+        "How would a new employee's trust in this feature differ from a long-tenured employee's, and does that change your design?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume workspace content varies in freshness and that users often don't know in advance which page holds the answer. Plan: focus on confidence-signaling and correction UX, briefly touch why-AI and system design, then evals and metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "Full-text search already solves the case where a user knows the right keyword; Q&A's value is answering a natural-language question by synthesizing across pages the user couldn't have keyword-searched their way to, especially when the answer is scattered across more than one page. If a workspace is small enough that a user reliably remembers where things are, this adds little over search — the value is specifically at real scale with imperfect recall." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A long-tenured employee asking a quick recall-check question has some independent ability to sanity-check a wrong answer against their own memory. A new employee using this as a primary way to learn how the company works has much lower tolerance for a confidently wrong answer, since they have no independent way to catch the error — this is the segment most exposed by outdated content, since they can't tell an outdated page from a current one. A user asking about something that will directly drive an action (a policy, a process step) needs near-zero tolerance for an answer sourced from a stale page presented as current." },
+          { "stage": "System Design Choices", "walkthrough": "Retrieval-augmented generation over the workspace's own indexed content, respecting existing page permissions, with page-freshness (last-edited date) captured as retrieval metadata specifically so it can be surfaced, not just used internally for ranking. Feedback loop: thumbs up/down per answer feeding into retrieval-ranking tuning, plus explicit 'this page is outdated' flagging that a user can apply to a cited source." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Every answer should show its source pages as clickable citations along with each cited page's last-edited date, directly addressing the freshness-blindness risk for the new-employee segment. When cited pages conflict, the answer should say so explicitly rather than silently picking one. Correction should be one click to flag an answer as wrong, feeding both a fallback to plain search and the retrieval-tuning feedback loop; for the bad 5% with thin or conflicting grounding, the fallback is an honest 'I couldn't find a confident answer' rather than a forced synthesis." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of real historical questions with known-correct answers pulled from actual workspace content, checking specifically whether retrieved citations contain the right answer, separate from whether the generated text reads well. LLM-as-judge helps score fluency and citation usage, but factual correctness against a private workspace needs the golden set, since a judge model has no independent way to verify facts about content it hasn't seen." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: task-completion rate, meaning the share of questions where the user didn't immediately fall back to manual search. Guardrails: hallucination rate (answers with no supporting citation), rate of answers sourced predominantly from stale pages (a proxy for the freshness-blindness risk), and cost per successful answer, since retrieval-plus-generation cost scales with workspace size." }
+        ]
+      },
+      "pitfalls": [
+        "Surfacing citations without their freshness/last-edited date, leaving new employees unable to tell a current answer from a stale one",
+        "Silently picking one answer when cited pages actually conflict, instead of surfacing the disagreement"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-ux-005",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-ux-trust",
+      "title": "Design the escalation and disclosure UX for Klarna's AI customer service",
+      "company": ["Klarna"],
+      "region": "global",
+      "industry": "fintech-bnpl",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Klarna deployed an AI assistant to handle a large share of customer service chats, later restoring more human agent availability after feedback. Design the UX for disclosure and escalation that balances automation with trust.",
+      "context": [
+        "Klarna is a fintech company offering buy-now-pay-later and payment services, and publicly stated in 2024 that its AI assistant was handling a large share of customer service chats, described as doing the work of many full-time agents.",
+        "In 2025, Klarna's CEO publicly acknowledged that cutting human agent availability had gone too far in some cases and stated the company was restoring more access to human support.",
+        "Klarna's customer service handles issues including payment disputes, refunds, and account questions, which can involve real financial stakes for the user."
+      ],
+      "assumptions": [
+        "assumed: customer service contacts vary from low-stakes account questions to high-stakes payment disputes involving real money already moved or at risk",
+        "assumed: user sentiment (frustration, urgency) is a meaningful signal for escalation need, independent of the literal issue category"
+      ],
+      "followUps": [
+        "Given Klarna's own public experience walking back over-automation, what specific signal would you have wanted visibility into earlier?",
+        "How would you decide the right default human-agent access level, rather than swinging between full automation and Klarna's later correction?",
+        "How would a payment-dispute conversation's UX differ from a simple account-question conversation?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume contacts range from low-stakes account questions to high-stakes payment disputes, and that user sentiment is a real, independent escalation signal. Plan: use Klarna's own public over-correction as the anchor, focus on disclosure and escalation design, then evals and metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "A large share of customer service volume is genuinely repetitive (account status, simple refund-eligibility questions) where an AI assistant grounded in account data can resolve things faster than waiting for a human agent. Klarna's own public experience is the useful case study here: full automation captured cost and speed gains, but the later walk-back suggests some share of contacts — likely disputes, high-stakes financial questions, or frustrated users — needed human judgment that the AI assistant wasn't matching, which is exactly the kind of segment-level error-tolerance question this framework asks upfront rather than discovering after the fact." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A user asking a simple account-status question has high tolerance for full automation, since the stakes and ambiguity are both low. A user in an active payment dispute, where money has already moved or a charge is contested, has much lower tolerance for an AI assistant handling the full resolution, since a wrong automated judgment on a financial dispute has real monetary and trust consequences. A user showing clear frustration or urgency, regardless of the literal issue category, is a signal that should lower the automation-tolerance threshold for that specific conversation, independent of the topic." },
+          { "stage": "System Design Choices", "walkthrough": "A real-time classification layer scoring both issue category (account question vs. dispute) and conversational sentiment/urgency, using both signals jointly to decide automation-versus-escalation, since Klarna's experience suggests category alone under-detects the cases that actually needed a human. Financial facts (balances, payment status, dispute status) are retrieved from Klarna's own account systems, never generated, since these are deterministic facts with real financial consequences if stated wrong." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Clear disclosure that the user is talking to an AI assistant, with a low-friction, always-visible path to a human agent rather than one that has to be discovered or explicitly requested past a certain point. For the payment-dispute segment specifically, I'd default to proactively offering human involvement rather than waiting for either a category trigger or a frustration signal to fire, given the real financial stakes and Klarna's own experience that pure automation there went too far. On the bad 5% where sentiment and category signals disagree, the safer default is to escalate rather than continue automating." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of real (anonymized) past conversations labeled with the correct escalation decision by category and sentiment, since Klarna's own public correction suggests the original escalation thresholds were miscalibrated — this eval should be explicitly re-validated against real outcomes (complaint rates, dispute resolution satisfaction) rather than assumed correct at launch. LLM-as-judge can assess conversational quality, but the escalation threshold itself needs validation against real downstream outcomes, not just judged conversation quality." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: resolved-without-reopen-or-complaint rate, not raw automation/containment rate, since Klarna's own experience shows optimizing for pure automation cost savings without this guardrail led to a public correction. Guardrails: escalation rate specifically on the payment-dispute category (should stay meaningfully non-zero, not trend toward full automation), complaint/dissatisfaction rate following automated resolutions, and cost per resolved contact including the cost of maintaining sufficient human-agent capacity as a standing guardrail, not a variable cost to minimize toward zero." }
+        ]
+      },
+      "pitfalls": [
+        "Treating cost savings from automation as the primary success signal without a real outcome-based guardrail like complaint or reopen rate, which is the failure mode Klarna itself publicly walked back from",
+        "Using issue category alone to decide escalation, missing that conversational sentiment/urgency is an independent and necessary signal"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-evals-002",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-evals",
+      "title": "Define the quality bar for Slack AI's channel and thread summarization",
+      "company": ["Slack"],
+      "region": "global",
+      "industry": "workplace-messaging",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Slack AI includes a summarization feature that condenses unread messages in a channel or thread into a short recap. Define how you'd evaluate whether this feature is good enough to ship and keep improving.",
+      "context": [
+        "Slack AI includes a recap/summarization feature that generates a short summary of unread messages in a channel or thread.",
+        "Slack AI has been offered as a paid add-on for Slack workspaces.",
+        "Slack conversations often include informal language, multiple simultaneous sub-topics in one channel, and messages referencing shared context (attachments, prior decisions) not fully spelled out in the text."
+      ],
+      "assumptions": [
+        "assumed: a meaningful share of channels have multiple concurrent sub-topics happening in the same thread or timeframe, which summarization needs to disentangle rather than blend",
+        "assumed: users primarily use the summary to decide whether to read the full thread, not as a full substitute for reading important messages"
+      ],
+      "followUps": [
+        "How would you catch a summary that blends two unrelated sub-topics into one confusing sentence?",
+        "How would you evaluate whether a summary omitted something that later turned out to matter, if the user never reads the full thread to find out?",
+        "How would your eval approach differ for a small, focused channel versus a large, noisy one?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume channels often have multiple concurrent sub-topics and that summaries are primarily used to decide whether to read further, not as a full substitute. Plan: brief why-AI and system design context, then focus mainly on the eval framework, closing with metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "The problem is real: returning to a busy channel after time away means scrolling through potentially hundreds of messages to find what matters, which a deterministic 'show unread count' badge doesn't solve at all. Summarization requires understanding informal, multi-topic conversation and condensing it coherently, which needs generative synthesis rather than simple extraction (like just showing the most-reacted-to message), since the important content isn't always the most reacted-to." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A user checking a low-stakes social channel has high tolerance for an imperfect or slightly blended summary, since missing something there has low cost. A user checking a channel where decisions get made (a project or incident channel) has much lower tolerance, since a summary that omits or misrepresents a decision could cause them to miss something they needed to act on, and they may not read the full thread to catch the gap. This second segment is the one the eval framework needs to weight most heavily." },
+          { "stage": "System Design Choices", "walkthrough": "Summarization grounded strictly in the actual unread messages (not general knowledge), with thread/reply structure preserved as input signal to help the model disentangle concurrent sub-topics rather than blending them into one narrative. Feedback loop: an explicit 'was this summary helpful' control, plus tracking whether a user reads the full thread immediately after seeing the summary (a signal the summary under-delivered)." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "The summary should be visually and clearly labeled as AI-generated and secondary to the real thread, with a one-click 'read full thread' path always available rather than positioning the summary as a replacement for reading. For a decision-type channel, I'd add a lightweight visible cue when the summary is drawn from a thread with an unusually high message count or multiple detected sub-topics, nudging higher-stakes users toward reading further. On a low-confidence or highly fragmented thread, the fallback is a shorter, more conservative summary rather than forcing a single coherent narrative across topics that don't actually connect." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of real (anonymized) channel/thread histories with a human-written reference summary, scored on two separate dimensions: coverage (did it include the key points a human reader would flag) and topic-separation (did it correctly keep concurrent sub-topics distinct rather than blending them), since blending is a specific, checkable failure mode distinct from general summary quality. LLM-as-judge is reasonably useful for scoring general coherence and readability, but coverage of specific key points needs to be checked against the human-written reference summary, since a judge model has no independent way to know what actually mattered in that conversation. I'd run this offline eval as a gate before any summarization-prompt or model change ships, with the decision-channel segment weighted more heavily in the golden set than the general/social segment." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: 'read summary and moved on without reading full thread, without later needing to backtrack' — approximated by low subsequent full-thread-read rate combined with low explicit-complaint rate, rather than raw summary-view count, which says nothing about whether the summary was trustworthy. Guardrails: coverage-omission rate specifically in decision-type channels (checked via periodic manual audit, since this is hard to fully automate) and cost per summary generated, since summarization runs on a recurring basis as messages accumulate, not just once per user action." }
+        ]
+      },
+      "pitfalls": [
+        "Scoring summary quality only on general readability without a specific, separate check for whether concurrent sub-topics got incorrectly blended together",
+        "Trusting a judge model's coverage score instead of checking against what a human reader of the actual conversation would flag as important"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-evals-003",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-evals",
+      "title": "Define the quality bar for YouTube's video recommendation model",
+      "company": ["YouTube"],
+      "region": "global",
+      "industry": "video",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "YouTube's homepage and 'up next' recommendations are driven by a ranking model trained on watch behavior. Define how you'd evaluate whether a change to this ranking model is actually an improvement before rolling it out broadly.",
+      "context": [
+        "YouTube's homepage and autoplay 'up next' queue are driven by a recommendation system that ranks candidate videos based on signals including watch history, watch time, and engagement.",
+        "YouTube has publicly discussed evolving its recommendation systems over time to reduce the prominence of 'clickbait' or misleading content and to weigh viewer satisfaction signals, not just raw watch time.",
+        "YouTube supports explicit user feedback signals on recommendations, such as a 'not interested' or 'don't recommend this channel' option."
+      ],
+      "assumptions": [
+        "assumed: raw watch time and click-through rate are both available as candidate ranking-optimization signals, alongside explicit negative feedback signals",
+        "assumed: a ranking model change is tested via a live experiment (A/B test) before full rollout, not just an offline metric comparison"
+      ],
+      "followUps": [
+        "If a ranking change increases watch time but also increases 'not interested' clicks, how would you decide whether to ship it?",
+        "How would you evaluate a ranking change's effect on long-tail or smaller-channel content specifically, not just overall engagement?",
+        "What would make you roll back a ranking change after it's already live?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume watch time, click-through, and explicit negative feedback are all available signals, and that changes are tested via live experiment before full rollout. Plan: brief why-AI/system-design context, then focus mainly on the eval and metrics framework, since that's the heart of a ranking-model question." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "A ranking problem across an enormous, constantly changing video catalog with highly individual viewer preferences is exactly the kind of high-dimensional pattern-matching problem that isn't tractable with fixed manual rules — a rules-based system (e.g. 'show more of what you watched most recently') would badly underperform a model that can learn from patterns across millions of viewers, so this is a clear case for a learned model, distinct from the framework's other cases where the answer is sometimes 'don't use ML/AI here.'" },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A casual viewer browsing for entertainment has high tolerance for an occasional irrelevant recommendation, since the cost of a bad suggestion is just scrolling past it. A viewer who has previously flagged 'not interested' on similar content has much lower tolerance for the same type of content resurfacing, since ignoring explicit negative feedback directly damages trust in the system. Smaller and long-tail creators are a distinct stakeholder (not a viewer segment, but affected by the model) whose visibility depends heavily on ranking behavior, meaning a ranking change optimized purely for aggregate watch time could systematically starve them of exposure even while viewer-side metrics look fine." },
+          { "stage": "System Design Choices", "walkthrough": "A ranking model trained on historical watch and engagement data, with explicit negative feedback signals ('not interested') incorporated as a distinct, higher-weighted training signal rather than being drowned out by the much higher volume of implicit positive signals. Any change goes through offline replay evaluation against historical data first, then a live A/B experiment before full rollout, given the scale at which a ranking change affects both viewer experience and creator livelihoods." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "Recommendations aren't presented with an explicit confidence score, but the 'not interested' and 'don't recommend this channel' controls are themselves the trust mechanism — they need to be easy to find and to visibly take effect quickly, so a viewer who acts on one sees the correction reflected soon after, reinforcing that the feedback was actually used. When a recommendation is a lower-confidence, more exploratory suggestion (outside the viewer's usual pattern) rather than a high-confidence match to established preference, surfacing a light 'because you watched X' explanation helps the viewer calibrate trust in that specific suggestion." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "Offline, an evaluation replaying the new ranking model against held-out historical viewing sessions, checking whether it would have ranked previously-clicked-and-watched-to-completion videos highly (a proxy for relevance) and previously-marked-not-interested videos low. Online, an A/B test tracking watch time alongside explicit satisfaction signals (not interested rate, don't-recommend-channel rate) jointly, since watch time alone can be gamed by clickbait-style content that gets clicked but not genuinely valued — this is exactly the tension YouTube has publicly discussed addressing. I would not ship a ranking change on watch-time improvement alone if it also increases negative-feedback rate; that combination should block a rollout pending further investigation, not just get flagged as noise." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: a satisfaction-weighted watch metric that combines watch time with explicit feedback signals, not raw watch time alone, since raw watch time is gameable by content optimized for clicks rather than genuine value (a known failure mode this framework explicitly warns against). Guardrails: not-interested/negative-feedback rate (should not rise alongside a watch-time gain), and content-diversity or long-tail-creator-exposure share, protecting the creator stakeholder from being optimized away by aggregate-only metrics. Compute cost of serving the ranking model at YouTube's scale is a real economic guardrail, but a secondary one relative to the trust and creator-ecosystem risks of an aggregate-only metric." }
+        ]
+      },
+      "pitfalls": [
+        "Using raw watch time as the sole success metric for a ranking change, which is gameable by clickbait-style content optimized for clicks rather than genuine value",
+        "Evaluating only viewer-side engagement metrics without checking the ranking change's effect on smaller-creator visibility as a distinct stakeholder concern"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-evals-004",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-evals",
+      "title": "Define the quality bar for ShareChat's content-moderation classifier",
+      "company": ["ShareChat"],
+      "region": "india",
+      "industry": "social-media",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "ShareChat, an Indian regional-language social platform, uses an AI classifier to detect policy-violating content (hate speech, misinformation, graphic content) across posts in many languages. Define how you'd evaluate whether this classifier is good enough to act on automatically.",
+      "context": [
+        "ShareChat is an Indian social media platform supporting content in multiple Indian regional languages, distinct from primarily English-language platforms.",
+        "Content moderation at scale on user-generated-content platforms commonly combines automated classifiers with human review, given the volume of content posted.",
+        "India's IT Rules require platforms above a certain size to act on flagged content within defined timeframes and to maintain grievance-redressal mechanisms."
+      ],
+      "assumptions": [
+        "assumed: classifier performance (both false-positive and false-negative rates) varies meaningfully across the different regional languages supported, given differing amounts of training data and linguistic nuance per language",
+        "assumed: some category of content (e.g., clear graphic violence) is severe enough to warrant fully automated removal, while other categories (e.g., borderline political speech) warrant human review before action"
+      ],
+      "followUps": [
+        "How would you evaluate whether the classifier performs equitably across all supported languages, not just the ones with the most training data?",
+        "What would you do if the classifier's false-positive rate on a specific language is high enough that legitimate creators are getting wrongly removed?",
+        "How does India's IT Rules timeframe requirement affect how much human review you can realistically insert into the pipeline?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume classifier performance varies by language given uneven training data, and that severity tiers (automated removal vs. human review) apply to different content categories. Plan: brief why-AI/system-design context given the regulatory backdrop, then focus mainly on the eval framework given how central language-equity is to this specific case, closing with metrics and guardrails." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "The volume of user-generated content posted daily makes fully manual review infeasible, and India's IT Rules impose real response-time requirements that manual-only review couldn't reliably meet at scale — a classifier is the only way to triage volume down to a reviewable size or act automatically on the clearest cases. This isn't a 'should we use AI' question in the way some 0-to-1 cases are; it's closer to 'given we need a classifier, how do we know it's good enough,' since manual-only moderation isn't a realistic alternative at this scale." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "For clearly severe content (graphic violence, clear hate speech), the platform has low tolerance for false negatives (missing real violations) given both user-safety and regulatory exposure, and comparatively higher tolerance for the classifier erring toward caution. For borderline or context-dependent content (political speech, satire), the platform has low tolerance for false positives, since wrongly removing legitimate speech is its own real harm to users and creators, especially given ShareChat's role as a platform for regional-language voices that may already be underserved by primarily-English moderation tooling. Users posting in lower-resource languages (where the classifier likely has less training data) are effectively a distinct segment with worse expected classifier accuracy, and that gap itself is a fairness problem, not just a technical limitation to note in passing." },
+          { "stage": "System Design Choices", "walkthrough": "A tiered pipeline: high-confidence, high-severity classifications trigger automated action (to meet response-time requirements), while lower-confidence or borderline-category classifications route to human review queues, with the confidence threshold for automated action set conservatively higher for lower-resource languages specifically, given their higher expected error rate. This tiering needs to be an explicit, language-aware design choice, not a single global confidence threshold applied uniformly across all languages." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "A creator whose content is automatically actioned should receive a clear, specific explanation of which policy was triggered and an accessible appeal path, since India's IT Rules also require grievance-redressal mechanisms and a wrongly-actioned creator needs a real route to correction, not just a generic notice. For borderline content held for human review, the queue itself should surface the classifier's stated reason and confidence to the human reviewer, so review time is spent efficiently rather than re-deriving context from scratch. On the bad 5% where the classifier's confidence is genuinely low, the system should default to holding for review rather than either auto-removing or auto-approving." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of labeled content per supported language (not just an aggregate cross-language set), since an aggregate false-positive/false-negative rate can look acceptable overall while hiding much worse performance in specific lower-resource languages — this per-language breakdown is the single most important eval design choice here. LLM-as-judge has real limitations for this specific task, since judging policy-violation severity in a regional language requires cultural and linguistic context a general judge model may not reliably have; native-language human reviewers remain necessary for building and periodically re-validating each language's golden set, not just at initial launch. I'd gate any confidence-threshold or model change on per-language false-positive and false-negative rates both staying within acceptable bounds, not just an aggregate metric improving." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: correctly-actioned-content rate, broken out per language, not an aggregate rate that could mask poor performance on lower-resource languages. Guardrails: false-positive rate per language (protecting legitimate creators from wrongful removal), response-time compliance against IT Rules requirements, and human-reviewer capacity/cost for the borderline-category queue, since under-resourcing that queue to save cost directly undermines the fairness guardrail for exactly the content types most likely to be wrongly automated." }
+        ]
+      },
+      "pitfalls": [
+        "Evaluating classifier performance only on an aggregate cross-language metric, hiding much worse false-positive or false-negative rates in specific lower-resource languages",
+        "Treating a single global confidence threshold as fair when it structurally produces worse outcomes for languages with less training data"
+      ],
+      "related": []
+    },
+    {
+      "id": "ai-evals-005",
+      "track": "ai-product",
+      "framework": "ai-product",
+      "type": "ai-evals",
+      "title": "Define the quality bar for Replit's AI code-generation agent",
+      "company": ["Replit"],
+      "region": "global",
+      "industry": "developer-tools",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Replit's AI agent can generate and modify entire small applications from a natural-language description, not just suggest single lines like an autocomplete tool. Define how you'd evaluate whether a new version of this agent is good enough to ship.",
+      "context": [
+        "Replit is a browser-based coding platform that has built an AI agent capable of generating and iterating on complete small applications from natural-language instructions, going beyond single-line code completion.",
+        "Replit's agent operates within its own hosted development and execution environment, where generated code can be run and tested immediately.",
+        "Building a working application from a natural-language description typically involves multiple steps (setting up structure, writing code, handling errors, iterating based on results)."
+      ],
+      "assumptions": [
+        "assumed: the agent's output can be automatically executed and tested within Replit's own environment as part of evaluation, not just read for plausibility",
+        "assumed: task complexity varies widely, from a simple single-page app to a multi-file application with several interacting components"
+      ],
+      "followUps": [
+        "How would you evaluate a task that technically 'runs' but doesn't actually do what the user asked for?",
+        "How would you weigh a slower agent that produces more correct results against a faster one that produces more plausible-looking but sometimes wrong results?",
+        "What would you do about a task where there's no single correct implementation, just several reasonable ones?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions & Game Plan", "walkthrough": "I'll assume generated output can be automatically executed and tested in Replit's own environment, and that task complexity varies from simple single-page apps to multi-component applications. Plan: brief why-AI/system-design context, then focus mainly on the eval framework, since 'does the generated app actually work' is the central question, closing with metrics." },
+          { "stage": "Product Motivation & Why AI", "walkthrough": "Building even a simple application from scratch requires translating a natural-language intent into working code across multiple interacting steps, which is exactly the kind of open-ended, context-dependent task a fixed template generator can't handle beyond the most common, pre-anticipated app shapes — this is a case where the value clearly requires generative capability, not a deterministic alternative, since the space of possible requested applications is effectively unbounded." },
+          { "stage": "Segmentation & Error Tolerance", "walkthrough": "A hobbyist prototyping a simple idea has high tolerance for the agent needing a few iterations to get right, since the stakes of an early wrong attempt are low and iteration is cheap. A user building something with real users or data (even a small app) has lower tolerance for subtle correctness bugs that pass a superficial 'it runs' check but produce wrong behavior under some inputs. A non-technical user who can't read the generated code to verify it has the lowest tolerance of all, since they have no independent way to catch an error the agent itself doesn't surface." },
+          { "stage": "System Design Choices", "walkthrough": "The agent should be evaluated (and ideally operate) as a loop, not a single generation: generate, execute in the sandboxed environment, observe errors or test failures, and iterate — since a single-shot generation for a multi-step task has a much higher failure rate than an iterative one that can self-correct against real execution feedback. This iterative design is itself a system-design choice with direct eval implications: success should be measured at the end of the iteration loop, not on the first draft." },
+          { "stage": "UX for Probabilistic Output", "walkthrough": "The agent should show its iteration steps visibly (what it's building, what errors it hit, what it changed) rather than presenting only a final result, since that transparency is what lets a technical user catch a wrong turn early instead of only discovering a subtle bug after the fact. For the non-technical-user segment, a plain-language summary of what was built and a simple way to describe what's wrong in their own words (rather than pointing at code) is the main correction path. On a task the agent can't complete after reasonable iteration, the fallback is to say so honestly and show what it has so far, rather than presenting an incomplete or broken result as finished." },
+          { "stage": "Evals & Quality Bar", "walkthrough": "A golden set of task descriptions paired with automated test suites checking actual functional behavior (not just 'does it run without a crash'), since a plausible-looking app that doesn't do what was asked is a more insidious failure than one that visibly crashes. LLM-as-judge is weak here for the same reason as any code-generation eval: correctness is objectively checkable by running tests, so the eval should prioritize automated test-pass rate over a judge model's subjective read of whether the code 'looks right.' For the non-technical-user segment specifically, I'd add a distinct eval checking whether the agent explains what it built in plain language, since that user has no other way to sanity-check the result." },
+          { "stage": "Metrics, Guardrails & Economics", "walkthrough": "North Star candidate: task-completion rate on held-out tasks, defined strictly as passing the task's automated test suite, not merely 'produced runnable code,' which would reward plausible-but-wrong output. Guardrails: rate of tasks that run without crashing but fail their functional tests (the specific insidious-failure category called out above), average iterations-to-success (a proxy for efficiency, not just eventual correctness), and cost per successfully completed task, since an iterative agent loop can run many expensive generation-and-execution cycles per task." }
+        ]
+      },
+      "pitfalls": [
+        "Treating 'the generated app runs without crashing' as sufficient evidence of correctness, missing the more insidious case of code that runs but doesn't do what was asked",
+        "Judging output quality by how plausible the code looks rather than by actually executing it against real functional tests"
+      ],
+      "related": []
+    }
+  ]
+}

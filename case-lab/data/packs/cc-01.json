@@ -1,0 +1,751 @@
+{
+  "pack": "cc-01",
+  "cases": [
+    {
+      "id": "cc-prioritization-001",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Choosing Notion's next quarter: AI search, the developer API, or Notion Mail",
+      "company": ["Notion"],
+      "region": "global",
+      "industry": "productivity-software",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Notion has three credible bets for the next quarter: deepen Notion AI's enterprise search (connecting to tools like Slack and Google Drive), invest further in the public API and integrations ecosystem, or push harder on adjacent surfaces like Notion Calendar and Notion Mail. You can meaningfully fund only one this quarter. How do you decide?",
+      "context": [
+        "Notion launched Notion AI in February 2023 as a paid add-on embedded in the editor, later adding AI-powered Q&A search across a workspace's own content.",
+        "Notion opened a public API in 2021, enabling third-party integrations and a growing ecosystem of connected tools and templates.",
+        "Notion acquired the calendar app Cron in 2022 and released Notion Calendar in 2023, then launched Notion Mail in 2025, extending the product into adjacent daily-use surfaces."
+      ],
+      "assumptions": [
+        "assumed: each of the three initiatives would take a dedicated team roughly a full quarter to ship a credible first version",
+        "assumed: Notion AI is currently monetized as a paid add-on on top of the base subscription, and enterprise search would extend that same add-on",
+        "assumed: the API/integrations investment would target developers building on Notion, not end-user template creators"
+      ],
+      "followUps": [
+        "If you had to defend cutting the developer API investment entirely for two quarters, what would you tell the developer ecosystem that already depends on Notion's API?",
+        "How would you sequence these three if you could only guarantee funding one quarter at a time, not commit to all three eventually?",
+        "What signal in the first month after shipping your chosen bet would tell you that you picked wrong?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume each of these three initiatives is roughly a quarter of dedicated engineering effort, that enterprise AI search would ship as an extension of the existing paid Notion AI add-on, and that the API investment is aimed at third-party developers rather than end users building templates. My plan: connect this decision to Notion's mission, segment the users each bet primarily serves, identify the sharpest problem among them, then argue for one bet using an impact-versus-effort lens rather than trying to please all three constituencies at once."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Notion's value isn't 'notes' or 'docs' as features, it's giving a team or individual one flexible place to think, plan, and coordinate instead of stitching together five single-purpose tools. My mission statement: 'become the connective tissue between everything a team already uses to get work done.' Strategically, Notion's advantage is its flexible, block-based canvas and a large existing workspace footprint in knowledge-work teams, which both an AI-search bet and an API bet can leverage directly, while Calendar and Mail are newer surfaces built on acquired products rather than Notion's core architecture."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem here includes end users inside existing Notion workspaces, third-party developers building on the API, and prospective users who haven't adopted Notion for their daily inbox or scheduling yet. Within existing workspace users, two segments matter: power users in large, tool-fragmented organizations who lose time hunting for information across Slack, Drive, and Notion itself, and individual users who already like Notion but haven't made it their calendar or email home. The tool-fragmented power-user segment scores highest on reach-times-underserved, since it sits inside Notion's existing paying customer base and its problem is unaddressed by any current feature, whereas expanding into inbox and calendar competes with deeply entrenched daily habits outside Notion's control."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the fragmented power user's day: they get a question, don't remember if the answer lives in a Notion page, a Slack thread, or a Drive doc, and end up manually checking each tool or asking a teammate. The problem isn't 'Notion needs more features' -- it's that Notion AI's Q&A only sees Notion's own content, so it can't be the single place to ask a work question when the answer often lives elsewhere, which is a real, frequent problem for any team using more than one tool, and severe because it undermines the exact 'connective tissue' promise in Notion's mission. This outranks the API and Mail bets on frequency, since a knowledge gap like this recurs many times a day for every user in a fragmented workspace, versus a one-time habit switch needed for adopting Notion Mail."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three distinct directions: deepen enterprise AI search to pull answers from connected tools like Slack and Google Drive, invest in the API/integrations ecosystem so third-party developers extend Notion themselves, or push Notion Mail and Calendar to capture more of a user's daily surface area. Plotting impact against effort, enterprise AI search wins for this quarter: it's high impact because it directly serves Notion's largest, already-monetized segment and reinforces the core mission, and its effort is contained because it extends an existing paid product rather than building a new surface from scratch. I'd sequence the API investment next, since a stronger integrations ecosystem actually makes better AI search possible by feeding it more connected data, and I'd defer the Mail and Calendar push, since it competes for attention against deeply habitual tools like Gmail and Google Calendar and is the least differentiated bet of the three. The key risk is connected-search leaking data across permission boundaries when pulling from third-party tools, mitigated by scoping each connector's search results to what the requesting user can already access in that source tool."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating all three bets as equally strategic without asking which existing, already-paying segment each one actually serves",
+        "Assuming Notion Mail and Calendar are low-risk 'more surface area' wins without weighing how entrenched competing daily habits like Gmail already are"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-002",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Eternal's next capital bet: Blinkit's dark stores, Zomato's core delivery, or District's going-out push",
+      "company": ["Eternal", "Zomato", "Blinkit"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Zomato's parent company, renamed Eternal in 2024, now spans three distinct businesses: Zomato's core food delivery, Blinkit's quick-commerce grocery delivery, and District, a going-out and events vertical spun out of the Zomato app in 2024. As the executive owning cross-business investment, how would you prioritize incremental capital and product investment across the three this year?",
+      "context": [
+        "Zomato's parent company changed its name to Eternal in 2024, formally organizing the business around three units: Zomato (food delivery), Blinkit (quick commerce), and District (going-out and events).",
+        "Eternal acquired Blinkit (formerly Grofers) in 2022, entering India's quick-commerce grocery delivery market.",
+        "District was launched as a separate app in 2024, spinning out Zomato's dining-out, events, and movie ticketing features that previously lived inside the main Zomato app.",
+        "India's quick-commerce market includes strong competitors to Blinkit, including Zepto and Swiggy Instamart."
+      ],
+      "assumptions": [
+        "assumed: Blinkit requires the most capital-intensive investment of the three, given ongoing dark-store network expansion",
+        "assumed: Zomato's core food delivery business is the most mature and profitable of the three, while District is the earliest-stage",
+        "assumed: the decision covers incremental investment on top of already-committed baseline spend for each business, not a decision to shut any of them down"
+      ],
+      "followUps": [
+        "How would your answer change if Blinkit's unit economics in new cities were still underwater while Zomato's food delivery was solidly profitable?",
+        "District competes for some of the same discretionary spend as Zomato's food delivery. How would you think about cannibalization between the two?",
+        "If a competitor made an aggressive quick-commerce move in Blinkit's strongest city, would that change your allocation this quarter?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume this is about incremental investment on top of already-committed baseline spend, that Blinkit is the most capital-intensive of the three given its dark-store expansion, and that Zomato's core delivery business is the most mature while District is the earliest-stage bet. My plan: state Eternal's mission across these three businesses, segment by how each serves that mission and how underserved each opportunity still is, identify the sharpest problem the leading segment faces, then make a specific capital-allocation call using an impact-versus-effort lens."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Eternal's businesses share one underlying value proposition: getting things people want -- a meal, groceries, or an evening out -- delivered or booked with minimal friction, using the same logistics, discovery, and payments infrastructure. My mission statement: 'become the operating system for how Indian urban consumers get things done outside their home or kitchen.' Strategically, Eternal's advantage is a shared rider network, merchant relationships, and a large existing user base it can cross-sell into Blinkit and District, a strength that a single-vertical competitor like Zepto or a dedicated events platform lacks."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes consumers using each vertical, restaurant and grocery merchant partners, and Eternal's own capital allocators. Within consumers, the segments split cleanly by underlying need: routine, planned grocery and household restocking (Blinkit's core use case), occasional hunger-driven food ordering (Zomato's core use case), and discretionary going-out planning for a dinner, concert, or movie (District's use case). Plotting reach against how underserved each is, Blinkit scores highest: quick commerce in India is still expanding rapidly and Eternal is in a genuine three-way race with Zepto and Swiggy Instamart for dark-store density and delivery speed, meaning share not captured now is share a well-funded competitor will capture instead."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the Blinkit segment's context: a household needs a small grocery top-up right now, and picks whichever app delivers fastest and has the item in stock in a nearby dark store; if Blinkit's dark-store density in a given neighborhood lags a competitor's, that order goes to Zepto or Instamart instead, often permanently shifting the default app on that user's home screen. The problem isn't 'Blinkit needs more features' -- it's that quick-commerce is a local, density-driven land grab where being second-fastest in a neighborhood effectively means losing that neighborhood, which is both frequent (every unstocked or slow-delivery order is a lost trial) and severe (it can flip a user's default app). This ties to Eternal's mission because losing the quick-commerce race narrows 'operating system for getting things done' down to just food ordering, ceding the fastest-growing part of that promise to a competitor."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three real options: pour incremental capital into Blinkit's dark-store expansion and delivery speed, invest in deepening Zomato's already-mature food delivery experience, or accelerate District's build-out into new cities and event categories. On an impact-versus-effort view, Blinkit wins for incremental investment this cycle: the impact of not losing ground in an active, winner-take-most local land grab is high, and while dark-store expansion is capital-intensive, it's a well-understood playbook Eternal has already executed at scale, unlike District's less-proven category. I'd hold Zomato's core delivery at its current investment level, since it's mature enough that incremental spend there has diminishing returns, and I'd keep District at a smaller, exploratory investment level until its unit economics in early markets prove out. The key risk of over-indexing on Blinkit is capital strain if quick-commerce unit economics don't improve as new cities mature, mitigated by tying continued dark-store expansion to a clear per-city profitability gate rather than funding growth for its own sake."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Splitting capital evenly across all three businesses instead of recognizing that quick-commerce is in an active, time-sensitive competitive race the other two aren't",
+        "Ignoring that Blinkit's capital intensity means 'prioritize it' has a real cost, not just an opportunity to compare against the other two"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-003",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Slack's quarter: Slack AI, Huddles and Canvas, or countering Teams bundling",
+      "company": ["Slack"],
+      "region": "global",
+      "industry": "workplace-collaboration",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Slack has three candidate priorities for the quarter: expand Slack AI (summarization and search-based answers), deepen Huddles and Canvas to make existing conversations stickier, or respond more directly to Microsoft Teams' bundling advantage inside Microsoft 365. You can resource one properly. Which do you pick and why?",
+      "context": [
+        "Slack launched Slack AI in February 2024, a paid add-on offering channel and thread summarization and natural-language search over a workspace's message history.",
+        "Slack (then an independent company) filed an antitrust complaint against Microsoft with the European Commission in 2020, alleging Microsoft used bundling Teams into Microsoft 365 to disadvantage Slack.",
+        "Slack has continued to build native features that keep interactions inside the platform, including Huddles (lightweight audio/video calls, launched 2021) and Canvas (embedded documents, launched 2023).",
+        "Slack was acquired by Salesforce in 2021."
+      ],
+      "assumptions": [
+        "assumed: Slack AI is currently priced as a per-seat add-on on top of the base subscription",
+        "assumed: 'responding to Teams bundling' in this quarter means a packaging or go-to-market change, not a multi-year platform rebuild",
+        "assumed: Huddles and Canvas already have meaningful adoption within existing paid workspaces, and the opportunity is deepening rather than launching from zero"
+      ],
+      "followUps": [
+        "If your board asked why you didn't prioritize the direct competitive response to Teams, what would you say?",
+        "How would you measure whether deepening Huddles and Canvas actually reduces the risk of a workspace switching to Teams?",
+        "Salesforce owns Slack. How might that ownership change which of these three you'd realistically get resourced?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume Slack AI is a per-seat paid add-on, that 'responding to Teams bundling' this quarter means a packaging or go-to-market move rather than a platform rebuild, and that Huddles and Canvas already have real adoption to build on. My plan: state Slack's mission, segment the customers each option primarily protects or grows, identify the sharpest problem facing the highest-priority segment, then make the call on an impact-versus-effort basis."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Slack's value isn't 'chat' as a feature, it's replacing email and scattered meetings with a searchable, always-on record of how a team actually works together. My mission statement: 'be the place work happens, not just where it's discussed.' Strategically, Slack's advantage is its cross-platform, tool-agnostic integration ecosystem and its reputation as the better-loved product among the people who actually use it daily, both of which Teams' bundling advantage doesn't erase, since IT procurement and end-user preference aren't the same decision-maker."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes end users who chat daily inside Slack, IT/procurement buyers who decide the company-wide tool, and Salesforce, which owns Slack and wants it to cross-sell with its broader suite. Two segments matter most: workspaces at real risk of being displaced by a Teams bundling decision made above the end users' heads, and existing loyal workspaces where the risk isn't losing the account but losing daily engagement to habits like email or ad-hoc video calls. The at-risk-of-displacement segment scores higher on severity, since losing an entire workspace to Teams is a full account loss, not a usage dip, even though it may be a smaller segment in raw numbers than the broader engaged base."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the at-risk workspace's context: procurement is renewing an enterprise software bundle, Teams comes 'free' inside it, and the case for keeping Slack rests entirely on whether end users and department heads push back hard enough to justify a separate line item. The problem isn't 'Slack's product is worse' -- it's that the switching decision often happens at a budget-and-procurement level Slack's product experience alone can't influence, and today Slack lacks a packaging or pricing counter-move that makes the separate-line-item case easier for a champion inside that company to win. This is severe because it can cost an entire account in one renewal cycle, and it directly threatens the mission, since a displaced workspace stops being 'the place work happens' altogether."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three directions: expand Slack AI as a differentiated feature Teams doesn't match as well, deepen Huddles and Canvas to raise daily engagement and switching cost, or build a packaging/pricing response aimed directly at the procurement-level bundling threat. On impact versus effort, I'd prioritize the direct competitive response this quarter: the impact of preventing full-account losses is higher than incremental engagement gains among already-loyal users, and a packaging change (for example, bundling Slack AI and Canvas into an enterprise tier priced to beat the 'free inside Teams' argument) is achievable within a quarter, unlike a multi-year platform differentiation strategy. I'd treat deepening Huddles and Canvas as the second priority, since stickier daily use also strengthens the procurement case by giving end-user champions more to defend, and I'd keep Slack AI expansion as an ingredient inside the packaging response rather than a separate initiative. The key risk is that an aggressive enterprise discount undermines margin without actually stopping displacement if the champion inside the customer's org has already lost the internal argument; the mitigation is targeting the packaging change specifically at renewal-stage accounts showing early bundling risk signals, not offering it broadly."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating Slack AI as automatically the top priority because it's the newest, most visible feature, without weighing the procurement-level risk of losing entire accounts",
+        "Assuming a better product alone can overcome a bundling disadvantage decided at the budget level, not the end-user level"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-004",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "PhonePe's next bet: new fintech verticals, UPI reliability at scale, or international expansion",
+      "company": ["PhonePe"],
+      "region": "india",
+      "industry": "fintech",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "PhonePe processes the largest share of India's UPI transaction volume of any app. It now has three credible directions to invest in further: new fintech verticals like insurance and wealth management, hardening the reliability of its core UPI payment infrastructure at its current scale, or international expansion. As the product leader making this call, how would you prioritize?",
+      "context": [
+        "PhonePe has consistently held the largest share of UPI transaction volume among apps on India's Unified Payments Interface, according to NPCI's published UPI statistics.",
+        "PhonePe has diversified beyond payments into new fintech verticals, including stockbroking (Share.Market, launched 2023) and insurance broking, after receiving an IRDAI insurance broking license in 2023.",
+        "PhonePe has pursued international expansion, including launching UPI-based payment acceptance for Indian travelers in markets such as the UAE.",
+        "India's UPI system has experienced publicly reported downtime incidents affecting major apps at various points, drawing scrutiny given UPI's role as national payments infrastructure."
+      ],
+      "assumptions": [
+        "assumed: PhonePe's UPI transaction volume continues to grow, increasing the absolute cost of any reliability incident",
+        "assumed: new fintech verticals like insurance and wealth are still in an early, pre-scale stage relative to the core payments business",
+        "assumed: international expansion today is a small, early-stage effort relative to PhonePe's domestic UPI business"
+      ],
+      "followUps": [
+        "PhonePe's UPI market leadership itself invites regulatory scrutiny about market concentration. How does that risk factor into your prioritization?",
+        "How would you convince a growth-focused executive team that infrastructure reliability deserves top billing over a new revenue line like insurance?",
+        "If a major reliability incident happened during this quarter, how would that change everything else on this list?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume PhonePe's UPI volume keeps growing, making any reliability incident more costly in absolute terms, that its new verticals like insurance and wealth are still early relative to its core payments business, and that international expansion today is a small effort by comparison. My plan: state PhonePe's mission, segment the users and stakeholders most exposed by each option, identify the sharpest problem facing the highest-priority segment, then make an impact-versus-effort call on where to invest."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "PhonePe's value isn't 'send money' as a feature, it's being the default, always-available way hundreds of millions of Indians move and increasingly manage their money. My mission statement: 'be the financial infrastructure people trust without having to think about it.' Strategically, PhonePe's greatest asset is exactly that -- being the largest UPI app by volume -- which is also its greatest exposure, since any reliability failure at that scale doesn't just annoy users, it becomes a national payments-infrastructure story, unlike a smaller app's outage."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes everyday UPI users making routine payments, merchants who depend on PhonePe for real-time payment acceptance, and prospective customers for new fintech verticals like insurance or investing. Two segments matter most for this decision: the mass base of existing daily UPI users, for whom PhonePe is now essential everyday infrastructure, and a much smaller, more affluent segment exploring PhonePe's newer wealth and insurance products. The daily UPI segment scores far higher on reach, and while it isn't 'underserved' in the sense of missing features, it is acutely underserved on the dimension of guaranteed reliability at its current scale, since PhonePe's rapid growth in transaction volume increases the blast radius of any future incident faster than infrastructure investment may be keeping pace."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a routine UPI user's context: they attempt a payment at a shop counter or to a family member, expecting near-instant confirmation, and any failure -- a stuck transaction, a delayed confirmation, a temporary outage -- creates immediate real-world friction, from an awkward moment at a till to genuine anxiety about whether money was actually sent. The problem isn't 'PhonePe needs more products' -- it's that being the largest UPI app means even a small percentage failure rate translates into a very large absolute number of disrupted transactions, and each such incident is amplified by media and regulatory attention given UPI's role as national infrastructure. This is severe because a serious reliability failure risks eroding the core trust the entire mission depends on, and it's frequent in the sense that transaction volume keeps climbing, raising the stakes of even a rare failure."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three options: continue expanding into new fintech verticals like insurance and wealth, invest in hardening core UPI reliability and infrastructure at scale, or grow international expansion. On an impact-versus-effort view, I'd prioritize reliability hardening this cycle: the impact of protecting trust in the core payments experience for hundreds of millions of daily users vastly outweighs the impact of growing a still-early insurance or wealth vertical, and while infrastructure work is genuinely effortful, it's a more bounded, well-understood engineering problem than building new regulated financial products from scratch. I'd keep new-vertical investment at a steady, unaccelerated pace rather than stopping it entirely, since insurance and wealth diversify PhonePe's business away from pure payments margin, and I'd treat international expansion as the lowest priority this cycle, since it's the smallest current opportunity and doesn't protect the core mission the way reliability does. The key risk of under-investing in new verticals is ceding that ground to a competitor also chasing India's fintech diversification wave; the mitigation is keeping a small, dedicated team on those verticals so PhonePe doesn't restart from zero once reliability investment matures."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating reliability investment as 'boring' compared to new revenue lines, without weighing how a trust failure at PhonePe's scale could be a national infrastructure story",
+        "Assuming diversification into insurance and wealth is automatically the growth priority just because it's a new revenue line, without checking whether it's actually the most underserved opportunity"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-005",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Netflix's next investment: the ad tier, live sports rights, or gaming",
+      "company": ["Netflix"],
+      "region": "global",
+      "industry": "video-streaming",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Netflix has three credible places to put incremental investment this year: growing its ad-supported tier and ad-tech capabilities, acquiring more live sports and events rights, or continuing to build out Netflix Games. Each has different economics and different levels of proof so far. How would you prioritize?",
+      "context": [
+        "Netflix launched an ad-supported subscription tier in November 2022 and has reported continued ad-tier subscriber growth in subsequent earnings calls.",
+        "Netflix has expanded into live events and sports, including the Jake Paul vs. Mike Tyson boxing match (November 2024), NFL games on Christmas Day (December 2024), and exclusive rights to WWE Raw (starting January 2025).",
+        "Netflix has invested in gaming since 2021 through Netflix Games, offering mobile games included with a subscription, though the company has publicly acknowledged games engagement remains a small fraction of overall member time compared to video."
+      ],
+      "assumptions": [
+        "assumed: the ad-supported tier has a lower average revenue per member than ad-free tiers but a lower price point that expands the addressable subscriber base",
+        "assumed: live sports and events rights require large upfront or multi-year financial commitments relative to typical licensed content",
+        "assumed: gaming investment to date is small relative to Netflix's overall content and technology budget"
+      ],
+      "followUps": [
+        "Live sports rights often come with multi-year commitments. How does that change your risk calculus compared to the other two options?",
+        "If gaming engagement has stayed flat for two years, what evidence would make you double down anyway rather than deprioritize it further?",
+        "How do you avoid the ad tier's growth simply cannibalizing higher-ARPU ad-free subscribers rather than expanding the total base?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume the ad tier trades lower per-member revenue for a larger addressable base, that live sports rights require large multi-year financial commitments, and that gaming investment remains small relative to Netflix's overall content budget. My plan: state Netflix's mission, segment the audiences and revenue mechanics each option primarily serves, identify the sharpest problem facing the highest-priority segment, then make the call on an impact-versus-effort basis given each option's proof level so far."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Netflix's value isn't 'shows and movies' as a feature, it's being the default place people go when they want to be entertained, with no decision fatigue about where to look. My mission statement: 'own the moment someone decides they want to watch something.' Strategically, Netflix's advantage is its enormous existing subscriber base and its ability to license or produce content across genres, which both the ad tier and live sports draw on directly, while gaming asks Netflix to compete in an entertainment category further from that core strength."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes price-sensitive prospective subscribers who churn to or never sign up because of Netflix's ad-free price, advertisers seeking a large, engaged audience, and existing subscribers whose engagement and retention Netflix wants to deepen. The price-sensitive prospective-subscriber segment scores highly on reach, since it represents real subscriber growth headroom, and is clearly underserved today by a product that historically offered only a higher-priced ad-free option; live sports appeals to a different but also large segment of existing and lapsed subscribers who currently get sports content elsewhere, while gaming's engaged segment has stayed a small, proven-but-plateaued slice of the base."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the price-sensitive prospective subscriber's context: they compare Netflix's cost against other streaming and entertainment options, and a full-price ad-free plan is the single biggest reason they don't sign up or that they cancel during a lean month, even though they'd still watch regularly if the price fit their budget. The problem isn't 'Netflix needs more content' -- it's that price is the primary barrier for a meaningfully sized segment that already wants the product, which is both frequent (price sensitivity recurs every renewal cycle) and directly measurable in churn and non-conversion data Netflix already has. This ties to the mission because every price-blocked non-subscriber is a lost 'default place to watch,' handed instead to a cheaper alternative."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three options: keep investing in the ad tier and ad-tech to convert price-sensitive non-subscribers, acquire more live sports and events rights to pull in sports fans and drive appointment viewing, or continue building out gaming. On impact versus effort, I'd prioritize the ad tier this cycle: it has the clearest, already-proven growth trajectory since its 2022 launch, and each incremental improvement in ad-tech and targeting compounds revenue without the multi-year financial exposure that sports rights carry. I'd treat live sports as the second priority, since events like the Tyson-Paul fight and NFL games have already shown they can drive major spikes in engagement and sign-ups, but I'd size any new rights commitment carefully given the multi-year financial exposure. I'd deprioritize further gaming investment this cycle given its acknowledged small share of member time, without shutting it down entirely, since it's a lower-cost, optionality bet that could pay off later. The key risk with the ad tier is cannibalizing higher-ARPU ad-free subscribers who downgrade rather than net-new subscribers joining; the mitigation is monitoring the mix of new-to-Netflix ad-tier sign-ups versus downgrades from existing ad-free members, and adjusting ad-tier marketing to target acquisition channels reaching non-subscribers specifically."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Chasing live sports rights primarily because they're exciting and high-visibility, without weighing the multi-year financial commitment against the ad tier's already-proven, lower-risk growth",
+        "Assuming gaming deserves equal investment to the other two simply because Netflix has been building it for years, without weighing its acknowledged small share of engagement"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-pricing-002",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "pricing",
+      "title": "Spotify's 2023 Premium price increase across its plan tiers",
+      "company": ["Spotify"],
+      "region": "global",
+      "industry": "audio-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "In mid-2023, Spotify raised Premium subscription prices in many markets for the first time since launch, while keeping its Individual, Duo, Family, and Student plan structure intact. Walk through how you would have approached this pricing decision.",
+      "context": [
+        "Spotify raised Premium subscription prices in a number of markets starting around July 2023, its first broad price increase in several of those markets since Premium launched.",
+        "Spotify's Premium plans include Individual, Duo (two accounts), Family (up to six accounts, with parental controls), and a discounted Student plan.",
+        "Spotify has continued to raise prices in various markets in the years since, alongside expanding what's bundled into Premium, such as audiobook listening hours added in 2023."
+      ],
+      "assumptions": [
+        "assumed: the price increase was targeted market-by-market rather than applied uniformly worldwide",
+        "assumed: Family and Duo plans have historically had a lower churn rate than Individual plans, since switching costs are higher for a shared household plan",
+        "assumed: a meaningful share of Individual-plan subscribers are price-sensitive enough that some churn to the free, ad-supported tier was expected"
+      ],
+      "followUps": [
+        "How would you decide how much to raise the Family plan versus the Individual plan, given they likely have different price sensitivity?",
+        "What would make you delay a price increase in a specific market even if most markets were ready for one?",
+        "How do you tell the difference between a subscriber who downgrades to free because of the price increase versus one who was going to churn anyway?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume the increase was rolled out market-by-market rather than globally at once, that Family and Duo plans have historically churned less than Individual given the higher switching cost of a shared household plan, and that some Individual-plan churn to the free tier was an expected, accepted trade-off. My plan: connect this to Spotify's mission, segment subscribers by what each plan tier serves, identify the core packaging problem being solved, then recommend how I'd have approached the increase across tiers."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Spotify's value proposition is unlimited, on-demand access to music and now audio content generally, replacing the friction of owning or pirating individual tracks. My mission statement: 'make all the world's audio instantly available for less than the cost of owning it piece by piece.' Strategically, Spotify's advantage is a large, entrenched subscriber base with high switching costs once playlists, listening history, and habits are built up, which supports testing price increases without an immediate mass exodus, unlike a newer entrant with less accumulated user investment."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes free ad-supported listeners, paying subscribers across the Individual/Duo/Family/Student tiers, and rights holders paid based on streaming activity. Within paying subscribers, the segments split by household context and price sensitivity: Individual subscribers, who bear the full price alone and are most price-sensitive; Family and Duo subscribers, who split the cost across a household and face a higher switching cost since multiple people would need to agree to leave; and Student subscribers, who are price-sensitive by definition of the discounted tier. Family and Duo subscribers score better on 'safe to raise price' because the cost-per-person increase from a price bump is small relative to the value of not disrupting multiple people's shared listening setup."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping an Individual subscriber's context at renewal: they see a higher price than they've paid before, weigh it against Spotify's now-larger bundle (music plus podcasts plus audiobook hours), and decide whether to stay, downgrade to free, or consider a cheaper household plan instead. The problem Spotify needs to solve isn't 'raise revenue' as a need -- the specific problem is that a flat, uniform price increase risks pushing exactly the most price-sensitive, lowest-switching-cost segment (solo Individual subscribers) toward churn, while under-pricing the least price-sensitive, highest-switching-cost segment (Family/Duo households) relative to what they'd tolerate. This is a real problem because getting the sizing wrong on either end either leaves revenue on the table or triggers avoidable churn, and it's tied to the mission since every churned subscriber is one more person Spotify isn't the default audio destination for."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Spotify's actual packaging kept the tier structure (Individual, Duo, Family, Student) intact while adjusting prices within each, rather than restructuring the tiers themselves or adding a new tier. I'd defend that choice: restructuring tiers during a price increase compounds the change users have to process and risks confusion, whereas raising prices within a familiar structure lets each segment evaluate the same value proposition they already understand at a new price point. Within that, I'd size the increase smaller on Individual, where price sensitivity and switching-cost are both working against Spotify, and could afford a relatively larger increase on Family and Duo, where the higher switching cost of coordinating a household departure absorbs a larger increase more easily. The key risk is that even a modest Individual-tier increase pushes a chunk of low-engagement subscribers to the free tier; the mitigation is pairing any Individual-tier increase with visible bundle expansion (like added audiobook hours) so subscribers see more value alongside the higher price, not just a higher price."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Applying the same percentage price increase uniformly across all tiers without accounting for how switching cost differs between a solo subscriber and a shared household plan",
+        "Treating any post-increase churn as a failure rather than expecting some churn from the most price-sensitive segment as a deliberate trade-off"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-pricing-003",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "pricing",
+      "title": "Packaging Duolingo Max as a premium AI tier above Super Duolingo",
+      "company": ["Duolingo"],
+      "region": "global",
+      "industry": "edtech",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "In March 2023, Duolingo launched Duolingo Max, a new subscription tier built on GPT-4, priced above its existing Super Duolingo subscription, offering features like 'Explain My Answer' and AI roleplay conversations. Walk through how you'd have approached packaging this as a new, higher tier rather than folding it into Super Duolingo.",
+      "context": [
+        "Duolingo launched Duolingo Max in March 2023, built using GPT-4, adding 'Explain My Answer' and AI-powered roleplay conversation practice.",
+        "Duolingo Max was priced as a tier above the existing Super Duolingo subscription, which itself sits above Duolingo's free, ad-supported tier with limited daily hearts.",
+        "Duolingo has publicly discussed integrating generative AI features as a way to make practice feel more like conversing with a real person."
+      ],
+      "assumptions": [
+        "assumed: Duolingo Max carries a meaningfully higher per-user cost than Super Duolingo, given the cost of GPT-4 API calls per lesson interaction",
+        "assumed: Super Duolingo subscribers are a meaningfully larger population than the free tier's most price-insensitive users, making them the natural upsell target for Max",
+        "assumed: most free-tier users would not convert directly to Max without first experiencing Super Duolingo's ad-free, unlimited-hearts experience"
+      ],
+      "followUps": [
+        "How would you decide which specific AI features belong in Max versus folding into Super Duolingo for free?",
+        "If GPT-4 API costs fell sharply, would you eventually fold Max's features into Super Duolingo? How would you decide?",
+        "How would you measure whether Max is attracting genuinely new subscribers versus just upgrading existing Super subscribers at a higher price?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume Duolingo Max carries meaningfully higher per-user cost than Super Duolingo given GPT-4 API usage, that Super Duolingo subscribers are the natural upsell audience rather than free users converting directly, and that most free users wouldn't jump straight to Max without experiencing Super first. My plan: connect this to Duolingo's mission, segment users by what each tier already serves, identify the specific gap Max needed to close, then recommend the tiering approach Duolingo actually took."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Duolingo's value isn't 'lessons' as a feature, it's making language learning feel like an achievable daily habit rather than a slow, discouraging slog. My mission statement: 'make practicing a language feel like progress you can see today, not just years from now.' Strategically, Duolingo's advantage is its massive, already-habituated user base and gamified core loop, which a new AI tier can build directly on top of rather than needing to build habit formation from scratch, unlike a standalone AI tutoring app with no existing daily-use audience."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes free-tier learners, Super Duolingo subscribers, and Duolingo's own cost structure for running GPT-4-powered features. Segments split by depth of engagement and willingness to pay: free-tier learners who are price-sensitive and mostly motivated by the core gamified loop, existing Super subscribers who've already shown willingness to pay for a better experience and want deeper practice (like understanding why an answer was wrong or a realistic conversation), and a smaller segment of highly motivated learners preparing for real-world use (travel, work, exams) who want the most realistic practice possible. This last segment scores well on reach-times-underserved among paying users specifically, since Super Duolingo's existing lesson format doesn't let them practice open-ended conversation or get a personalized explanation, and they're already proven willing to pay."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a motivated Super Duolingo subscriber's context: they get an answer wrong, see it marked incorrect, but get no explanation of why, or they want to practice a real conversation (ordering food, a job interview) but Duolingo's structured exercises don't flex to open-ended dialogue. The problem isn't 'lessons need more content' -- it's that the existing exercise format can't provide personalized explanation or open-ended conversational practice, which is exactly what a fixed-content, non-generative product structurally can't do, only what a generative one can. This is a real, well-defined problem for the motivated-learner segment specifically, tied to the mission because visible daily progress stalls once someone hits a wall a canned exercise can't explain."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Duolingo's actual approach was a distinct, higher-priced tier above Super rather than folding AI features into Super at the existing price. I'd defend that packaging: given GPT-4 API costs scale with usage in a way core lesson content doesn't, bundling AI features into Super's existing price for the entire subscriber base would mean the majority of Super subscribers who wouldn't use the AI features are still absorbing that cost. A separate Max tier isolates the higher marginal cost to exactly the segment willing to pay for it -- the motivated learners identified above -- while keeping Super's price and margin profile untouched for everyone else. The key risk is that a new top tier fragments the value story and confuses users deciding between Super and Max; the mitigation is making the marketing crisp about what's genuinely new in Max (explanation and roleplay) versus what's already in Super (unlimited hearts, no ads), so the upgrade decision maps cleanly to a specific unmet need rather than a vague 'more premium' label."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Bundling GPT-4-powered features into Super Duolingo's existing price without accounting for how usage-based AI costs differ from largely fixed lesson-content costs",
+        "Assuming free-tier users are the natural target market for a premium AI tier, rather than existing paying subscribers who've already shown willingness to pay for more"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-pricing-004",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "pricing",
+      "title": "Unifying Swiggy's loyalty programs into Swiggy One",
+      "company": ["Swiggy"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Swiggy consolidated separate loyalty and membership benefits across its food delivery, Instamart, and Dineout businesses into a single paid membership, Swiggy One, offering benefits like free delivery across services for one fee. Walk through how you would have approached this packaging decision.",
+      "context": [
+        "Swiggy operates multiple consumer businesses under one app ecosystem, including food delivery, Instamart (quick commerce), and Dineout (restaurant reservations and dining offers).",
+        "Swiggy introduced Swiggy One, a unified paid membership offering benefits such as free delivery across its food delivery and Instamart services, consolidating what had previously been more fragmented, service-specific perks.",
+        "Swiggy listed on Indian stock exchanges in November 2024."
+      ],
+      "assumptions": [
+        "assumed: before Swiggy One, benefits like free delivery thresholds or discounts varied separately by service, creating a fragmented value proposition for a user active across multiple Swiggy services",
+        "assumed: Swiggy One is priced as a single recurring fee (e.g. monthly or annual) rather than a per-transaction charge",
+        "assumed: users who order from both food delivery and Instamart are a meaningful, identifiable segment Swiggy can target with a unified offer"
+      ],
+      "followUps": [
+        "How would you price Swiggy One differently for a user who only ever orders food versus one who's active across food, Instamart, and Dineout?",
+        "What's the risk of a single-service user (say, food delivery only) feeling like Swiggy One overcharges them for benefits they don't use?",
+        "How would you measure whether Swiggy One is actually increasing cross-service usage, versus just being adopted by users who were already cross-service active?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume that before Swiggy One, benefits varied separately by service, creating a fragmented experience for cross-service users, that Swiggy One is a single recurring membership fee, and that cross-service users are an identifiable, targetable segment. My plan: connect this to Swiggy's mission, segment users by which services they actually use, identify the specific problem a fragmented loyalty structure created, then recommend the unified packaging approach Swiggy took."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Swiggy's value isn't any single service like 'food delivery' -- it's being the default app for a household's everyday convenience needs, whether that's a meal, groceries, or a dinner reservation. My mission statement: 'be the one app people open whenever they need something brought to them or booked for them, today.' Strategically, Swiggy's advantage over single-service competitors like a standalone quick-commerce app is exactly this breadth -- one login, one delivery fleet, one loyalty relationship -- which only pays off if the loyalty and pricing experience actually feels unified rather than stitched together service by service."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes single-service users active in only food delivery or only Instamart, cross-service users active across two or more of Swiggy's businesses, and Swiggy's own margin economics per service. Cross-service users are the clearest segment to prioritize: they already demonstrate trust in Swiggy's ecosystem across more than one need, but under a fragmented, service-specific loyalty structure they were getting no combined benefit for that broader engagement, meaning they were meaningfully underserved relative to the value they were already providing Swiggy. Single-service users, by contrast, may not value a cross-service membership as highly, since they'd be paying in part for benefits on a service they don't use."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a cross-service user's context: they order dinner delivery one night, then need a last-minute grocery item from Instamart the next day, but each service might have had its own separate free-delivery threshold, discount codes, or promotional structure, making the overall value proposition feel inconsistent and forcing the user to think about savings service by service rather than as one relationship with Swiggy. The problem isn't 'delivery costs too much' as a generic need -- it's that a fragmented, per-service loyalty structure fails to reward or even recognize a user's aggregate engagement across Swiggy's ecosystem, understating the actual value that user represents and giving them no reason to consolidate more of their spend with Swiggy specifically. This ties to the mission because being 'the one app' requires the loyalty experience to actually feel unified, not like several different apps sharing a login."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Swiggy's actual approach was a single, unified paid membership, Swiggy One, bundling benefits like free delivery across food delivery and Instamart under one fee, rather than continuing separate service-specific perks or a discount-code-driven approach. I'd defend that choice: a unified membership directly targets the cross-service segment identified above, since its value scales with how many of Swiggy's services a member actually uses, encouraging exactly the cross-service behavior that strengthens the platform's overall stickiness and average revenue per user. The key risk is alienating single-service users who feel they're paying for benefits on services they don't touch; the mitigation is making the free-tier and pay-per-order experience still reasonably competitive for single-service users, so Swiggy One is a clear upgrade for genuinely multi-service households rather than a toll every user feels pressured into."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming every Swiggy user values a cross-service membership equally, without recognizing that single-service users may see less value in bundled benefits",
+        "Underestimating how much a fragmented per-service loyalty structure was actively working against Swiggy's own cross-sell goals before unification"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-pricing-005",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "pricing",
+      "title": "Packaging LinkedIn Premium across job seekers, sales, and recruiters",
+      "company": ["LinkedIn"],
+      "region": "global",
+      "industry": "professional-network",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "LinkedIn offers several distinct paid subscription tiers on top of the same underlying platform: Premium Career for job seekers, Premium Business for general professional growth, Sales Navigator for sales professionals, and Recruiter for talent acquisition professionals. Walk through how you would approach segmenting and pricing across these very different use cases.",
+      "context": [
+        "LinkedIn offers multiple Premium subscription tiers, including Premium Career (aimed at job seekers), Premium Business (general professional and business insights), Sales Navigator (aimed at sales professionals for lead generation and outreach), and Recruiter/Recruiter Lite (aimed at talent acquisition professionals).",
+        "These tiers are priced differently from one another and offer different feature sets tailored to each professional use case, all built on the same underlying LinkedIn platform and network data.",
+        "LinkedIn has been owned by Microsoft since its 2016 acquisition."
+      ],
+      "assumptions": [
+        "assumed: Sales Navigator and Recruiter carry meaningfully higher price points than Premium Career, reflecting a business-expense buyer rather than an individual consumer buyer",
+        "assumed: a meaningful share of LinkedIn's free users have a specific, high-intent use case (job seeking, selling, hiring) that a general-purpose Premium tier wouldn't fully serve",
+        "assumed: individual job seekers are typically paying out of pocket, while sales and recruiting professionals often have their subscription expensed or funded by their employer"
+      ],
+      "followUps": [
+        "Why might it make sense to price Recruiter and Sales Navigator far above Premium Career, even though they run on the same underlying data?",
+        "How would you decide whether a feature belongs in the general Premium Business tier versus being reserved for a specialized tier like Sales Navigator?",
+        "What's the risk of a user who genuinely needs Sales Navigator-level features settling for the cheaper Premium Business tier instead, and how would you catch that?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume Sales Navigator and Recruiter are priced well above Premium Career, reflecting employer-funded business buyers rather than individual consumers, and that a meaningful share of free users have a specific high-intent use case a general Premium tier wouldn't fully serve. My plan: connect this to LinkedIn's mission, segment users by professional use case rather than demographics, identify the core problem a single undifferentiated Premium tier would create, then recommend the verticalized packaging approach LinkedIn actually uses."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "LinkedIn's value isn't 'a professional profile' as a feature, it's being the place where professional opportunity -- a job, a client, a hire -- actually gets found and acted on. My mission statement: 'connect the world's professionals to make them more productive and successful,' which LinkedIn itself has stated, and which only holds if the product actually serves very different professional jobs-to-be-done equally well, not just the most common one."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes individual members with varying professional goals, and LinkedIn's own platform and data assets that all these use cases draw from. The segments split cleanly by job-to-be-done rather than demographics: job seekers wanting visibility into who's viewed their profile and how they compare to other applicants, general professionals wanting broader industry insight and expanded messaging, salespeople wanting advanced lead search and outreach tools, and recruiters wanting sourcing and candidate-management tools at scale. These segments are genuinely mutually exclusive in what they need from the same underlying data -- a salesperson's need for advanced company-level search filters has nothing in common with a job seeker's need for application insights -- which is exactly why a single blended Premium tier would underserve all of them at once."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a sales professional's context: they need to find decision-makers at target companies, track who's viewed their profile as a buying signal, and send outreach at a volume and precision a job-seeker-oriented tool wouldn't support, while a job seeker on the same underlying platform has entirely different needs like resume insights and applicant comparisons. The problem a single, generic Premium tier creates isn't 'LinkedIn needs more features' -- it's that bundling every use case's needs into one tier either overprices the tier for whichever segment uses the fewest of those features, or underdelivers depth for whichever segment needs the most specialized tools, and both outcomes leave real willingness-to-pay on the table. This ties to the mission because 'making professionals more productive' requires the tools to actually match the specific job each professional is doing, not a one-size-fits-all bundle."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "LinkedIn's actual approach is four distinct tiers -- Premium Career, Premium Business, Sales Navigator, and Recruiter -- each priced and featured for its specific segment rather than one blended Premium tier. I'd defend that structure: it lets LinkedIn price Sales Navigator and Recruiter much higher, since those buyers are typically businesses expensing a clear ROI tool (more deals closed, more hires made), while keeping Premium Career accessible to an individual job seeker paying out of pocket for a comparatively lower-stakes, shorter-duration need. The key risk is a user whose needs actually match a specialized, higher-priced tier settling for a cheaper general tier instead, either because they don't realize the specialized tier exists or because of sticker shock; the mitigation is contextual in-product prompts that surface the right specialized tier at the moment a user's behavior signals that use case, like showing Sales Navigator when someone starts doing heavy company-and-title-filtered searches on a general account."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming one well-designed Premium tier could serve every use case adequately, instead of recognizing job seekers, salespeople, and recruiters need fundamentally different tools from the same data",
+        "Pricing Recruiter and Sales Navigator too close to Premium Career's price point, missing that employer-funded business buyers have very different willingness to pay than individual consumers"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-growth-001",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "growth-loop",
+      "title": "Designing Canva's template creation and sharing loop",
+      "company": ["Canva"],
+      "region": "global",
+      "industry": "design-software",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Canva's growth has been fueled in part by a large library of templates that users create, use, and share, alongside a Creators program that pays template designers based on usage. Design the acquisition loop that connects template creation, sharing, and new-user acquisition.",
+      "context": [
+        "Canva provides a large public library of templates that users can browse, customize, and publish designs from.",
+        "Canva launched the Canva Creators program, allowing template designers to earn payment based on how often their templates are used by other Canva users.",
+        "Designs made in Canva are frequently shared or published externally (for example, on social media, in print, or exported for other uses), often carrying visible or implicit association with Canva as the tool used to create them."
+      ],
+      "assumptions": [
+        "assumed: a meaningful share of new Canva sign-ups arrive after encountering a Canva-made design (e.g. a social media graphic or presentation) created by someone else, and wanting to make something similar",
+        "assumed: template creators are motivated by a combination of payment and the discoverability/reputation that comes from a widely-used template",
+        "assumed: templates that get used more are more likely to be seen and shared further, since they appear in more finished designs circulating publicly"
+      ],
+      "followUps": [
+        "How would you prevent the loop from being gamed, for example a creator publishing many low-quality templates to farm usage payouts?",
+        "How would you measure whether a new sign-up came from encountering a Canva-made design versus a more traditional acquisition channel?",
+        "What would you do differently for a template category where most usage happens on Canva's free tier versus one dominated by paid Pro users?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume a meaningful share of sign-ups arrive after encountering a Canva-made design elsewhere and wanting to recreate something similar, that creators are motivated by both payment and reputation, and that more-used templates get seen and shared further simply by appearing in more finished designs circulating publicly. My plan: connect this to Canva's mission, segment the participants in the loop, identify the specific friction the loop needs to solve, then design the loop's mechanics."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Canva's value isn't 'design tools' as a feature, it's letting anyone without design training make something that looks professionally designed. My mission statement: 'empower the world to design, not just the people trained to.' Strategically, Canva's advantage is a massive, constantly refreshed template library contributed by its own user and creator base, which a from-scratch design tool without that library simply can't match on day one for a non-designer trying to get something done quickly."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes template creators who design and publish templates, everyday users who browse and customize templates to make something for their own purpose, and the people who see a finished Canva-made design out in the world without necessarily knowing it started as a Canva template. The segment worth focusing the loop design on is that last group -- people encountering a finished design (a flyer, an Instagram post, a presentation) without yet being a Canva user -- since they're the largest reach opportunity and are currently underserved by any deliberate mechanism connecting 'I like how this looks' to 'I could make this myself.'"
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this non-user's context: they see a well-designed graphic somewhere -- a friend's social post, a small business's flyer -- like how it looks, and either have no idea what tool made it, or know it's Canva but don't know how to get to that specific template or one like it, so the appreciation dead-ends without becoming a sign-up. The specific friction here isn't 'people don't want to design things' -- it's that there's no low-friction bridge from seeing a finished Canva design to being able to instantly start from that same template, which is a real, frequent problem since Canva-made designs circulate constantly across social media and everyday communications, and severe in the sense that it's pure lost acquisition, a person who already expressed interest by design but has no path back to the source. This ties to the mission because every dead-ended moment of appreciation is a missed chance to empower one more person to design."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "The loop mechanics: a creator publishes a template to Canva's library; users discover and customize it for their own designs; those finished designs circulate publicly (shared on social media, printed, sent to colleagues), often visibly or discoverably tied back to Canva; people who see and like those designs are routed back to the specific template or a similar one, closing the loop into a new sign-up or a returning user's next design; and creators earn based on how often their template is used, incentivizing them to publish more and better templates, which strengthens the next cycle of discovery. The concrete lever to strengthen the weakest link identified above -- the dead-ended appreciation moment -- is making template attribution and 'remix this' entry points as visible and low-friction as possible wherever a Canva design surfaces publicly, for example an easily shareable 'made with this template' link a creator or user can include when they publish or export a design. The key risk is creators gaming usage-based payouts by publishing many near-duplicate, low-quality templates; the mitigation is weighting payouts partly by downstream engagement with designs made from a template (e.g. views or shares of the finished output), not just raw usage counts, so quality and actual onward circulation matter, not just volume."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming the loop is already complete once a template is used, without addressing the gap between someone seeing a finished design and finding their way back to make one themselves",
+        "Rewarding template creators purely on usage volume, inviting low-quality template farming rather than templates that people actually want to see more of"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-growth-002",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "growth-loop",
+      "title": "Dropbox's classic storage-for-referral growth loop",
+      "company": ["Dropbox"],
+      "region": "global",
+      "industry": "cloud-storage",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "In its early years, Dropbox grew significantly through a referral program that gave both the referrer and the person they invited extra free storage space, rather than a cash incentive. Design and justify this loop's mechanics.",
+      "context": [
+        "Dropbox's early referral program rewarded both the existing user and the new user they referred with additional free storage space upon a successful signup, rather than a cash payment.",
+        "Dropbox has publicly credited this referral program, alongside other tactics, with contributing meaningfully to its user growth in its early years, including in its 2018 S-1 filing discussing its history and growth drivers.",
+        "Dropbox's core free product is a limited amount of storage, with paid plans unlocking additional storage and features."
+      ],
+      "assumptions": [
+        "assumed: the marginal cost to Dropbox of granting extra storage was lower than the marginal cost of an equivalent cash referral bonus, since unused storage capacity is cheaper than cash",
+        "assumed: most successful referrals in this era came through people sharing a personal referral link directly with friends, family, or colleagues rather than public social posts",
+        "assumed: users who received bonus storage from referrals were more likely to also eventually convert to a paid plan once their free storage, even with referral bonuses, was exhausted"
+      ],
+      "followUps": [
+        "Why might a storage reward work better for this product than a straightforward cash referral bonus would have?",
+        "How would you prevent the loop from being gamed by users creating fake accounts to refer themselves?",
+        "How would this loop's design need to change for a product where the core resource being given away (storage) isn't something the referred user immediately values?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume bonus storage cost Dropbox less at the margin than an equivalent cash bonus, that most successful referrals came through direct link-sharing rather than public posts, and that referral-driven users were more likely to eventually convert to paid once their free storage filled up. My plan: connect this to Dropbox's mission, segment the participants in the loop, identify the specific friction the loop needed to solve, then design the loop's mechanics and their justification."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Dropbox's value isn't 'cloud storage' as a feature, it's making a file available wherever you are without having to think about carrying it, emailing it to yourself, or losing it. My mission statement: 'make your files feel like they're always with you, no matter what device you're on.' Strategically, Dropbox's core resource -- storage space -- is also its natural referral currency, giving it an advantage a product without a similarly natural, low-marginal-cost reward wouldn't have."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes existing free-tier users bumping up against their storage limit, people they might refer who don't yet use Dropbox, and Dropbox's own storage cost economics. The highest-value segment to target is existing free users nearing their storage cap, since they have a direct, immediate incentive to refer (more free storage solves their own problem right now) and they're a large, easily reachable population already inside the product, unlike a cold outreach to non-users who have no existing relationship with Dropbox prompting them to act."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping this near-capacity free user's context: they're syncing files, hit their storage limit, and now face a decision -- delete files, pay for a plan, or find another way to get more space. The specific friction here is that Dropbox's core value proposition (files always with you) breaks down exactly at the free-tier storage ceiling, creating a natural moment of frustration that could either convert to a paid plan or cause the user to look for a workaround or a competitor; simultaneously, this same user has strong social proof to offer -- they've formed a real usage habit and know firsthand whether Dropbox is good -- but nothing in the product routes that frustration-driven moment into inviting others. This is frequent (it recurs for every growing free user) and directly tied to the mission, since the moment 'always with you' breaks is exactly when Dropbox risks losing the user's trust in the product's core promise."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "The loop mechanics: a free user hits or approaches their storage limit; at that moment, Dropbox surfaces a referral prompt offering bonus storage for both the referrer and each successful referral, up to a cap; the user shares their personal referral link with people they know would benefit from Dropbox; each successful signup gives both people extra storage, immediately relieving the referrer's original capacity problem while giving the new user a bigger free allotment than they'd have gotten by signing up cold; and some share of these new users eventually hit their own storage ceiling, restarting the loop. The core design choice -- storage instead of cash -- works because it's a reward users would have to pay for anyway, meaning it drives Dropbox's own conversion funnel (more storage used means closer to needing a paid plan) rather than being a pure cost with no secondary benefit, unlike cash which has no such connection to the product's paid tier. The key risk is abuse via fake self-referrals; the mitigation is capping total bonus storage earnable through referrals and requiring referred accounts to show real usage (not just signup) before the bonus is granted."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating a cash incentive and a storage incentive as interchangeable, missing that storage doubles as a lever pulling users toward Dropbox's own paid conversion funnel",
+        "Not tying the referral prompt to the specific moment of frustration (hitting the storage cap) where the incentive is most motivating"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-growth-003",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "growth-loop",
+      "title": "Designing CRED's referral and rewards-driven acquisition loop",
+      "company": ["CRED"],
+      "region": "india",
+      "industry": "fintech",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "CRED, an Indian app for paying credit card bills, restricts membership to users with a good credit score and rewards on-time bill payment and referrals with 'CRED coins' redeemable for brand rewards. Design the growth loop this combination creates.",
+      "context": [
+        "CRED is an Indian fintech app that lets users pay credit card bills and rewards on-time payment with 'CRED coins,' redeemable for offers and products from partner brands.",
+        "CRED has historically restricted access to users meeting a minimum credit score threshold, positioning membership as exclusive rather than open to all credit card holders.",
+        "CRED has run referral programs offering coin or cash rewards to both the referrer and the new member they bring in.",
+        "CRED became known for high-profile, high-budget advertising campaigns, including its widely discussed 2021 IPL cricket season ad campaigns."
+      ],
+      "assumptions": [
+        "assumed: the credit-score eligibility gate is a meaningful part of CRED's growth loop, since it makes membership itself feel like a status signal worth sharing",
+        "assumed: CRED coins earned through referrals and bill payments are redeemable for rewards with real perceived value to the target user segment (e.g. premium brand partners)",
+        "assumed: CRED's target segment (high-credit-score individuals) skews toward users who are already active on social media and comfortable sharing app referral links"
+      ],
+      "followUps": [
+        "How does the credit-score eligibility gate change the psychology of a referral compared to an app open to everyone?",
+        "What's the risk of the coin-redemption rewards feeling low-value over time, and how would that affect the loop?",
+        "How would you adapt this loop for a market or segment where credit-score-based exclusivity wouldn't carry the same social cachet?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume the credit-score gate itself is a meaningful part of the growth loop by making membership feel like a status signal, that CRED coins have real perceived value to the target segment through brand partner redemptions, and that CRED's target segment is comfortable sharing referral links socially. My plan: connect this to CRED's mission, segment the participants in the loop, identify the specific friction or motivation the loop addresses, then design the loop's mechanics."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "CRED's value isn't 'pay your credit card bill' as a feature -- paying a bill is already easy through a bank's own app -- it's making a mundane financial chore feel like a reward-earning, status-affirming act instead. My mission statement: 'make responsible financial behavior feel like something worth showing off, not just something you have to do.' Strategically, CRED's advantage is combining a genuinely useful utility (bill payment, due-date tracking) with an exclusivity mechanic that a bank's own app, open to all its cardholders regardless of credit behavior, can't replicate."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes existing CRED members with good credit scores, non-members who may or may not meet the eligibility bar, and CRED's brand partners funding the reward redemptions. The segment worth focusing the loop on is existing members who've already accumulated coins and experienced the exclusivity of qualifying -- they have both the motivation (more coins) and the credible social signal (I have good credit, I'm in) to refer others, unlike a non-member who has no firsthand experience of the product to vouch for."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping an existing member's context: they've just paid a bill on time, earned coins, and are deciding what to do with them, while separately, in conversation, a good-credit friend mentions being annoyed by clunky bill payment reminders elsewhere -- a natural opening to mention CRED, but with no strong reason to bother unless there's something in it for the member making the introduction. The specific friction is that word-of-mouth about a genuinely useful but non-urgent utility product doesn't happen on its own at scale, since 'I pay my bills with this app' isn't naturally exciting to bring up unprompted; CRED needs to convert the existing motivation (earning more coins, reinforcing exclusivity status) into an active reason to refer, not rely on organic enthusiasm alone. This is frequent, since every member has a recurring monthly bill-payment cycle that's a natural trigger point, and it ties to the mission because more referrals from existing members with good credit specifically reinforces the exclusive, aspirational positioning that gives the whole product its social currency."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "The loop mechanics: a member pays their bill on time, earns coins, and at that moment is prompted to refer specific eligible friends (people likely to meet the credit-score bar), offering bonus coins to both the referrer and the new member upon successful signup and verification; because membership itself requires meeting the credit-score bar, a referral implicitly signals 'you qualify for something exclusive,' which is a stronger prompt to accept than a referral to an open-to-everyone app; the new member, now also earning coins and enjoying exclusive brand redemptions, becomes a future referrer in the same cycle. The concrete lever to strengthen the identified friction is timing referral prompts to the moment right after a rewarding action (successful on-time payment, redeeming a reward), when the member's positive sentiment toward the app is highest, rather than a generic anytime prompt. The key risk is the coin-redemption rewards feeling low-value over time as novelty fades, weakening the entire incentive structure; the mitigation is continually refreshing brand partnerships and reward variety so redemption remains something members are excited to talk about, not just accumulate."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating the referral incentive as the only growth lever, without recognizing that the credit-score exclusivity gate is doing real psychological work making the referral itself feel valuable to give",
+        "Prompting referrals at arbitrary times rather than the specific moments (post-payment, post-redemption) when a member's goodwill toward the app is highest"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-growth-004",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "growth-loop",
+      "title": "Meesho's reseller-driven social sharing growth loop",
+      "company": ["Meesho"],
+      "region": "india",
+      "industry": "social-commerce",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Meesho, an Indian social commerce platform, grew significantly through a network of resellers who share product catalogs from Meesho via WhatsApp, Facebook, and Instagram to their own social contacts, earning margin on resulting sales without holding any inventory themselves. Design and evaluate this growth loop.",
+      "context": [
+        "Meesho is an Indian social commerce platform that originally built its growth around a network of resellers, individuals who share product catalogs sourced from Meesho's supplier network with their own social contacts via apps like WhatsApp, Facebook, and Instagram.",
+        "Resellers earn a margin on sales made through the products they share, without needing to hold inventory themselves, as Meesho and its suppliers handle fulfillment.",
+        "Meesho has counted resellers, many of whom are women in smaller Indian towns and cities, as a significant part of its user base and go-to-market strategy, and has publicly discussed this reseller network as core to its growth story.",
+        "Meesho has received investment from major global investors including SoftBank and Meta (through its venture arm), reported in various funding rounds."
+      ],
+      "assumptions": [
+        "assumed: most resellers operate on a small scale, sharing catalogs with a limited personal network of contacts rather than running it as a full-time business",
+        "assumed: the margin a reseller earns per sale is Meesho's primary lever for keeping resellers motivated to keep sharing catalogs",
+        "assumed: a meaningful share of end customers buying through a reseller's shared link had not previously shopped on Meesho directly"
+      ],
+      "followUps": [
+        "How would you prevent this loop from stalling once a reseller has exhausted their immediate social network of likely buyers?",
+        "What's the risk of resellers sharing misleading product information to drive sales, and how would you design against it?",
+        "How would you adapt or replace this loop as Meesho grows and wants to reach customers with no reseller in their social network at all?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume most resellers operate at small personal-network scale rather than as a full business, that per-sale margin is the primary lever keeping resellers motivated, and that a meaningful share of end customers reached through a reseller hadn't shopped on Meesho directly before. My plan: connect this to Meesho's mission, segment the loop's participants, identify the specific access problem the loop was built to solve, then design and evaluate the loop's mechanics."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Meesho's value isn't 'an online store' as a feature -- plenty of those exist -- it's making it possible for someone with no capital, inventory, or existing customer base to earn income by selling to people who already trust them personally. My mission statement: 'let anyone with a phone and a social network turn that trust into income.' Strategically, Meesho's advantage over a conventional e-commerce marketplace is that it doesn't need to build its own demand-generation or advertising engine city by city -- its resellers' existing personal trust networks do that work, at a cost structure (margin share, not ad spend) a traditional marketplace competing purely on paid acquisition can't easily match."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes resellers who share catalogs and earn margin, end customers who buy through a reseller's shared link, and suppliers whose products get distributed through this network. The reseller segment specifically -- many of whom are individuals, often women, in smaller Indian towns and cities without easy access to a conventional retail job or existing e-commerce infrastructure -- is the highest-priority segment, since they're both the growth engine (their sharing drives new customer acquisition) and a population historically underserved by traditional retail employment or e-commerce-seller infrastructure, which typically favors people with more capital or urban market access."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a prospective reseller's context: they want to earn supplemental income, but lack the capital to stock inventory, the logistics knowledge to handle shipping, or access to a formal retail job, while they do have something valuable -- a trusted personal and social network of contacts (family, neighbors, a WhatsApp group) who'd buy something recommended by them specifically. The specific problem isn't 'people need to shop online' -- it's that turning an existing base of personal trust into income has historically required capital or infrastructure this segment doesn't have, and no product before Meesho's model made that translation (trust into income) possible with zero upfront investment. This is severe because it's a genuine economic-access barrier, not a minor inconvenience, and it ties directly to the mission of letting anyone with a phone and a social network monetize that trust."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "The loop mechanics: a supplier lists a product; Meesho surfaces it in a catalog a reseller can browse and select from; the reseller shares specific product images and prices (with their own margin included) via WhatsApp, Facebook, or Instagram to their personal network; an end customer buys directly from that shared listing, Meesho and the supplier handle fulfillment, and the reseller earns their margin without ever touching inventory; the reseller, now with a proof point of successful sales and earned income, is motivated to browse and share more products, and often to recruit other resellers within their own network, compounding the loop. The concrete design lever addressing the identified problem is making the reseller signup and catalog-sharing flow require zero capital and minimal technical skill, so the barrier to becoming a reseller stays as close to zero as the barrier the model is trying to remove for the end customer's purchase decision. The key risk is the loop stalling once a reseller exhausts their immediate personal network of likely buyers, since word-of-mouth-based reach is naturally finite per individual; the mitigation is layering in easy re-engagement tools (restocking prompts, new-arrival catalogs to reshare) so an active reseller keeps finding new reasons to re-share with the same network over time, rather than the loop depending on constantly recruiting entirely new resellers to sustain volume."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating the reseller network purely as a distribution channel, missing that its real defensibility comes from it being a genuine economic-access product for an underserved segment, not just a marketing tactic",
+        "Assuming reseller-driven reach scales indefinitely, without accounting for the natural ceiling of any one reseller's personal social network"
+      ],
+      "related": []
+    }
+  ]
+}

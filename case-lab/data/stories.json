@@ -1,0 +1,408 @@
+{
+  "generatedAt": "2026-09-09T03:49:47.624Z",
+  "stories": [
+    {
+      "id": "story-chatbot-origin",
+      "title": "Why We Built a Chatbot at All",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "Before we had a chatbot, customers could only reach CheapOair support through call or email. Around 60% of our bookings are international with respect to the US, so calling in was expensive for customers because of roaming charges, and email didn't get them quick support.",
+      "task": "I needed to figure out whether a new support channel was actually justified, and which one, before pushing for the investment.",
+      "action": "I ran surveys to understand customers' preferred channel for support, pulled customer feedback on our IVR, and gathered feedback from Operations agents who were conveying the voice of the customer from the front line. I used all three inputs together to build the case.",
+      "result": "Those three inputs pointed to the same conclusion, so we launched a chatbot for quick support for flight post-booking queries, starting with basic flows like booking details and billing details, and handing off anything more complex to travel experts.",
+      "metrics": [
+        {
+          "label": "International bookings",
+          "value": "60%"
+        }
+      ],
+      "themes": [
+        "user-research",
+        "customer-empathy",
+        "data-driven-decision"
+      ],
+      "tags": [
+        "chatbot",
+        "survey",
+        "ivr",
+        "voice-of-customer"
+      ],
+      "sourceQuote": "60% of bookings are international (wrt US),  so calling was expensive as well due to roaming and email doesn’t get quick support."
+    },
+    {
+      "id": "story-dialogflow-es-automation",
+      "title": "Scaling the Dialogflow ES Chatbot from 20% to 50% Automation",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "When we first launched the chatbot, it only had 20% automation, meaning that fraction of queries were resolved end-to-end by the bot itself. We had onboarded basic flows like booking details and billing details, and anything transactional or needing extra support was handed off to travel experts.",
+      "task": "My job was to grow that automation percentage by onboarding more self-serve flows without hurting the experience.",
+      "action": "The chatbot was built on Google's Dialogflow ES, where I had to define each intent manually by adding the training phrases that denoted that intent, since Dialogflow ES uses NLP keyword matching between the typed query and the training phrases. For each intent I defined the response, the CTAs, and the sub-intents so users could converse through a flow. I onboarded self-serve flows for new bookings, cancellations, exchanges, schedule changes, add-ons, CCD, and CCV. I coordinated with different product and business owners to understand each process, then supervised the end-to-end integrations, and onboarded different agent teams to back the chatbot for anything it couldn't resolve. Day to day, I reviewed chat transcripts, stayed connected with stakeholders, and pulled insights from feedback to shape the next set of improvements to the chat experience.",
+      "result": "We took the chatbot to 50% automation, with 62% CSAT and 60% engagement.",
+      "metrics": [
+        {
+          "label": "Automation",
+          "value": "50% (up from 20%)"
+        },
+        {
+          "label": "CSAT",
+          "value": "62%"
+        },
+        {
+          "label": "Engagement",
+          "value": "60%"
+        }
+      ],
+      "themes": [
+        "0-to-1",
+        "execution-under-constraint",
+        "stakeholder-management",
+        "metrics-ownership"
+      ],
+      "tags": [
+        "dialogflow-es",
+        "chatbot",
+        "self-serve-flows"
+      ],
+      "sourceQuote": "On DF chatbot afterwards, we achieved 50% automation with 62% CSAT. Engagement 60% this is through onboarding self-serve flows like new bookings, cancellations, exchanges, schedule changes, add-ons, ccd, ccv."
+    },
+    {
+      "id": "story-typing-box-block",
+      "title": "Blocking the Typing Box to Stop Intent Drift",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "About three years in, gen-AI chatbots became the norm and customers started typing freely into our chatbot the way they would on ChatGPT. That exposed the real limitation of Dialogflow ES: it's a basic NLP engine that can't handle multi-turn conversation, free-flow casual conversation, or context. Users' intent wasn't being classified properly, so the wrong flow would run.",
+      "task": "I had to stop users from getting derailed mid-flow on our highest-value journeys, since it was costing us both conversion and satisfaction.",
+      "action": "I took the strategic decision that on the major flows -- exchange, cancel, schedule change, and add-ons -- once intent was identified, either from CTAs or from the source of the booking, we would block the typing box entirely and let the user move through the fixed, defined path. Previously, users would type something in between steps and get diverted into a different flow entirely, losing conversion and ending up frustrated.",
+      "result": "This stopped the mid-flow diversions that were losing us conversion and leaving customers dissatisfied on exactly the flows that mattered most.",
+      "metrics": [],
+      "themes": [
+        "saying-no",
+        "execution-under-constraint",
+        "technical-depth",
+        "customer-empathy"
+      ],
+      "tags": [
+        "dialogflow-es",
+        "intent-classification",
+        "ux"
+      ],
+      "sourceQuote": "we have taken strategic decision for the major flows (exch, cancel, schedule, add-ons) once intent is identified from CTAs or based on source of booking, we block the typing box and let user flow the fixed defined path"
+    },
+    {
+      "id": "story-dialogflow-cx-kill",
+      "title": "Killing the Dialogflow CX Migration on Cost and ROI",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "In parallel with fixing intent drift on Dialogflow ES, we started a proof of concept on Dialogflow CX, Google's version with Gen AI capabilities. We connected directly with Google's POC team and had multiple sessions to understand the product, how to use it, and what benefits it offered. They walked us through the complete architecture, including webhook handling, and the upgraded interface made it look like a straightforward migration from the lower version to the higher one.",
+      "task": "I had to decide whether migrating our chatbot stack to Dialogflow CX was actually the right call.",
+      "action": "I evaluated the migration against its cost and the return it would generate for us.",
+      "result": "It didn't work out -- the cost was too high relative to the ROI, so I killed the CX migration and we pivoted to building our own architecture on Google's Vertex APIs instead, which was smoother since we already had the billing account set up.",
+      "metrics": [],
+      "themes": [
+        "killed-a-project",
+        "saying-no",
+        "data-driven-decision"
+      ],
+      "tags": [
+        "dialogflow-cx",
+        "google-poc",
+        "cost-benefit-analysis"
+      ],
+      "sourceQuote": "But it didn’t worked due to the higher cost and ROI."
+    },
+    {
+      "id": "story-vertex-orchestrator",
+      "title": "Building the In-House Orchestrator and AI Agent Architecture on Vertex",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "After killing the Dialogflow CX migration, we still needed to solve the same underlying problem: weak intent classification and a limited chat experience on our existing Dialogflow ES bot.",
+      "task": "My main motivation was to build our own architecture on Google's Vertex APIs that would meaningfully improve intent classification and the overall chat experience.",
+      "action": "I drove the build of an orchestrator agent, which decides what to do with a customer's query, along with a set of specialized AI agents with clearly defined jobs: an Intent Classifier, a Booking Details Query agent, a Small Talk agent, an FAQ agent, and an Agent Summarization agent. On top of that architecture, we built five specific functionalities: Digression, which lets the bot continue the previous flow after answering an in-between query; Flow Switch, which asks for confirmation before transferring the user from one major intent to another; Flow Queries, which answers side questions raised mid-flow, for example mid-cancellation, and then resumes the previous step; Global Queries, which answers a query upfront regardless of where the user is; and Clarification, which asks a follow-up when a query is ambiguous and shows the possible next steps.",
+      "result": "Against the old Dialogflow ES chatbot, the new AI chatbot moved engagement from 58% to 70%, containment from 48% to 53%, and CSAT from 62% to 80%. The biggest ongoing challenge was mastering prompt engineering.",
+      "metrics": [
+        {
+          "label": "Engagement",
+          "value": "70% (AI) vs 58% (DF)"
+        },
+        {
+          "label": "Containment",
+          "value": "53% (AI) vs 48% (DF)"
+        },
+        {
+          "label": "CSAT",
+          "value": "80% (AI) vs 62% (DF)"
+        }
+      ],
+      "themes": [
+        "ai-product",
+        "0-to-1",
+        "technical-depth",
+        "metrics-ownership"
+      ],
+      "tags": [
+        "vertex-ai",
+        "orchestrator",
+        "ai-agents"
+      ],
+      "sourceQuote": "Created orchestrator agent (which will decide what to do with the customer’s query) and different Ai agents whose job was defined (Intent Classifier, Booking details query, Small talk, FAQs, Agent Summarization)"
+    },
+    {
+      "id": "story-eval-system",
+      "title": "Building the Offline/Online Eval System for the AI Chatbot",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "As we moved to an LLM-based chatbot on Vertex, we couldn't just ship it and trust it -- we needed a way to prove it was accurate and safe, and that it wasn't regressing with every change.",
+      "task": "I had to put in place an evaluation framework that covered the bot both offline, before release, and online, in production.",
+      "action": "For offline eval, we built test suites the chatbot was run against: golden sets for ground truth, adversarial sets for edge cases and prompt injections, and regression sets for basic testing. For online eval, we used an LLM-as-judge approach on top of app insights logging, tracking metrics for groundedness, faithfulness, safety, jailbreak resistance, and answer relevancy.",
+      "result": "This eval system gave us the confidence to take the chatbot through compliance review and into the phased rollout that followed.",
+      "metrics": [],
+      "themes": [
+        "technical-depth",
+        "ai-product",
+        "metrics-ownership"
+      ],
+      "tags": [
+        "eval",
+        "llm-as-judge",
+        "golden-sets",
+        "adversarial-testing"
+      ],
+      "sourceQuote": "Groundness, Faithfulness, Safety, Jail break, Answer Relevancy"
+    },
+    {
+      "id": "story-compliance-rollout",
+      "title": "Getting the AI Chatbot Through Legal, InfoSec, and the AI Committee",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "Before we could put an LLM-based chatbot in front of real customers, it had to clear compliance -- legal exposure, information security, and our internal Gen AI guidelines.",
+      "task": "I owned getting the chatbot through that compliance process and then rolling it out safely.",
+      "action": "I connected with Legal, InfoSec, and the AI committee to work through everything from a compliance point of view, and followed the Gen AI guidelines the committee had put in place. Rather than going straight to customers, I opened the bot first to internal stakeholders for testing, then to the whole org, circulating feedback forms and improving the bot based on the suggestions we got back.",
+      "result": "Once we'd resolved the internal feedback, we made the chatbot live for 5% of traffic as the first real customer-facing rollout step.",
+      "metrics": [],
+      "themes": [
+        "compliance-risk",
+        "phased-launch",
+        "stakeholder-management",
+        "cross-functional"
+      ],
+      "tags": [
+        "legal",
+        "infosec",
+        "ai-committee",
+        "phased-rollout"
+      ],
+      "sourceQuote": "We first opened it for internal stakeholders for testing, and then to the whole org. Circulated feedback forms and improved on the suggestions received. Post resolving this, made it live for 5% traffic."
+    },
+    {
+      "id": "story-analytics-lead",
+      "title": "From Sr. Business Analyst to Leading the Analytics Team",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Sr. Business Analyst, Operations Product",
+      "situation": "I joined Fareportal as a Sr. Business Analyst, leading the analytics team for Operations Product with one data analyst reporting to me.",
+      "task": "I was responsible for modernizing how the Operations Product org tracked and analyzed its own performance.",
+      "action": "I built out dashboarding and moved reporting from Excel to Power BI, automated the queries that fed the dashboards, and wrote extensive SQL to support the analysis. I did deep data analysis for the team, coordinated with all the PMs to review their requirements, analyzed whatever items had just been released, and helped with target setting.",
+      "result": "That analytics foundation, and the credibility it built with Operations leadership, is what led to my move into a Product role, starting with the Priority Leads project.",
+      "metrics": [],
+      "themes": [
+        "leadership",
+        "data-driven-decision",
+        "mentoring",
+        "career-motivation"
+      ],
+      "tags": [
+        "business-analyst",
+        "power-bi",
+        "sql",
+        "analytics"
+      ],
+      "sourceQuote": "Started with Sr. Business analyst, where I was leading the analytics team of Operations Product, had one data analyst in my team."
+    },
+    {
+      "id": "story-priority-leads",
+      "title": "Priority Leads: Predicting Complaints Before They Happen",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager",
+      "situation": "Moving into a Product role, I was given ownership of building a Priority Leads tool -- a rules-based system to flag customers likely to complain before they actually did.",
+      "task": "I needed to define the rules that would identify at-risk customers early enough for Ops to intervene, and make sure those rules actually got acted on.",
+      "action": "I defined the rules manually on Excel together with Operations leaders, coordinating with them daily. The rules came out of experience and out of finding loopholes in the existing system -- for example, prioritizing a user who had contacted us more than three times across different mediums like call, email, and chat. Once agreed, I had these rules built as SQL queries that controlled the backend of lead generation inside the CRM. Every rule carried an SLA, driven by the Ops leaders for their teams to close before it breached, and I kept monitoring progress through a dashboard of leads created and their status.",
+      "result": "The goal was to predict a future complaint and resolve it before it snowballed, and we reduced complaints by 12%. The process is fully automated today and still running.",
+      "metrics": [
+        {
+          "label": "Complaints reduced",
+          "value": "12%"
+        }
+      ],
+      "themes": [
+        "rca",
+        "data-driven-decision",
+        "cross-functional",
+        "prioritization"
+      ],
+      "tags": [
+        "priority-leads",
+        "sql",
+        "crm",
+        "sla"
+      ],
+      "sourceQuote": "we were able to reduce the complaints by 12%."
+    },
+    {
+      "id": "story-chat-listing-page",
+      "title": "Bringing Live Chat to the Flight Listing Page",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "After Priority Leads, I moved into building the chatbot from scratch, initially managing 4 developers and 1 QA with no dedicated dev manager. Two of my priorities were improving the experience for customers waiting in queue, and increasing engagement by predicting intent from where the user was coming from.",
+      "task": "I wanted to get customers booking help from a live travel expert directly on the flight listing page, without cannibalizing the online booking flow.",
+      "action": "I identified the specific triggers where a chat option should be tested, starting with low-conversion-rate triggers and expanding to idle customers, senior segments, multi-city searches, and no-results or sold-out cases. I set up rule-based routing so high-quality leads went to our highest-performing agents, while pushing Ops to review and coach the lower performers. To drive click-through, I experimented with several chat-icon UX variants -- tooltips, an unread-message counter, and an animated icon. I reviewed chat transcripts daily to find action items and improvement areas, and I integrated the chat seamlessly with OBE, the platform agents use to book flights: on a single click, the same search the customer ran online opened for the agent in OBE, and if the customer had already selected a flight to review, that same flight was highlighted for the agent, cutting agent handling time.",
+      "result": "The goal throughout was to add incremental bookings through chat rather than cannibalize online conversion, so I ran AB tests on every change to monitor that impact.",
+      "metrics": [],
+      "themes": [
+        "experimentation",
+        "cross-functional",
+        "technical-depth",
+        "execution-under-constraint"
+      ],
+      "tags": [
+        "chat-widget",
+        "obe-integration",
+        "agent-routing",
+        "ux-experiments"
+      ],
+      "sourceQuote": "Seamless integration with OBE (where Agent book the flight) with the chat to reduce the AHT, on a single click - same search is getting opened on OBE to what customer have searched online."
+    },
+    {
+      "id": "story-search-explorer",
+      "title": "Search Explorer: Anticipating the Next Filter",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "As part of the same chat-on-listing-page work, I saw that users were struggling to narrow down flight search results to the one that actually fit them.",
+      "task": "I wanted to help users narrow their search by anticipating the filter they were likely to apply next, based on what they'd already selected.",
+      "action": "I built Search Explorer, which anticipated the user's next filter and presented flight options as clean UI tiles that explained, in plain terms, why a given flight was the better option -- for example, that it was three hours faster for just $20 more -- so the user had a clear value trade-off instead of a bare list.",
+      "result": "Users who selected a contract through Search Explorer had 40% more chance of converting by the end of the funnel.",
+      "metrics": [
+        {
+          "label": "Conversion likelihood",
+          "value": "+40%"
+        }
+      ],
+      "themes": [
+        "experimentation",
+        "ai-product",
+        "customer-empathy",
+        "metrics-ownership"
+      ],
+      "tags": [
+        "search-explorer",
+        "personalization",
+        "conversion"
+      ],
+      "sourceQuote": "users who are selecting any contract on search explorer have 40% more chances of getting converted at the end."
+    },
+    {
+      "id": "story-oli-trip-planner",
+      "title": "Oli: Building the AI Trip Planner from Competitive Teardown to Phased Launch",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager",
+      "situation": "Management wanted us to explore how AI could support trip planning and discovery, an area we hadn't touched yet.",
+      "task": "I was asked to research the space and turn it into a real product, eventually named Oli, that could plan trips for users and convert them into flight bookings.",
+      "action": "I started with a competitive teardown of Trip.com and MindTrip, documenting what they were doing well and where we could realistically leverage similar approaches. I circulated that analysis internally to get the product team's own take on how they'd plan a trip, and used that to find the pattern most people actually follow. I then spent about a month in working sessions with a UX designer to land on the right UI/UX, iterating repeatedly after reviews with leadership until we had the best version we could get to. In parallel, I wrote the PRD, deciding what would ship in phase 1 versus later phases, and ran daily meetings with the three development teams involved -- Chatbot, which owned the UI and chat functionality, RPA, which owned the backend generating the AI content, and App, which owned the surface Oli launched on -- to groom requirements and rework anything we'd missed. Oli's features spanned destination discovery narrowed by personalized info, day-wise itinerary planning, flight discovery as the ultimate conversion goal, hotel and car discovery pushed to phase 2, and full booking-funnel assistance with context across the listing, review, traveler-details, seat-selection, and payment pages, plus post-booking assistance linked back into our existing chatbot since pre- and post-booking data comes from different APIs. We tracked everything through AB test metrics, dashboards in Excel and Power BI, Google Analytics for the funnel, and app insights for logging. I launched it in phases -- internal UAT first, then org-wide exposure for feedback, then live to 5% of app traffic, then 20%, then 50%, then 100%.",
+      "result": "At 5%, I audited transcripts to see whether Oli was actually helping users, fixed bugs and gaps, and watched the AB test metrics closely to make sure we weren't cannibalizing app conversion and bookings. The numbers were trending in the right direction, so we moved up to 20% and continued from there.",
+      "metrics": [],
+      "themes": [
+        "0-to-1",
+        "cross-functional",
+        "phased-launch",
+        "ai-product",
+        "prioritization"
+      ],
+      "tags": [
+        "oli",
+        "trip-planner",
+        "competitive-analysis",
+        "prd"
+      ],
+      "sourceQuote": "Then first launched on 5% app traffic, then 20% -> 50% -> 100%."
+    },
+    {
+      "id": "story-whatsapp-meta",
+      "title": "Launching WhatsApp Support via Meta APIs off Social Ads",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager",
+      "situation": "I ran a survey on communication channel preference and found a significant number of users, especially in Asian and LatAm markets, preferred WhatsApp.",
+      "task": "I wanted to turn that preference into a new sales channel by connecting customers with travel experts over WhatsApp, sourced directly from social ads.",
+      "action": "We started by launching WhatsApp links embedded in Facebook and Instagram ads. I did the initial research into the full WhatsApp integration: the message types available on the Meta WhatsApp Cloud Platform, their costs, which template messages we'd need to create for our use case, what the dynamic greeting message would be per ad and flow, how the agent would know which ad a user came from so the value proposition matched, and the Agent-to-Booking-platform integration needed to cut agent handling time by passing search details and auto-opening the listing page for the agent, plus a flow to re-engage customers who went inactive. I ran a POC to figure out how a user on WhatsApp would connect to an agent on our NICE Max UI, and found the mechanism through backend polling. I then coordinated with the Marketing team on where to launch the ads and who should see them, and led the internal approvals for budget and Meta-billing setup.",
+      "result": "The objective from the start was to connect customers with travel experts to help them book, and we initiated WhatsApp support via Meta APIs on social media ads, generating 25 new bookings a day with $3.7K in daily revenue.",
+      "metrics": [
+        {
+          "label": "New bookings",
+          "value": "25/day"
+        },
+        {
+          "label": "Daily revenue",
+          "value": "$3.7K"
+        }
+      ],
+      "themes": [
+        "0-to-1",
+        "cross-functional",
+        "influence-without-authority",
+        "stakeholder-management"
+      ],
+      "tags": [
+        "whatsapp",
+        "meta-api",
+        "nice-max",
+        "social-ads"
+      ],
+      "sourceQuote": "Initiated WhatsApp support via Meta APIs on social media ads; generating 25 new bookings with $3.7K daily revenue"
+    },
+    {
+      "id": "story-cancel-exchange-funnel",
+      "title": "Cancel and Exchange Funnel RCAs and Optimizations",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "Product Manager, Chatbot",
+      "situation": "After we launched self-serve cancel and exchange flows on the chatbot -- flows that didn't exist before, when users had to call in or get transferred to an agent -- I tracked both funnels end to end. Cancel ran Entry > Cancel Intent > Cancel for some pax or all > Automated/Non-automated > Show refund details > Proceed with cancel > OTP > Success. Exchange ran Entry > Type of change > Search widget > Modify for some pax or all > Automated/Not automated > Show listings > Review page > Select payment method > OTP step > Success/Failure, with non-automated cases always going to agents.",
+      "task": "My job was to find where users were dropping out of each funnel and fix it.",
+      "action": "On the cancel funnel, I found a huge drop at the OTP step. I dug into whether users were even seeing the OTP box, whether they could type into it, whether the send button worked, and whether they were receiving the OTP emails at all or those emails were landing in spam, reviewing both the chats of dropping users and their feedback. Going into the API logs, I found the actual cause: the email API was broken for a few specific booking engines, so those booking types weren't getting the OTP email at all. Separately, on the exchange funnel, I found a drop from the listing step to the review step. I RCA'd it using data, logs, chat audits, and re-testing the flow itself; the data and logs didn't point anywhere on their own, so I checked whether a backend release had touched the listings, and it had: a release had added more airline engines to increase listing volume, which broke the cheapest/shortest/recommended sorting, so users were stuck seeing the same order regardless of their sort choice. I got that resolved with the backend team. Beyond the two RCAs, I also found two optimization opportunities: at the 'Show refund details' step in the cancel flow, users wanted to know upfront when they'd get their refund if they cancelled now, and were asking things like why they owed a cancellation fee if they already had travel insurance, so I had the UI answer those questions upfront. And on the exchange funnel's OTP step, since all OTPs at Fareportal went out by email only, we were getting complaints from users who couldn't access or find that email, so I pushed to add OTP via SMS, coordinating with the SMS team and the backend OTP API team to build the workflow within a sprint.",
+      "result": "After the backend release causing the sorting bug was resolved and the email API issue was fixed, both funnels returned to normal. The refund-details-upfront change increased the next-step transition by almost 15%, and OTP via SMS increased OTP-to-success by 8%.",
+      "metrics": [
+        {
+          "label": "Refund-details-upfront step transition",
+          "value": "+15%"
+        },
+        {
+          "label": "OTP-to-success (via SMS)",
+          "value": "+8%"
+        }
+      ],
+      "themes": [
+        "rca",
+        "funnel-optimization",
+        "data-driven-decision",
+        "execution-under-constraint"
+      ],
+      "tags": [
+        "cancel-flow",
+        "exchange-flow",
+        "rca",
+        "otp",
+        "refund"
+      ],
+      "sourceQuote": "Then from the logs of APIs, we got to figure it out the there is issue with the email API for few booking engines and these booking types were not getting the email at all."
+    }
+  ]
+}

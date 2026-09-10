@@ -1,0 +1,1168 @@
+{
+  "pack": "an-02",
+  "cases": [
+    {
+      "id": "an-rca-002",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a watch-time drop in Netflix's Brazil catalog",
+      "company": ["Netflix"],
+      "region": "global",
+      "industry": "video-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Netflix's average hours streamed per subscriber in Brazil dropped 10% in a single week and has stayed at that lower level since. Walk me through your root-cause analysis.",
+      "context": [
+        "Netflix is a subscription video-streaming service offering licensed and original content across most countries worldwide.",
+        "Netflix introduced an ad-supported subscription tier in several markets starting in November 2022.",
+        "Netflix began enforcing restrictions on account sharing outside a household in 2023, adding a paid 'extra member' option in many markets."
+      ],
+      "assumptions": [
+        "assumed: average hours streamed per weekly active subscriber in Brazil fell 10% week-over-week, as posed by the interviewer",
+        "assumed: the drop is specific to Brazil, with the global average roughly flat over the same week",
+        "assumed: there was no public statement from Netflix acknowledging an outage or incident that week"
+      ],
+      "followUps": [
+        "Your leading hypothesis is a licensing expiry on a top title. What's the fastest way to confirm or kill that theory?",
+        "How would your investigation change if the drop had unfolded gradually over six weeks instead of overnight?",
+        "What guardrail would you propose so a licensing-driven drop like this is caught before it happens, not after?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd first pin down that the metric is average hours streamed per weekly active subscriber in Brazil specifically, down 10% week-over-week, and that it stepped down sharply and has held at the new lower level rather than continuing to slide or bouncing back. A clean step-change rather than a gradual slide points toward a discrete event that happened around the start of that week, which narrows my search considerably before I look at any cause."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "Before treating this as a real behaviour change, I'd check whether a logging or event-schema change shipped to the Brazil app or backend that week, whether the watch-time pipeline had a delayed or partial load, and whether the definition of a 'streaming hour' or 'weekly active subscriber' changed. I'd also check whether a bot- or QA-traffic filter was newly applied to that market. If none of these line up with the exact timing, I'd treat the drop as real user behaviour."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut hours streamed by device, by content genre, and critically by individual title, since a catalog-level cause should be visible as a change in the title mix people are watching. If the drop is concentrated in one or two titles or one genre rather than spread evenly, that points to a content-supply issue specific to Brazil rather than something affecting the whole platform. I'd also check whether other countries showed any dip in the same titles, which would suggest a global rather than local cause."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "If the drop concentrates on a small number of titles, my first suspicion is that a popular licensed show's Brazil streaming rights expired or were pulled from the catalog that week, since licensing windows are country-specific and often reset on set dates. A second internal candidate is a home-screen ranking or recommendation change that stopped surfacing a previously heavily-watched title as prominently. I'd check the content and merchandising release calendar for Brazil for anything scheduled that week."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "If the drop is spread evenly across titles and genres rather than concentrated, I'd look outside the product: a major live cultural or sporting event in Brazil pulling attention elsewhere that week, a broadband or mobile network issue specific to Brazilian ISPs, or a competing streaming service's high-profile new-season release drawing viewers away. I'd check whether the timing lines up with any known local event or a competitor's publicized launch."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the drop concentrates almost entirely on one previously top-watched licensed series, my leading hypothesis is that its Brazil streaming rights expired that week and the title left the catalog. The confirming query: compare that title's hours-streamed contribution to Brazil's total the week before versus its absence the week after, cross-referenced against the licensing calendar. The disconfirming signal: if hours are down roughly proportionally across every title and genre, the loss of one title isn't the explanation and I'd look at network or event-driven causes instead."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: re-rank the Brazil home screen to more aggressively surface comparable genre content and originals to recapture some of that viewing occasion while a licensing renewal or replacement is negotiated. Durable fix: build a licensing-expiry forecast that flags any title contributing more than a set share of a country's weekly hours within 60 days of its rights window closing, so content and merchandising can queue a replacement in advance. Guardrail metric: per-title concentration of a country's weekly watch-time, alerted whenever a single title crosses a high-concentration threshold, since that's exactly the fragility that caused this drop."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming a country-level drop must be a product bug before checking whether it's concentrated in a single title",
+        "Treating a step-change as a data artefact without first checking whether the drop is actually spread evenly across the catalog"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-003",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a driver acceptance rate drop on Uber's Android app",
+      "company": ["Uber"],
+      "region": "global",
+      "industry": "ride-hailing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Uber's driver trip-acceptance rate in a major market dropped 8 percentage points over three days and hasn't recovered. Walk me through your root-cause analysis.",
+      "context": [
+        "Uber operates a ride-hailing marketplace connecting riders and drivers through a mobile app, launched in 2010.",
+        "Uber's driver app shows the pickup location and, in many markets, estimated fare information before a driver accepts or declines a trip request.",
+        "Uber ships app updates to iOS and Android on separate release trains, so the two platforms don't always run the same driver-app version at the same time."
+      ],
+      "assumptions": [
+        "assumed: driver trip-acceptance rate fell 8 percentage points over three days in this market, as posed by the interviewer",
+        "assumed: the metric is the share of trip requests a driver accepts within the standard offer window",
+        "assumed: there was no publicly acknowledged Uber outage in that market during this period"
+      ],
+      "followUps": [
+        "Your leading hypothesis is a client-side bug in a recent Android release. What's the fastest way to confirm or kill that theory?",
+        "How would your investigation change if the drop had appeared identically on both iOS and Android?",
+        "What guardrail would catch an acceptance-rate regression like this within hours instead of days?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is driver trip-acceptance rate, defined as accepted requests over total requests offered within the standard decision window, down 8 percentage points over three days in this one market, and that it stepped down and held rather than drifting back up. I'd also check whether it moved as a sudden step on a specific day or eroded gradually across the three days, since that distinguishes a single triggering event from a rolling rollout."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the definition of 'offer window' or 'accepted' changed in how the metric is computed, whether there was a logging gap in the driver-app event pipeline during those days, and whether a fraud- or bot-account filter started excluding a chunk of driver sessions from the denominator or numerator differently. If none of these line up with the timing, I'd treat the drop as a genuine behaviour change among real drivers."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut acceptance rate by OS (iOS vs Android), driver-app version, vehicle category, and time of day. If the drop is concentrated on Android and on the latest app version specifically, that strongly points to something in that release; if it's uniform across both platforms and every app version, that points to something external to the app, like a change in demand patterns or fare economics that all drivers are reacting to."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "If the drop is Android-and-latest-version-specific, my leading suspicion is a bug in that release, for example the fare or destination preview rendering incorrectly or too slowly, causing drivers to let requests time out rather than actively decline them. A second internal candidate is an experiment ramping into that market that changed how much trip information is shown to drivers before they accept. I'd check the Android release notes and the experiment log for that market and that exact date range."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "If the drop were uniform across platforms, I'd look at whether local fuel prices spiked, whether a new city regulation changed driver earnings or commission economics, or whether a competing ride-hailing app launched an aggressive driver-incentive campaign pulling supply away during peak hours. I'd check for any public news or regulatory announcement in that market around the same window."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the drop is concentrated on the newest Android app version, my leading hypothesis is that the release introduced a rendering or latency bug in the trip-offer screen that's causing offers to time out rather than be actively declined. The confirming query: compare acceptance rate for drivers on the new Android build versus drivers still on the previous build, within the same market and time window. The disconfirming signal: if acceptance rate is equally depressed for drivers still on the old build, the release isn't the cause and I'd revisit the external causes."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: halt or roll back the Android release for that market while the bug is confirmed, to stop further driver frustration and passenger wait-time increases. Durable fix: add an automated acceptance-rate regression check, gated on a small canary population, as a required pass before any driver-app release proceeds past a limited rollout. Guardrail metric: a real-time, per-platform acceptance-rate anomaly alert with an hours-not-days detection window, so a regression like this is caught the same day it ships."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Jumping to 'drivers are unhappy with pay' before checking whether the drop is isolated to one app version",
+        "Conflating a timed-out offer with an actively declined one, which would hide a rendering or latency bug behind a generic 'acceptance' label"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-004",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a search-to-booking drop for Airbnb in one city",
+      "company": ["Airbnb"],
+      "region": "global",
+      "industry": "hospitality",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Airbnb's search-to-booking conversion rate in one major city fell 15% over a month, with no single-day cliff. Walk me through your root-cause analysis.",
+      "context": [
+        "Airbnb is a global online marketplace connecting hosts offering short-term lodging and experiences with guests searching for a stay.",
+        "Several cities and countries have introduced regulations restricting or limiting short-term rental listings, including registration requirements or caps on the number of nights a property can be rented.",
+        "Airbnb's search results rank and filter listings based on factors including price, availability, and host responsiveness."
+      ],
+      "assumptions": [
+        "assumed: search-to-booking conversion rate for this city fell 15% over the trailing month, as posed by the interviewer",
+        "assumed: the metric is bookings completed divided by searches with at least one result shown, for stays in this city",
+        "assumed: overall Airbnb-wide conversion rate stayed roughly flat over the same period"
+      ],
+      "followUps": [
+        "Your leading hypothesis is a regulation-driven inventory shrink. What's the fastest way to confirm or kill that theory?",
+        "How would your investigation change if the drop were a sudden cliff on one specific day instead of a slow monthly bleed?",
+        "What guardrail metric would catch a slow, city-level bleed like this well before it compounds to 15%?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is search-to-booking conversion, defined as completed bookings divided by searches returning at least one result, down 15% over a full month in this one city, with no single-day cliff -- meaning it's a slow bleed rather than a step-change. That shape matters: a gradual decline points toward something changing incrementally over the month, like inventory shrinking week by week, rather than a single triggering event."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the search-result logging pipeline changed what counts as a 'search with results,' whether a spam- or fake-listing filter change removed listings from that city's inventory count mid-month, and whether there was any backfill delay in how bookings for that city are attributed. If the decline tracks smoothly across the month rather than aligning with a pipeline change date, I'd treat it as a real drop in booking behaviour."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut conversion by listing type (entire home vs private room), by neighbourhood within the city, by new vs returning guest, and by search intent (dated vs flexible search). If the drop is concentrated in specific neighbourhoods or listing types rather than spread city-wide, that points to a supply-side issue in that segment; if it's uniform across the whole city and all guest types, that points to something affecting demand or trust city-wide."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "If the drop is concentrated in specific neighbourhoods, I'd suspect a change to search ranking that's demoting certain listings, or an internal policy change (like a new host-verification requirement) that quietly removed a chunk of listings from that area's active inventory. I'd check whether total active listing count in this city fell over the same month, which would directly explain fewer bookings even with unchanged guest demand."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "If the drop is uniform city-wide, I'd look at whether the city introduced or began enforcing a short-term rental registration requirement or a cap on rental nights during that month, which would shrink legal inventory gradually as hosts pulled listings to comply, or delist while awaiting registration. I'd also check for a local event calendar shift (a major festival or conference not recurring this year) and for a competitor's aggressive city-specific promotion. I'd check municipal announcements and host community forums for that city during this window."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where active listing count in that city fell steadily over the month and the drop is spread across neighbourhoods, my leading hypothesis is that a new short-term rental registration requirement took effect and hosts are delisting faster than they're completing registration. The confirming query: plot city-wide active listing count against the registration deadline date, checking whether the decline in listings tracks the decline in bookings proportionally. The disconfirming signal: if listing count stayed flat while conversion still fell, the cause is on the demand or ranking side, not supply."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: proactively surface a registration-compliance guide and expedited support to hosts in that city so fewer listings churn off the platform than necessary, and temporarily widen search radius defaults so guests see nearby inventory instead of an empty result set. Durable fix: build a standing regulatory-tracking process that flags upcoming short-term-rental legislation in top markets months ahead, so host communication and compliance support can start before a deadline forces sudden delistings. Guardrail metric: active listing count per city tracked weekly with an alert on any sustained multi-week decline, so a slow bleed like this is caught well before it shows up as a 15% conversion drop."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating a slow, month-long bleed as several small unrelated blips instead of recognising the shape as evidence of a gradually-compounding cause",
+        "Assuming a conversion drop must be a ranking-algorithm problem before checking whether the underlying supply of listings actually shrank"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-005",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a checkout completion drop for one Stripe integration",
+      "company": ["Stripe"],
+      "region": "global",
+      "industry": "payments",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Checkout completion rate for transactions using one specific card network dropped from 96% to 80% over a two-hour window and stayed there. Walk me through your root-cause analysis.",
+      "context": [
+        "Stripe is a payments infrastructure company that processes online card and other payment transactions on behalf of businesses.",
+        "Completing a Stripe checkout typically requires an authorization round-trip with the customer's card network and issuing bank.",
+        "Stripe publishes real-time uptime and incident information for its services on a public status page."
+      ],
+      "assumptions": [
+        "assumed: checkout completion rate for this one card network fell from 96% to 80% within a two-hour window, as posed by the interviewer",
+        "assumed: completion rate for all other card networks stayed within its normal range over the same window",
+        "assumed: no incident for this card network was posted on Stripe's public status page"
+      ],
+      "followUps": [
+        "Your leading hypothesis is an upstream authorization failure at the card network. What's the fastest way to confirm or kill that theory?",
+        "How would your investigation change if the drop had affected every card network at once rather than just one?",
+        "What guardrail would catch a network-specific authorization failure like this within minutes?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is checkout completion rate -- successful authorizations divided by attempted charges -- for transactions on this one card network, dropping from a 96% baseline to 80% within a tight two-hour window and holding there, which is a sharp step-change pointing to a discrete triggering event rather than a drifting trend. I'd also confirm the exact start time, since a precise timestamp is the fastest way to cross-reference against release logs and any third-party status pages."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether Stripe's own event logging or webhook delivery for this card network had a gap or delay during that window, and whether a recent change to how declined transactions are categorized (for example, miscounting a soft decline as a hard failure) coincided with the timing. If the underlying authorization responses from the network itself show genuine declines rather than a logging gap, I'd treat this as a real drop in successful transactions."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut the drop by decline reason code, by merchant, by geography, and by whether the transaction used a saved card versus a fresh entry. If declines are concentrated on one specific decline-reason code and spread across many unrelated merchants and geographies, that points to something upstream of any single merchant, like the card network or issuing banks; if it's concentrated on a handful of merchants or one integration pattern, that points to something on Stripe's or those merchants' side."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "If the drop were concentrated on merchants using a specific Stripe API version or a recently updated SDK, I'd suspect a bug in how authorization requests are being formatted or retried for that card network. I'd check whether any Stripe-side deploy or config change touching that network's integration went out right before the drop began."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "If declines are spread across many unrelated merchants and integration types but concentrated on this one network, I'd suspect an issue upstream at the card network or its issuing-bank partners: a processing outage, a routing change, or an elevated false-decline rate from their own fraud systems. I'd check whether the card network or major issuing banks had a status update or public incident report during that window."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where declines are spread across merchants but concentrated on one specific decline-reason code tied to this network's authorization step, my leading hypothesis is an authorization outage or degraded routing at the card network itself. The confirming query: pull the raw decline-reason-code distribution for this network during the window and check whether it's dominated by a generic 'issuer unavailable' or timeout code rather than genuine fraud or insufficient-funds declines. The disconfirming signal: if declines are dominated by a normal mix of legitimate decline reasons, the network isn't at fault and I'd look at a Stripe-side integration bug instead."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: enable automatic retry-on-alternate-routing for this network's transactions where supported, and proactively notify affected merchants so they can offer customers an alternate payment method at checkout. Durable fix: build automated cross-checks against the card network's own status feed so a network-side outage is flagged to Stripe's monitoring within minutes rather than inferred from a completion-rate anomaly. Guardrail metric: a per-network, near-real-time completion-rate alert with a tight threshold and short detection window, since payments failures compound merchant revenue loss by the minute."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming a payments drop is always Stripe's own bug before checking whether declines are concentrated on one upstream network",
+        "Treating a sharp two-hour step-change the same way as a slow multi-day bleed, which would misdirect the investigation toward the wrong cause category"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-006",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause an order completion drop after an Amazon checkout experiment",
+      "company": ["Amazon"],
+      "region": "global",
+      "industry": "e-commerce",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Amazon's order completion rate for one customer segment dropped 6% starting the day a new checkout flow test began ramping. Walk me through your root-cause analysis.",
+      "context": [
+        "Amazon operates a global e-commerce marketplace with a multi-step checkout flow from cart to order confirmation.",
+        "Amazon frequently runs A/B tests and incremental UI changes on its checkout and product pages.",
+        "Amazon offers one-click and saved-payment checkout options for eligible customers."
+      ],
+      "assumptions": [
+        "assumed: order completion rate for the affected segment fell 6% starting the day the new checkout flow began ramping, as posed by the interviewer",
+        "assumed: the metric is orders completed divided by checkouts initiated, for customers in the experiment's target segment",
+        "assumed: order completion rate for customers outside the experiment stayed roughly flat over the same period"
+      ],
+      "followUps": [
+        "Your leading hypothesis is that the new checkout flow itself is the problem. What's the fastest way to confirm or kill that theory?",
+        "How would you tell whether this is a genuine flow-design issue versus a targeting bug that put the wrong customers into the test?",
+        "What guardrail would you want in place before any checkout experiment ramps past a small holdout?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is order completion rate for this specific customer segment, down 6% starting precisely the day the checkout experiment began ramping, and that it has held at that lower level rather than recovering as more users onboard to the new flow. The exact-day alignment with a known experiment start is the single strongest clue here, so I'd verify that timing match before doing anything else."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the experiment's own event instrumentation correctly logs a 'completed order' the same way the control flow does, since a new checkout flow is a common place for a tracking gap to hide a real completion as an unlogged one. I'd also check whether the experiment's targeting logic accidentally included a segment it wasn't meant to, which could look like a performance problem when it's actually a targeting bug. If completion events are logging correctly and targeting matches the intended segment, I'd treat the drop as a real effect of the new flow."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut completion rate by treatment vs control within the same segment, by device type, and by whether the customer used a saved payment method or entered new payment details. If the drop is isolated to the treatment arm and concentrated among customers entering fresh payment details, that points to a friction issue introduced by the new flow; if it's present in both arms, the experiment isn't the cause and something else changed that same day."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "If the drop is isolated to the treatment arm, I'd suspect the new checkout flow introduced extra steps, a confusing field order, or a validation bug that's rejecting valid payment details more often than the old flow. I'd check the flow's step-by-step funnel to see exactly which screen shows the biggest treatment-vs-control gap in drop-off."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "If the drop appeared in both treatment and control arms starting that same day, I'd look outside the experiment entirely: a payment processor issue affecting this segment's typical payment methods, a promotional pricing change that made the same items appear worse relative to a competitor's price, or a seasonal dip specific to this segment's typical purchase category. I'd check for any unrelated platform-wide change that shipped the same day."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the drop is isolated to the treatment arm and concentrated at the payment-details step, my leading hypothesis is that the new flow's payment-form validation is rejecting a class of valid entries (for example, a stricter card-format check that some legitimate cards trip). The confirming query: compare payment-step error rates between treatment and control, broken down by the specific validation error triggered. The disconfirming signal: if payment-step error rates are similar between arms but completion still differs, the friction is elsewhere in the flow, not validation."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: pause the ramp and hold the experiment at its current exposure while the validation logic is reviewed, so no further customers are exposed to the faulty check. Durable fix: relax or correct the validation rule, and add a funnel-step regression check to the experiment's pre-ramp checklist so a step-level completion drop is caught on a small holdout before any wider rollout. Guardrail metric: a per-arm, per-funnel-step completion-rate monitor that auto-pauses ramp-up if any treatment step's completion rate falls meaningfully below its control counterpart."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming the whole new flow is bad before isolating which specific step is driving the drop",
+        "Ramping an experiment further while still investigating, compounding the number of affected customers before the cause is confirmed"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-007",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a notification opt-in drop for LinkedIn on iOS",
+      "company": ["LinkedIn"],
+      "region": "global",
+      "industry": "professional-networking",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "LinkedIn's push notification opt-in rate for new iOS users dropped 20 percentage points the week a new iOS version was released, while Android stayed flat. Walk me through your root-cause analysis.",
+      "context": [
+        "LinkedIn is a professional networking platform that sends push and email notifications for connections, messages, and job updates.",
+        "LinkedIn is available on both iOS and Android, and notification permissions on each platform are governed by that platform's own OS-level permission system.",
+        "Apple has periodically changed notification permission prompt behaviour and defaults across major iOS versions."
+      ],
+      "assumptions": [
+        "assumed: push notification opt-in rate for new iOS users fell 20 percentage points the week the new iOS version released, as posed by the interviewer",
+        "assumed: the metric is the share of new users who accept the notification permission prompt within their first session",
+        "assumed: LinkedIn's own notification-prompt UI and copy did not change that week"
+      ],
+      "followUps": [
+        "Your leading hypothesis is an iOS-level change to the permission prompt. What's the fastest way to confirm that without waiting for Apple's release notes?",
+        "How would your investigation differ if Android had also dropped, just by a smaller amount?",
+        "What guardrail would help LinkedIn catch a platform-level change like this before it ships to all iOS users?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is the opt-in rate for the native notification permission prompt among new iOS users specifically, down 20 percentage points the week the new iOS version rolled out, while Android held flat, and that it has stayed at the lower level rather than being a one-week blip. The platform-specific timing alongside a known OS release is the clearest signal to chase first."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether LinkedIn's own event logging for 'prompt accepted' versus 'prompt shown' changed that week, and whether the iOS SDK LinkedIn uses to read permission status was updated in the same app release, which could misreport a real 'allowed' as 'denied.' If the raw OS-level permission status (checked directly, not just via LinkedIn's own logging) shows genuinely fewer users allowing notifications, I'd treat this as a real behaviour change."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "Since the drop is already isolated to iOS and Android is flat, that's effectively segmentation done for me: this points to an iOS-specific cause rather than something in LinkedIn's own cross-platform product logic. Within iOS, I'd further check whether the drop is uniform across iOS versions or concentrated only on devices running the new OS version specifically, which would confirm the OS-version link precisely rather than assuming it from the correlated timing alone."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "An internal cause is less likely here given Android is unaffected and LinkedIn didn't change its own prompt that week, but I'd still rule out an iOS-specific app release that changed when in the user journey the prompt is shown, since a prompt shown at a less natural moment can lower acceptance even without any change to iOS itself."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "The most likely external cause is that the new iOS version changed the default behaviour, wording, or timing of the system-level notification permission dialog, or changed how pre-permission soft-prompts interact with the native OS prompt. I'd check Apple's release notes and developer forums for that iOS version for any documented change to notification permission handling."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given that the drop is iOS-only, coincides exactly with the new iOS version, and Android (unaffected by this OS change) stayed flat, my leading hypothesis is that the new iOS version changed the default framing or behaviour of the system permission prompt in a way that reduces acceptance. The confirming query: check opt-in rate for iOS users still on the previous OS version during the same week versus those already upgraded. The disconfirming signal: if opt-in rate dropped equally for users on the old and new iOS versions, the OS version isn't the driver and I'd look at LinkedIn's own iOS app release instead."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: test and, if effective, deploy an improved pre-permission soft-prompt (an in-app screen explaining the value of notifications before triggering the native OS prompt) to partially offset the lower baseline acceptance. Durable fix: build a standing process to review Apple's iOS beta release notes ahead of each major OS release, specifically for anything touching permission prompts, so LinkedIn can adapt its own onboarding flow before the OS version reaches general availability. Guardrail metric: opt-in rate segmented by OS version, tracked continuously, so any future OS-driven shift is visible within days of an OS release reaching a meaningful share of users."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming LinkedIn's own product must be at fault before noticing the drop is isolated to one platform and correlated with an OS release",
+        "Not checking whether the drop is specific to the new OS version versus affecting all iOS users regardless of version"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-008",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause an unexplained DAU spike on Pinterest",
+      "company": ["Pinterest"],
+      "region": "global",
+      "industry": "visual-discovery",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Pinterest's DAU in one country jumped 18% over two days with no marketing campaign running, then began drifting back down. Walk me through your root-cause analysis.",
+      "context": [
+        "Pinterest is a visual discovery platform where users browse and save images, called 'pins,' organized into boards.",
+        "Pinterest competes with other visual and social discovery apps for users' time spent browsing.",
+        "Pinterest reports Daily and Monthly Active User figures as part of its quarterly public earnings."
+      ],
+      "assumptions": [
+        "assumed: DAU in this country rose 18% over two days, as posed by the interviewer",
+        "assumed: no Pinterest-run marketing campaign, push campaign, or feature launch targeted this country during that window",
+        "assumed: the rise has been gradually reverting toward baseline in the days since, rather than holding at the new higher level"
+      ],
+      "followUps": [
+        "Your leading hypothesis is a competitor outage. How would you confirm that without direct access to the competitor's status page?",
+        "Should Pinterest treat a temporary, externally-driven spike like this as a growth opportunity or just noise? How would you decide?",
+        "What would make you suspect this rise was actually a bot or spam wave rather than genuine new users?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is DAU for this one country, up 18% over a two-day window with no internal campaign running, and that it's now drifting back down rather than holding at the new level -- a shape that looks like a temporary external pull rather than a durable structural change. Getting the exact start day matters, since I'll want to cross-reference it against any known external events."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether a bot-detection or account-deduplication rule changed during that window in a way that inflated the active-user count, and whether any tracking or attribution change caused sessions to be double-counted. If the rise shows up consistently across both logged-in and app-open-level counting methods, and holds up under a manual spot-check of session quality (real browsing behaviour, not single-ping sessions), I'd treat it as a genuine rise in real usage."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut the rise by new vs returning users, by acquisition source, and by whether new sessions are organic app-opens versus referral or search-driven. If the spike is concentrated in new-to-Pinterest users arriving via organic search or direct app-store downloads rather than any Pinterest-owned channel, that points to something pulling people toward Pinterest specifically, rather than an internal cause. If it's spread evenly across existing users too, that could instead suggest something keeping people home and browsing more broadly that day."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "Since no campaign or feature launch ran in this country, an internal cause is unlikely, but I'd still rule out an unannounced experiment ramp affecting this country's push-notification frequency or a bug that's inadvertently over-counting sessions before concluding the cause is external."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "My leading external candidates are a major outage at a competing visual or social discovery app that week, driving its users to alternatives, or a viral moment (a trend, meme, or news event) that specifically drove people to search for and browse visual content. I'd check social media chatter, app-store ranking movement for competitors in this country, and any downdetector-style outage reports for that window."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where new-user sessions from organic search and app-store downloads drove most of the spike, and a competing app had a widely-reported outage during the same two days, my leading hypothesis is that the competitor's outage temporarily pushed its users toward alternatives including Pinterest. The confirming query: check whether app-store search and download volume for Pinterest in that country spiked specifically around the outage window, and whether the new users' behaviour resembles typical first-time visitors rather than a bot pattern. The disconfirming signal: if new-user growth doesn't concentrate around the outage's exact timing, or if session quality looks synthetic, the competitor-outage theory doesn't hold and I'd look at a viral or bot-driven explanation instead."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation isn't about stopping a problem here since the movement is positive, but about capturing value from it: target this new-user cohort with a well-timed onboarding nudge (save a first board, follow a first topic) before they drift back to their prior habits. Durable fix: build a lightweight new-user activation flow specifically triggered for unusually large, organically-sourced new-user waves, so any future opportunistic spike converts more of these users into habitual ones rather than being pure noise. Guardrail metric: 7-day retention specifically for this spike's cohort, tracked separately from the baseline cohort, to see whether the temporary attention converts into any lasting lift or fully reverts."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Dismissing a positive metric movement as 'good news, no need to investigate' instead of treating an unexplained rise with the same rigor as a drop",
+        "Assuming an 18% spike is data noise without checking whether it's concentrated in a specific, explainable acquisition pattern"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-009",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "A Slack support containment-rate 'drop' that turns out to be a logging artefact",
+      "company": ["Slack"],
+      "region": "global",
+      "industry": "team-communication",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Slack's in-app support chatbot's containment rate (issues resolved without escalating to a human agent) reportedly dropped 14 percentage points the week after an analytics pipeline update shipped. Walk me through your root-cause analysis.",
+      "context": [
+        "Slack is a workplace messaging platform offering channels, direct messages, and third-party integrations for teams.",
+        "Slack has been owned by Salesforce since 2021.",
+        "Slack offers customer self-service support through a help center and in-app support channels for account and billing issues."
+      ],
+      "assumptions": [
+        "assumed: the support chatbot's containment rate fell 14 percentage points the week after the analytics pipeline update, as posed by the interviewer",
+        "assumed: containment rate is defined as resolved-without-escalation conversations divided by all support conversations handled by the bot",
+        "assumed: no change was made to the chatbot's own resolution logic or model that week"
+      ],
+      "followUps": [
+        "Once you suspect a logging artefact, what's the fastest way to prove it rather than just assert it?",
+        "How would you explain to a skeptical support-ops leader that a 14-point 'drop' isn't real without sounding like you're dodging accountability?",
+        "What process would you put in place so an analytics pipeline change can never silently corrupt a metric like this again?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is containment rate -- conversations resolved by the bot without a human escalation, divided by total bot conversations -- reportedly down 14 percentage points, starting precisely the week after an analytics pipeline update shipped. That timing, landing right after a pipeline change rather than a chatbot logic change, is the detail I'd flag as unusual before treating this as a real quality regression."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "Since the drop coincides with an analytics pipeline update rather than any change to the bot's actual resolution logic, my first move is to check whether the pipeline update altered how an 'escalation' event is classified or joined to its parent conversation. Specifically, I'd check whether the update changed an event-schema field (for example, how a conversation's terminal state is recorded) in a way that could cause resolved conversations to be miscategorized as escalated. I'd also check whether the raw conversation transcripts themselves show the bot actually resolving issues without a human ever joining, which would directly contradict the reported metric."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut the reported drop by conversation topic, by time within the week, and specifically by whether the conversation passed through the new pipeline's updated event path versus an older path if a partial rollout occurred. If the apparent drop is concentrated in exactly the conversations processed through the new pipeline logic, and largely absent from any conversations still on the old path, that's strong evidence the pipeline itself is the artefact, not the bot's actual performance."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "Framed as an internal cause even though it isn't a real quality regression: the analytics pipeline update most likely introduced a schema or field-mapping change that misclassifies genuinely-resolved conversations as escalations, for example by mishandling a status field rename or a change in how the 'resolved' timestamp is joined to the conversation record. I'd check the pipeline update's changelog for any field touching conversation-outcome classification."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "Given the drop is precisely time-aligned with an internal pipeline deploy rather than any external event, an external cause is unlikely here, but I'd still briefly check whether support volume or topic mix shifted that week (for example, a spike in a harder issue type genuinely needing more escalations) to make sure I'm not dismissing a real cause too quickly just because the pipeline timing looks convenient."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where manually sampled conversation transcripts show the bot resolving issues correctly without human involvement, even though the pipeline's computed metric marks many of them as escalated, my leading hypothesis is that the analytics pipeline update broke the mapping between a conversation's true resolution state and how it's recorded downstream. The confirming query: pull a random sample of conversations flagged as 'escalated' by the new pipeline and manually verify against the raw transcript whether a human agent actually joined. The disconfirming signal: if the sampled 'escalated' conversations genuinely show a human agent responding, the pipeline isn't at fault and containment truly declined."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: revert to computing containment rate from the pre-update pipeline logic (or the raw transcripts) while the schema issue in the new pipeline is fixed, so support-ops isn't making staffing or bot-investment decisions off a corrupted number. Durable fix: add an automated reconciliation check that compares the pipeline's computed containment rate against a raw-transcript-based ground truth on a sample of conversations after every analytics pipeline change, blocking the deploy if the two diverge beyond a small tolerance. Guardrail metric: a metric-integrity check run automatically after any pipeline or schema deploy touching support-conversation outcomes, so a definitional break like this is caught before it's ever reported as a real quality drop."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating a metric drop that coincides with a pipeline change as automatically real, without checking whether the pipeline itself corrupted the measurement",
+        "Fixing the chatbot's resolution logic in response to a drop that was never a real quality problem to begin with"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-010",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a first-week retention drop after Zomato's fee change",
+      "company": ["Zomato"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "First-week retention for Zomato's new-user cohort dropped 9 percentage points starting with the cohort that signed up the week a new platform fee was introduced at checkout. Walk me through your root-cause analysis.",
+      "context": [
+        "Zomato is an Indian food-delivery and restaurant-discovery platform operating across hundreds of Indian cities.",
+        "Zomato has periodically adjusted platform and convenience fees charged to customers at checkout.",
+        "Zomato listed on Indian stock exchanges in 2021."
+      ],
+      "assumptions": [
+        "assumed: first-week retention for the affected new-user cohort fell 9 percentage points versus the prior week's cohort, as posed by the interviewer",
+        "assumed: the metric is the share of first-time orderers who place a second order within 7 days of their first",
+        "assumed: the platform fee was introduced uniformly across the country rather than in a pilot subset of cities"
+      ],
+      "followUps": [
+        "Your leading hypothesis is price sensitivity from the new fee. What's the fastest way to confirm that versus a coincidental cause?",
+        "How would your investigation change if the fee had been introduced gradually as a city-by-city rollout instead of nationally on one day?",
+        "What guardrail would help Zomato catch a retention-damaging pricing change before it fully ships nationally?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is 7-day repeat-order rate for the cohort of users whose first order fell in the week the new fee launched, down 9 percentage points versus the immediately preceding cohort, and check whether subsequent weekly cohorts show the same lower retention or a partial recovery as users adjust. A cohort-over-cohort step-change aligned precisely with the fee's launch date is the strongest early signal here."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the 7-day retention window or the definition of a 'first order' changed in reporting around the same time, and whether any concurrent app release affected order-tracking or reorder-prompt logging for new users. If the underlying order data itself, not just the reported metric, shows fewer of this cohort placing a genuine second order, I'd treat the drop as real."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut retention by order value tier, by city, and by whether the user's first order used a promo/discount code. If the drop is concentrated among lower order-value, price-sensitive, non-promo users, that points to the fee itself being the friction; if it's spread evenly across all price tiers and cities, that would suggest something else changed that week besides the fee."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "Given the exact alignment with the fee launch, my leading internal cause is the new platform fee itself: for a first-time orderer with no established habit yet, an unexpected extra charge at checkout can meaningfully change the perceived value of a second order, especially for smaller basket sizes where the fee is a larger share of the total. I'd check whether the fee is flat or basket-size-dependent, since that shapes exactly which segment would be most discouraged."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "I'd still check whether a competitor ran an aggressive new-user discount campaign the same week, pulling price-sensitive first-time orderers away before their second Zomato order, or whether a broader seasonal dip in food-delivery demand coincided with the fee launch. I'd check competitor app-store promotions and category-wide order volume trends for that week."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the drop concentrates heavily among users whose first order was a small, non-promotional basket, my leading hypothesis is that the new fee disproportionately discourages a second order from exactly the users for whom it represents the largest relative cost increase. The confirming query: compare 7-day retention for this cohort segmented by first-order basket size, checking whether the retention gap versus the prior cohort widens as basket size shrinks. The disconfirming signal: if the retention gap is uniform regardless of basket size, the fee's proportional cost isn't the driver and I'd look at the competitor or seasonal explanation instead."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: waive or discount the platform fee on a new user's second order within the first week, softening the friction at exactly the moment habit formation matters most. Durable fix: introduce a basket-size-aware fee structure, or a temporary fee holiday for new users, so the fee doesn't disproportionately tax the smallest, most price-sensitive first orders. Guardrail metric: first-week retention tracked by cohort alongside any pricing or fee change, with an automatic flag if a new cohort's retention falls meaningfully below the trailing average at the same point in its lifecycle."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming a retention drop after a fee change must be about the fee amount overall, without checking whether it's concentrated in the smallest, most fee-sensitive baskets",
+        "Waiting for a full month of data before investigating, by which point several cohorts have already been affected"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-011",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a payment success rate drop after PhonePe's fraud-rule update",
+      "company": ["PhonePe"],
+      "region": "india",
+      "industry": "digital-payments",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "PhonePe's UPI payment success rate for a specific merchant category dropped 7 percentage points the same day a new fraud-detection rule was deployed. Walk me through your root-cause analysis.",
+      "context": [
+        "PhonePe is an Indian digital payments platform built on UPI, offering peer-to-peer transfers, merchant payments, and bill payments.",
+        "PhonePe has been among the largest UPI apps by transaction volume in India according to NPCI data.",
+        "Fraud-detection and risk rules on payment platforms can decline a transaction in addition to any decline from the underlying bank."
+      ],
+      "assumptions": [
+        "assumed: UPI payment success rate for this merchant category fell 7 percentage points the day the new fraud-detection rule deployed, as posed by the interviewer",
+        "assumed: the metric is successful transactions divided by attempted transactions for this merchant category",
+        "assumed: success rate for other merchant categories stayed roughly flat over the same day"
+      ],
+      "followUps": [
+        "Your leading hypothesis is that the new fraud rule is over-triggering on legitimate transactions. What's the fastest way to confirm that?",
+        "How would you balance the genuine fraud the rule may be catching against the legitimate transactions it's blocking?",
+        "What guardrail should PhonePe require before any fraud-rule change ships to full traffic?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is UPI payment success rate for this specific merchant category, down 7 percentage points, stepping down precisely on the day the new fraud-detection rule deployed, and check whether it has held at that lower level since deployment rather than being a one-day blip. The exact-day alignment with a known rule change is the strongest lead to chase first."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the decline-logging pipeline changed how it categorizes a fraud-rule decline versus a bank-side decline, since a genuine decline being real doesn't rule out a separate question of whether it's being correctly attributed. I'd confirm, by pulling raw transaction-level decline reason codes, that these are real declined transactions and not a reporting artefact. Given the clear, exact-day alignment with a known rule deployment and the decline reason codes pointing to fraud-rule triggers specifically, I'd treat this as a real effect of the new rule rather than a data issue."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut declines by decline-reason code, by transaction amount, by whether the user is a first-time or repeat payer to that merchant category, and by device or account age. If declines are concentrated on a specific fraud-rule reason code and disproportionately hit repeat, established payers with otherwise clean histories, that strongly suggests the rule is over-triggering on legitimate behaviour rather than catching genuine fraud, which would more plausibly concentrate on new or unusual payer patterns."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "The leading internal cause, given the deployment-day alignment, is that the new fraud-detection rule's thresholds are miscalibrated for this merchant category specifically, perhaps because the rule was tuned on a different category's typical transaction pattern and this category has naturally higher transaction amounts or frequency that the rule misreads as suspicious. I'd check the rule's configuration to see whether it applies category-specific thresholds or one blanket threshold across all merchant categories."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "Given the precise same-day alignment with a known internal deployment, an external cause is unlikely, but I'd still rule out a coincidental bank-side or NPCI infrastructure issue affecting this category's typical settlement path, and check whether there was any genuine fraud campaign targeting this merchant category that week that the new rule was specifically built to catch, which would mean some of the decline is legitimately protective rather than purely a false-positive problem."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where declines concentrate on one specific fraud-rule reason code and disproportionately affect repeat payers with clean transaction histories in this category, my leading hypothesis is that the new rule's threshold is miscalibrated for this category's normal transaction pattern, generating false positives rather than catching genuine fraud. The confirming query: pull the false-positive rate for this specific rule and category, by checking what share of blocked transactions were later confirmed legitimate through customer disputes or manual review. The disconfirming signal: if a meaningful share of blocked transactions are confirmed as genuine fraud attempts upon review, the rule is working as intended and the drop reflects real fraud being caught, not a calibration problem."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: raise the rule's threshold for this merchant category specifically, or temporarily exempt established repeat payers with clean histories, to reduce false positives while a proper recalibration is done. Durable fix: build category-specific fraud-rule thresholds informed by each category's normal transaction distribution, rather than one blanket rule across all merchant categories, and require a false-positive-rate check before any fraud-rule change ships broadly. Guardrail metric: false-positive rate (blocked-then-confirmed-legitimate transactions) tracked per rule and per merchant category, alerted whenever it exceeds a set tolerance, so a miscalibrated rule is caught before it meaningfully dents legitimate payment success."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming any drop tied to a fraud rule is automatically 'working as intended' without checking the false-positive rate against confirmed fraud",
+        "Applying one blanket fraud-rule threshold across merchant categories with very different normal transaction patterns"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-012",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "A CRED active-user 'drop' that turns out to be a metric definition change",
+      "company": ["CRED"],
+      "region": "india",
+      "industry": "fintech",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "CRED's reported monthly active users fell 22% the same month the analytics team refreshed the definition of an 'active user.' Walk me through your root-cause analysis.",
+      "context": [
+        "CRED is an Indian fintech app that rewards users for paying credit card bills on time and offers additional financial products.",
+        "CRED requires users to link and verify a credit card to access most of its core features.",
+        "CRED has expanded beyond credit card bill payments into products like short-term lending and a rewards/coin system."
+      ],
+      "assumptions": [
+        "assumed: reported MAU fell 22% month-over-month, as posed by the interviewer",
+        "assumed: the analytics team's definition refresh changed what counts as an 'active' session or action within the same month",
+        "assumed: no change was made to CRED's product, onboarding, or marketing spend that month"
+      ],
+      "followUps": [
+        "Once you suspect a definition change, what's the fastest way to prove the underlying usage didn't actually change?",
+        "How would you communicate a metric-definition-driven drop to a board or investor audience without it reading as a cover story?",
+        "What process would you put in place so a definition change never again looks indistinguishable from a real business decline?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is reported MAU, down 22% month-over-month, and that this decline coincides exactly with the month the analytics team refreshed the 'active user' definition rather than any product or marketing change. That coincidence, a metric-definition change landing in the same month as the reported drop, is the detail I'd flag as needing scrutiny before treating this as a real user decline."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd get the exact before-and-after definition of 'active': for instance, if the old definition counted any app open as active, and the new one requires a completed credit-related action (a bill payment, a card-linked transaction), that alone could produce a large apparent drop with zero change in real user behaviour. I'd recompute the prior month's MAU using the new definition retroactively; if the retroactive number is much closer to this month's reported number than the originally-reported prior-month number was, that's strong evidence the drop is definitional, not behavioural."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd segment the apparent decline by exactly which user actions moved from 'counted as active' to 'not counted as active' under the new definition. If nearly the entire 22-point gap is explained by users who opened the app or browsed rewards without completing a credit-related action -- precisely the behaviour the new definition excludes -- that confirms the drop is mechanical rather than a genuine falloff in engagement."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "Framed as an internal cause even though it's not a real usage decline: the definition refresh itself is the direct cause of the reported number moving, specifically by narrowing which actions qualify a user as 'active' that month. I'd check whether the analytics team documented the rationale for the change (for example, wanting a definition more tied to financial engagement rather than passive app opens) and whether they retroactively restated prior months, since a restated baseline would have avoided this appearing as a cliff at all."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "Given the precise alignment with a documented internal definition change and no concurrent product or marketing shift, an external cause is unlikely, but I'd still check underlying raw session counts and transaction volumes for that month to make sure a genuine external event (for example, a seasonal dip in discretionary card spend) isn't also contributing on top of the definitional effect."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where retroactively applying the new definition to the prior month produces a MAU figure within a couple of percentage points of this month's reported number, my leading hypothesis is that the 22-point drop is almost entirely explained by the definition change, not a real decline in engaged users. The confirming query: compare this month's MAU under the new definition against the prior month's MAU recomputed under the same new definition, rather than against the prior month's originally-reported number. The disconfirming signal: if a meaningful gap remains even after applying the new definition consistently to both months, some of the drop is real and needs its own investigation."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: republish the prior months' MAU restated under the new definition alongside this month's figure, so any stakeholder comparing month-over-month is comparing like-for-like rather than seeing a false cliff. Durable fix: establish a standing rule that any metric-definition change must be accompanied by a retroactive restatement of at least the trailing 6-12 months, published in the same update, so a definition change is never visually indistinguishable from a real business decline. Guardrail metric: a 'definition version' tag attached to every headline metric's historical series, so anyone reading a trend line can immediately see where a definition boundary falls."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Reporting a definition-driven drop as a headline business decline without checking whether a like-for-like restatement would close most of the gap",
+        "Assuming a metric-definition change and a business decline can't both be true and stopping the investigation as soon as the definition change is found"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-013",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a slow DAU bleed on Dream11 in the off-season",
+      "company": ["Dream11"],
+      "region": "india",
+      "industry": "fantasy-sports",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Dream11's DAU has been sliding roughly 3% a week for the past six weeks, with no single triggering event visible in release logs. Walk me through your root-cause analysis.",
+      "context": [
+        "Dream11 is an Indian fantasy sports platform where users create teams and compete based on real-world match statistics, primarily cricket.",
+        "Dream11 usage has historically spiked sharply during major cricket tournaments such as the IPL and Cricket World Cup, and fallen off during periods with no major matches.",
+        "Dream11 has been a prominent sponsor closely associated with Indian cricket events and runs large marketing campaigns tied to tournament windows."
+      ],
+      "assumptions": [
+        "assumed: DAU has declined approximately 3% week-over-week for six consecutive weeks, as posed by the interviewer",
+        "assumed: no major international or domestic cricket tournament has been running during this six-week window",
+        "assumed: no significant product release or marketing campaign change coincides with the start of the slide"
+      ],
+      "followUps": [
+        "How would you distinguish a normal seasonal bleed from an early warning sign of real product decay, if both look like a slow slide?",
+        "What would you want to see before concluding this is 'just the off-season' rather than investigating further?",
+        "How would you set a DAU goal for a team during a period you expect to be seasonally weak?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is overall DAU, declining roughly 3% week-over-week for six consecutive weeks, forming a steady slide rather than a sudden cliff, and confirm there's no single release or config change visible in the logs that lines up with when the slide began. A smooth, gradual decline with no discrete trigger point is itself an important clue, since it points away from a single internal or external event and toward something continuous, like a change in the underlying match calendar."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the DAU definition or counting logic changed at any point in this six-week window, and whether any bot- or test-account filtering was adjusted gradually rather than as one deploy. Given no release-log entry lines up with the start of the slide, and the decline looks smooth rather than stepped, I'd treat this as a real usage decline rather than a measurement issue."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut the decline by user tenure (new vs long-tenured users), by whether users are contest-entry-active or just app-opening, and by geography. If the decline is broad-based across nearly all user segments and geographies rather than isolated to one cohort or platform, that points toward something affecting the whole user base uniformly, which is the signature of an external, environment-wide cause rather than a localized product issue."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "Given no release or config change lines up with the slide's start and the decline is broad-based, an internal cause seems unlikely, but I'd still check whether push-notification volume or in-app promotional intensity was quietly reduced over this period, either deliberately (a cost-saving measure) or as a side effect of a marketing budget cycle unrelated to any code release."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "My leading external cause is straightforward seasonality: this six-week window likely falls between major cricket tournaments, a period historically associated with lower fantasy-sports engagement across the category, not just for Dream11. I'd check the cricket match calendar for this window and compare this six-week decline pattern against the equivalent off-season window from the prior year."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the decline is broad-based across user segments and geographies, and the six-week window falls in a gap with no major domestic or international tournament, my leading hypothesis is that this is expected seasonal decay in the absence of high-interest cricket matches to build contests around. The confirming query: overlay this six-week DAU trend against the same calendar window from the prior year, checking whether the decline rate and shape closely match. The disconfirming signal: if this year's decline is meaningfully steeper than the same window last year, seasonality alone doesn't explain it and a real, additional cause needs investigating."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: increase engagement around smaller, lower-profile matches or other sports contests during this gap to partially offset the seasonal lull, rather than treating the off-season as a dead period. Durable fix: build a seasonally-adjusted DAU baseline and forecast, so future off-season periods are measured against an expected seasonal curve rather than a flat prior-week comparison that always looks alarming. Guardrail metric: DAU trend compared against the same calendar-period baseline from the prior year, so a genuinely abnormal decline (steeper than the historical seasonal pattern) is distinguishable from expected seasonality at a glance."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Panicking over a six-week slide without first checking the match calendar for an obvious seasonal explanation",
+        "Comparing DAU only to the prior week rather than to the same calendar window a year earlier, which is what actually reveals whether the decline is normal seasonality"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-rca-014",
+      "track": "analytical",
+      "framework": "rca",
+      "type": "rca",
+      "title": "Root-cause a driver acceptance drop in Ola's auto-rickshaw category",
+      "company": ["Ola"],
+      "region": "india",
+      "industry": "ride-hailing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Ola's driver acceptance rate for auto-rickshaw rides in one city fell steadily by 11 percentage points over three weeks, while cab-category acceptance stayed flat. Walk me through your root-cause analysis.",
+      "context": [
+        "Ola is an Indian ride-hailing platform offering cab and auto-rickshaw rides booked through a mobile app.",
+        "Ola operates multiple vehicle categories, including auto-rickshaws, cabs, and bikes, in different Indian cities.",
+        "Ola pays drivers based on a commission and incentive structure that it has adjusted at various points."
+      ],
+      "assumptions": [
+        "assumed: auto-rickshaw driver acceptance rate in this city fell 11 percentage points over three weeks, as posed by the interviewer",
+        "assumed: a change to the auto-rickshaw driver commission or incentive structure took effect at the start of this three-week window",
+        "assumed: cab-category acceptance rate in the same city stayed within its normal range over the same period"
+      ],
+      "followUps": [
+        "Your leading hypothesis is a commission change specific to auto drivers. What's the fastest way to confirm that versus a coincidental cause?",
+        "How would you weigh a durable fix that costs Ola margin against a guardrail that just monitors the problem?",
+        "What would change about your analysis if bike-category acceptance had also dropped alongside auto?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clarify & Quantify",
+            "walkthrough": "I'd confirm the metric is driver acceptance rate for the auto-rickshaw category specifically in this city, down 11 percentage points over three weeks in a steady slide rather than a single-day cliff, while the cab category in the same city held flat over the same period. A category-specific, gradually-widening gap rather than a sudden citywide drop is the shape that most directly points toward something specific to auto drivers' economics or experience."
+          },
+          {
+            "stage": "Is It Real?",
+            "walkthrough": "I'd check whether the acceptance-rate calculation or offer-window definition changed for the auto category specifically during this window, and whether any driver-app logging change affected how auto-category offers are recorded differently from cab offers. Given cab-category logging is unaffected and shows no comparable movement, and the auto-category decline tracks smoothly rather than stepping at a logging-change date, I'd treat this as a real behavioural change among auto drivers."
+          },
+          {
+            "stage": "Segment the Drop",
+            "walkthrough": "I'd cut the decline by time of day, by trip distance, and by driver tenure within the auto-rickshaw category. If the decline is concentrated on shorter, lower-fare trips and among more experienced, higher-earning drivers who have alternatives, that points toward a change in the economics of accepting a ride becoming less worthwhile for exactly the trips and drivers with the most choice; if it's uniform across trip length and driver tenure, that would point toward something else, like a broader city-level supply issue."
+          },
+          {
+            "stage": "Internal Causes",
+            "walkthrough": "Given the category-specific and driver-tenure-concentrated pattern, my leading internal cause is a change to the auto-rickshaw commission or incentive structure that took effect at the start of this window, making shorter or lower-fare trips less attractive to accept relative to before. I'd check whether Ola adjusted the commission percentage or removed a per-trip incentive specifically for the auto category in this city, and whether the timing lines up with the start of the slide."
+          },
+          {
+            "stage": "External Causes",
+            "walkthrough": "I'd still check whether a local fuel-price change disproportionately affects auto-rickshaw driver economics (since autos typically run on CNG, with its own separate pricing dynamics from petrol/diesel used by cabs), or whether a competing platform launched an auto-specific driver incentive in this city during the same window, pulling supply away from Ola specifically for that category."
+          },
+          {
+            "stage": "Converge",
+            "walkthrough": "Given a scenario where the decline concentrates on shorter trips and among higher-tenure drivers, and a commission change for the auto category took effect right as the slide began, my leading hypothesis is that the new commission structure made shorter auto trips less economically worthwhile, so drivers with the most alternative options are declining them more often. The confirming query: compare acceptance rate for short-distance auto trips before and after the commission change date, isolated to this city, against acceptance rate for longer auto trips over the same period. The disconfirming signal: if short and long trips show a similar decline, the commission change on short-trip economics specifically isn't the driver and I'd look at the CNG pricing or competitor-incentive explanation instead."
+          },
+          {
+            "stage": "Act",
+            "walkthrough": "Immediate mitigation: reintroduce a minimum-fare top-up or short-trip incentive for the auto category in this city to restore the economics of accepting shorter trips while a full commission review happens. Durable fix: redesign the commission structure to scale with trip economics rather than applying a flat percentage that disproportionately penalizes low-fare, short-distance trips, and pilot any future commission change in a small set of cities before a full rollout. Guardrail metric: acceptance rate segmented by trip-fare tier for each vehicle category, monitored continuously after any commission or incentive change, so a fare-tier-specific effect like this is caught within days rather than three weeks."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating a category-specific decline as a citywide supply problem instead of noticing that the unaffected category rules out a general city-level cause",
+        "Rolling out a commission change city-wide or nationally without a small pilot to catch a fare-tier-specific effect first"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-retention-001",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "retention",
+      "title": "Diagnose a flattened week-4 retention curve for Zerodha's new account cohort",
+      "company": ["Zerodha"],
+      "region": "india",
+      "industry": "stock-broking",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Zerodha's week-4 retention for new trading-account cohorts has flattened at a lower level for the last two months compared to the prior six months. As the PM for onboarding, how would you diagnose what changed and set a goal to recover it?",
+      "context": [
+        "Zerodha is an Indian discount stock brokerage offering trading and investment accounts with no advisory fees.",
+        "Opening a Zerodha trading and demat account requires a KYC (know-your-customer) verification process before a user can place their first trade.",
+        "Zerodha's Kite platform is used for trading, while Coin is used for mutual fund investments."
+      ],
+      "assumptions": [
+        "assumed: week-4 retention (placing at least one trade in week 4 after account activation) has flattened roughly 8 percentage points below the prior six-month average, as posed by the interviewer",
+        "assumed: the KYC completion rate itself has stayed roughly stable over this period",
+        "assumed: no brokerage fee or account-opening cost change occurred during this window"
+      ],
+      "followUps": [
+        "How would you tell whether this is an activation problem (users never really got started) versus a habit problem (they started but didn't return)?",
+        "If your data showed the drop was entirely explained by a shift in acquisition channel mix, would you still call this a retention problem?",
+        "How would you set a goal here differently for the onboarding team versus the marketing/acquisition team?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume week-4 retention means placing at least one trade in the fourth week after account activation, that it's flattened about 8 percentage points below the prior six-month average for the last two months, and that KYC completion and fees have stayed stable over this window, so the cause is more likely downstream of account opening than at the gate itself. My plan: give brief product and business context, then spend most of the time building a metric framework that decomposes this curve into its likely components, and close with a goal for the onboarding team."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Zerodha's business model is volume-driven, low-cost brokerage, meaning revenue depends heavily on active traders generating brokerage and other transaction-linked fees rather than one-time account-opening revenue, so a durably lower week-4 retention directly threatens the business, not just an engagement vanity metric. Competitively, Zerodha's low-fee positioning has drawn a wave of new-to-investing users, especially since 2020, who differ meaningfully from earlier tech-savvy early adopters in how much guidance and hand-holding they need to place a confident first few trades. The mission connecting this to the company's purpose is 'make investing accessible without pushing people to trade more than they should,' which frames retention here as a proxy for genuine comfort with the platform, not just raw activity."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem players are new account holders (value = a low-cost, self-directed way to invest), Zerodha (value = sustainable trading volume from a comfortable, returning user base), and the broader market/regulator (value = well-informed retail participation, which SEBI-aligned platforms are expected to support). To diagnose the flattening, I'd decompose week-4 retention into its upstream stages: KYC-to-first-trade conversion (already assumed stable), first-trade-to-week-2-return rate, and week-2-to-week-4 return rate, since a flat week-4 number could hide very different stories depending on where in that chain the actual softness lives. I'd also segment by acquisition channel and by whether the user's first trade was in equities directly or via a guided mutual-fund SIP through Coin, since a channel-mix shift toward less-informed, lower-intent users would show up as lower retention with no change to the product experience itself. If the softness concentrates in the first-trade-to-week-2 window specifically, and disproportionately in one newer acquisition channel, that points to an activation and education gap for that channel's users rather than a platform-wide problem; if it's spread evenly across channels and stages, that would point to something structural, like a broader retail risk-appetite shift in the market."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "For the onboarding team, I'd set a goal on the first-trade-to-week-2 return rate specifically for the newer acquisition channel identified as the weak point, rather than on week-4 retention directly, since that's the stage closest to what onboarding actually controls. I'd target recovering roughly half the flattening gap within one quarter, defended by the size of that channel's share of new accounts and by the assumption that a guided first-trade education flow (comparable to what already exists for Coin's SIP onboarding) can close a meaningful share of the gap based on how much stronger Coin's own early retention has historically been. This bridges strategy to execution because the onboarding team can directly ship a channel-specific first-week education flow and measure its effect on that one stage within weeks, while a stable KYC completion rate and overall trading-volume guardrail ensure the fix isn't just accelerating account openings without actually building trading comfort."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating 'week-4 retention' as one number to fix directly instead of decomposing which upstream stage of the funnel actually softened",
+        "Assuming the cause must be a product regression without first checking whether a shift in acquisition channel mix changed the composition of who's in the cohort"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-retention-002",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "retention",
+      "title": "Diagnose a diluted 30-day retention curve after Meesho's paid-acquisition push",
+      "company": ["Meesho"],
+      "region": "india",
+      "industry": "social-commerce",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Meesho's 30-day retention for its monthly new-shopper cohort dropped noticeably the month a large paid-acquisition campaign ran. As the retention PM, how would you diagnose this and set a goal for the next quarter?",
+      "context": [
+        "Meesho is an Indian e-commerce platform, originally built around social commerce and reselling, now operating as a broader online marketplace.",
+        "Meesho has offered zero-commission listings for sellers at various points as part of its growth strategy.",
+        "Meesho runs paid marketing and referral-driven acquisition campaigns to grow its user base."
+      ],
+      "assumptions": [
+        "assumed: 30-day retention for the campaign-month cohort fell roughly 10 percentage points versus the prior month's organic-heavy cohort, as posed by the interviewer",
+        "assumed: the paid campaign roughly doubled new-shopper volume for that one month",
+        "assumed: no major product or app change shipped during the same month"
+      ],
+      "followUps": [
+        "How would you separate 'this channel brings lower-quality users' from 'this channel brings the same users but the onboarding didn't fit them'?",
+        "If the paid channel is genuinely lower-retention but much cheaper per acquisition, how would you decide whether to keep running it?",
+        "What would make you recommend pausing the campaign entirely versus just adjusting onboarding?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume the campaign-month cohort's 30-day retention fell about 10 percentage points versus the prior organic-heavy month, that the campaign roughly doubled new-shopper volume that month, and that no product change shipped alongside it, so a channel-driven composition shift is my starting suspicion. My plan: briefly frame the business context, then build a metric framework that separates channel effects from genuine product effects, and close with a goal that reflects what I find."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Meesho's model depends on high-volume, low-margin transactions across a broad, often first-time-online-shopper base, so new-user growth quality matters as much as raw volume: an acquisition channel that brings shoppers who never complete a first purchase or churn immediately adds cost without building the repeat-order behaviour the marketplace depends on. Competitively, Meesho differentiates on price and accessibility for value-conscious shoppers, many new to online shopping altogether, which means channel-driven shifts in who's arriving can meaningfully change the base rate of retention even with zero product change. The mission this connects to is building lasting trust with first-time online shoppers, which a purely volume-driven acquisition push can work against if it isn't matched with onboarding suited to less experienced users."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem players are new shoppers (value = an accessible, trustworthy first online-shopping experience), sellers (value = a growing, returning buyer base), and Meesho (value = sustainable repeat-order volume rather than one-time transactions). To diagnose the drop, I'd first check whether retention differs by acquisition source within that same month's cohort -- comparing paid-campaign-sourced shoppers against the organic and referral-sourced shoppers who arrived in the same month -- since if the paid segment alone shows the drop while organic and referral segments hold steady, this is a channel-composition effect diluting the blended average, not a platform-wide retention problem. I'd also check first-order completion rate and first-order category for the paid segment specifically, since a channel that brings shoppers via a broad, low-intent ad (versus a targeted referral from someone who already trusts the platform) may simply attract people less ready to become repeat buyers. If instead the drop shows up evenly across paid and organic shoppers in that same month, that would point to something else changing platform-wide that month, not the campaign itself."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "Assuming the diagnosis confirms the drop is concentrated in the paid-campaign segment, I'd set a goal for the growth/onboarding team on 30-day retention specifically for that acquisition channel, not on the blended platform-wide number, since blending would let true organic performance mask a real channel-quality problem. I'd target closing roughly half the gap between paid-channel and organic-channel retention within the next quarter, defended by testing a channel-specific onboarding flow (e.g., a more guided first-purchase experience with trust signals suited to less experienced shoppers) similar to lifts seen from onboarding changes in other price-sensitive, high-volume marketplaces. This bridges strategy to execution because the team can directly test and measure onboarding changes against this one channel's cohort, while a blended, platform-wide 30-day retention guardrail ensures the fix doesn't come at the expense of the already-healthy organic and referral cohorts."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Reading a blended retention drop as a platform-wide problem without first checking whether it's concentrated in the newly-scaled acquisition channel",
+        "Assuming a lower-retention paid channel is automatically not worth running, without weighing its retention against its cost per acquisition"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-retention-003",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "retention",
+      "title": "Diagnose a week-2 retention drop for a new Rapido rider cohort",
+      "company": ["Rapido"],
+      "region": "india",
+      "industry": "bike-taxi",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Week-2 retention for riders acquired through Rapido's latest referral campaign is running well below the retention of riders acquired through other channels in the same period. As the growth PM, how would you diagnose this and set a goal?",
+      "context": [
+        "Rapido is an Indian bike-taxi and ride-hailing platform operating in multiple Indian cities.",
+        "Rapido shows riders an estimated fare, which can include surge pricing during high-demand periods, before they confirm a booking.",
+        "Rapido has expanded beyond bike taxis into auto-rickshaw and cab categories in some cities."
+      ],
+      "assumptions": [
+        "assumed: week-2 retention for the referral-campaign cohort is roughly 12 percentage points below other channels' cohorts from the same period, as posed by the interviewer",
+        "assumed: the referral campaign offered a first-ride discount to new riders",
+        "assumed: surge-pricing frequency was similar across cities for both the referral cohort and the comparison cohort"
+      ],
+      "followUps": [
+        "How would you separate 'the discount attracted one-time deal-seekers' from 'the first-ride experience itself was worse for this cohort'?",
+        "If the referred riders' first rides disproportionately hit surge pricing, how would that change your read of this data?",
+        "How would you design a referral incentive that's less likely to attract one-time-only users in the first place?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume the referral cohort's week-2 retention runs about 12 percentage points below other channels in the same period, that the campaign offered a first-ride discount, and that surge-pricing exposure was similar across cohorts, so a pricing-experience difference isn't my starting suspicion. My plan: cover the product context briefly, then build a metric framework isolating whether this is a discount-driven quality issue or a genuine first-ride experience issue, and close with a goal for the referral program."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Rapido's business depends on riders forming a low-cost, convenient habit for short urban trips, competing against both other ride-hailing options and simply walking or using public transit for very short distances, so a new rider's first couple of rides are disproportionately important for establishing that habit before they default back to an alternative. Referral programs are a common low-cost-per-acquisition growth lever, but they inherently risk attracting people motivated primarily by the one-time discount rather than an ongoing need. The mission this connects to is building an everyday, trusted alternative to short-distance travel, which a discount-driven referral spike can undermine if the resulting riders were never going to become habitual users regardless of the actual ride experience."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem players are new riders (value = an affordable, quick first-ride experience worth repeating), referring existing riders (value = a reward for a successful referral), and Rapido (value = a low-cost acquisition channel that still produces habitual riders, not just one-time discount users). To diagnose the gap, I'd first check whether the referral cohort's second-ride rate (did they even take a ride beyond the discounted first one) differs meaningfully from other channels, since if most of the retention gap is explained by riders never returning after the discounted ride specifically, that points to discount-seeking behaviour rather than a bad experience. I'd also check first-ride completion quality for the referral cohort specifically (driver wait time, ride cancellation rate, fare accuracy versus the shown estimate) compared to other channels' first rides, since if the referral cohort's first-ride experience was measurably worse, the gap could instead be a genuine service-quality issue concentrated on new riders in whichever cities or times referral campaigns were heaviest."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "Assuming the diagnosis shows the gap is concentrated in riders who never took a second ride at all, rather than a worse first-ride experience, I'd set a goal for the growth team on second-ride conversion within 14 days specifically for referral-acquired riders, not on raw referral volume. I'd target closing a defined share of the gap versus other channels next quarter, defended by testing a smaller first-ride discount paired with a second-ride incentive instead of a single large first-ride-only discount, reasoning that spreading the incentive across the first two rides gives riders a reason to return before the campaign's cost-efficiency advantage over other channels is judged solely on volume. This bridges strategy to execution because the growth team directly controls the referral incentive structure, while an overall cost-per-retained-rider guardrail (not just cost-per-signup) ensures the referral program isn't optimized to look cheap on paper while producing riders who never really stick."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Judging a referral channel purely on cost-per-signup without checking whether its second-ride conversion is meaningfully worse than other channels",
+        "Assuming a lower-retention referral cohort means the ride experience was bad, without first checking whether they simply never returned after redeeming the one-time discount"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-retention-004",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "retention",
+      "title": "Diagnose a flattened repeat-purchase curve for Nykaa's loyalty cohort",
+      "company": ["Nykaa"],
+      "region": "india",
+      "industry": "beauty-ecommerce",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Nykaa's month-2 repeat-purchase rate for a recent new-customer cohort flattened at a lower level than the prior four cohorts. As the retention PM, how would you diagnose the cause and set a goal to recover it?",
+      "context": [
+        "Nykaa is an Indian beauty and personal care e-commerce platform that also operates physical retail stores.",
+        "Nykaa sells both third-party brands and its own private-label beauty products.",
+        "Nykaa listed on Indian stock exchanges in 2021."
+      ],
+      "assumptions": [
+        "assumed: month-2 repeat-purchase rate for this cohort is roughly 7 percentage points below the average of the prior four cohorts, as posed by the interviewer",
+        "assumed: the cohort's first-purchase basket composition (mix of categories bought) is similar to prior cohorts",
+        "assumed: no sitewide pricing or shipping-fee change occurred during this cohort's first two months"
+      ],
+      "followUps": [
+        "How would you distinguish an assortment/stock-availability problem from a genuine shift in what this cohort wants to buy?",
+        "If the flattening were concentrated only in customers whose first purchase was a specific product category, how would that change your investigation?",
+        "How would you set a goal here differently for a merchandising/inventory team versus a lifecycle-marketing team?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume month-2 repeat-purchase rate for this cohort sits about 7 percentage points below the trailing four-cohort average, that first-purchase basket composition looks similar to prior cohorts, and that no sitewide pricing or shipping change happened during this window, so my starting suspicion is something more specific, like assortment or stock availability for repeat-purchase items. My plan: briefly frame Nykaa's business context, build a metric framework to isolate where in the repeat-purchase journey the flattening lives, and close with a goal split across the teams that could act on it."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Nykaa's business model depends heavily on repeat purchases of consumable beauty products (skincare, makeup that gets used up and repurchased), so a flattened month-2 repeat-purchase curve directly threatens lifetime value, not just an engagement metric. Its private-label and exclusive-brand assortment is a key competitive differentiator against generic e-commerce marketplaces, meaning assortment health (in-stock rates on frequently-repurchased items) matters more for Nykaa's retention than for a platform selling interchangeable commodity goods. The mission this connects to is being the trusted, go-to destination for a customer's ongoing beauty routine, which depends on customers being able to reliably reorder what they already love."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem players are customers (value = reliably being able to reorder trusted products), brand partners including Nykaa's own private labels (value = a growing base of repeat buyers), and Nykaa (value = high customer lifetime value driven by repeat, not one-time, purchases). To diagnose the flattening, I'd first check repeat-purchase rate specifically for customers whose first purchase included a product that later went out of stock or was discontinued during their second-month window, since a stock-availability problem on frequently-repurchased items would show up precisely as a lower repeat rate concentrated in exactly that customer subset, with the rest of the cohort behaving normally. I'd also check whether this cohort's first-purchase products skew toward a category with historically lower repurchase cadence (for instance, a one-time gifting item versus a regular skincare consumable), which would look like a retention problem but actually reflect a natural, expected difference in category-level repurchase timing. If the flattening is spread evenly across all product categories and stock-availability is unaffected, that would point toward something broader, like a lifecycle-marketing or reminder-email change that stopped reaching this cohort effectively."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "Assuming the diagnosis shows the flattening concentrates on customers whose repurchase-relevant product went out of stock, I'd set a goal jointly owned by merchandising/inventory and lifecycle marketing: an in-stock rate target for the top repeat-purchase-driving SKUs, alongside a month-2 repeat-purchase-rate recovery target for customers affected by that stockout. I'd target recovering the majority of the 7-point gap within a quarter, defended by the size of the affected SKU's contribution to this cohort's first-purchase basket and by the assumption that restocking plus a targeted reminder to affected customers once the item is back can recapture most of the lapsed repeat-purchase intent. This bridges strategy to execution because inventory directly controls the stock-availability lever while lifecycle marketing directly controls re-engaging the affected customers, and an overall repeat-purchase-rate guardrail across all cohorts ensures this fix doesn't just move the problem to a different cohort or category."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Assuming a flattened repeat-purchase curve is a marketing or engagement problem before checking whether a specific frequently-repurchased product simply went out of stock",
+        "Comparing repeat-purchase rate across cohorts without accounting for a shift in first-purchase category mix that naturally has a different repurchase cadence"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-retention-005",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "retention",
+      "title": "Diagnose a week-4 retention gap for Blinkit's newly launched cities",
+      "company": ["Blinkit"],
+      "region": "india",
+      "industry": "quick-commerce",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Week-4 retention for new users acquired in Blinkit's recently launched tier-2 cities is running well below retention for equivalent new-user cohorts in its established metro markets. As the PM for new-market expansion, how would you diagnose this and set a goal?",
+      "context": [
+        "Blinkit (formerly Grofers) is an Indian quick-commerce grocery delivery platform promising delivery within minutes from local dark stores.",
+        "Blinkit was acquired by Zomato (now Eternal) in 2022.",
+        "Blinkit competes with other quick-commerce players such as Zepto and Swiggy Instamart in Indian cities."
+      ],
+      "assumptions": [
+        "assumed: week-4 retention for new-city cohorts runs roughly 15 percentage points below equivalent-tenure cohorts in established metros, as posed by the interviewer",
+        "assumed: these new tier-2 cities launched with fewer dark stores per capita than the established metros had at the same point in their own launch history",
+        "assumed: delivery promise time (minutes) shown to users is the same nationally regardless of actual local fulfillment capacity"
+      ],
+      "followUps": [
+        "How would you tell whether this is a delivery-experience problem versus these cities simply having lower category fit for quick-commerce overall?",
+        "If dark-store density is the driver, would you recommend slowing new-city launches or accepting lower retention as a temporary cost of expansion?",
+        "How would you set a goal here that doesn't unfairly penalize a new-market team for a structural, not execution, gap?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume week-4 retention for new tier-2 city cohorts runs about 15 percentage points below equivalent-tenure metro cohorts, that these cities launched with lower dark-store density per capita than metros had at a comparable stage, and that the delivery-time promise shown to users doesn't yet adjust for local fulfillment capacity. My plan: frame the business context briefly, build a metric framework that isolates whether this is a delivery-experience gap tied to density, a genuine category-fit gap, or something else, and close with a goal appropriately split between expansion and operations teams."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Blinkit's entire value proposition rests on a specific, fast delivery-time promise, which is only achievable when dark-store density is high enough relative to local demand; expanding into new cities before that density is built is a deliberate growth trade-off, not a mistake, but it does mean new cities structurally start below the experience level that established metros offer. Competitively, all major quick-commerce players race for density and coverage in new cities simultaneously, so a slower, more cautious density build-out risks ceding early-mover advantage to a competitor. The mission this connects to is making minutes-fast delivery a reliable everyday habit, which depends on the delivery promise actually being met, not just advertised, in every city Blinkit operates in."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem players are new-city customers (value = the same fast, reliable delivery promise as any metro customer), dark-store operations teams (value = enough local demand to justify the store's cost), and Blinkit (value = sustainable growth into new markets without diluting its core promise). To diagnose the gap, I'd check actual delivered time versus the promised time for orders in these new cities compared to metros, since if new-city orders are taking meaningfully longer than what's shown to the user at checkout, that's a direct, measurable trust-breaking gap rather than a vague 'new market adjustment' story. I'd also segment retention by distance from the nearest dark store within these cities, since if retention is meaningfully better for users living close to a store and meaningfully worse for those farther away, that isolates density (a fixable, ops-side variable) as the driver rather than these cities simply having lower underlying demand for quick-commerce as a category. If retention were uniformly low regardless of proximity to a dark store, that would instead suggest a category-fit issue -- these markets may just have different shopping habits -- which calls for a different response than building more stores."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "Assuming the diagnosis confirms retention correlates strongly with proximity to a dark store, I'd set a goal jointly owned by operations and new-market expansion: a dark-store-density target (stores per capita, or percentage of new-city population within a set delivery-time radius) to reach within two quarters, paired with a week-4 retention target for new cohorts once that density threshold is hit in a given city, rather than expecting current cohorts to close the full gap immediately. I'd defend the density target's size by benchmarking against the density level established metros had reached by the point their own retention matched today's metro baseline. This bridges strategy to execution because operations directly controls store rollout pace, while new-market expansion controls launch sequencing and can choose to delay full-scale user acquisition marketing in a city until density catches up, and an actual-versus-promised delivery-time guardrail ensures the promise isn't overstated to new-city users in the meantime."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating lower retention in new cities as an onboarding or marketing problem without checking whether the actual delivery promise is being met there",
+        "Setting the same retention target for new and established cities without accounting for the structural density gap driving the difference"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-retention-006",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "retention",
+      "title": "Diagnose a week-4 retention drop explained by referral-incentive composition on Groww",
+      "company": ["Groww"],
+      "region": "india",
+      "industry": "investing",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Week-4 retention for a recent new-investor cohort on Groww came in well below the trailing average, the same month a large one-time referral bonus campaign ran. As the PM for activation, how would you diagnose this and set a goal for the next quarter?",
+      "context": [
+        "Groww is an Indian investment platform offering mutual funds, stocks, and other investment products through a mobile app.",
+        "Opening a Groww account requires KYC verification before a user can begin investing.",
+        "Groww has grown its user base partly through referral programs and low-cost, no-brokerage positioning."
+      ],
+      "assumptions": [
+        "assumed: week-4 retention (defined as any app open with a portfolio view or new investment action) fell roughly 13 percentage points below the trailing six-month average for this cohort, as posed by the interviewer",
+        "assumed: the referral campaign offered a fixed cash bonus to both referrer and referee once the referee completed a small minimum first investment",
+        "assumed: KYC completion and first-investment completion rates for this cohort were similar to prior cohorts"
+      ],
+      "followUps": [
+        "How would you prove the drop is about who the campaign attracted rather than a genuine product issue that happened to coincide with it?",
+        "Would you recommend Groww run this kind of referral campaign again? What would you change about its design?",
+        "How would you set an activation-team goal without unfairly holding them accountable for a growth-team acquisition decision?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Assumptions and Game Plan",
+            "walkthrough": "I'll assume week-4 retention for this cohort fell about 13 percentage points below the trailing six-month average, that the referral campaign paid both sides a fixed cash bonus once the referee made a small minimum first investment, and that KYC and first-investment completion rates for this cohort looked normal, meaning the funnel up to first investment wasn't the problem. My plan: frame the business and mission context, build a metric framework that tests whether this is a cohort-composition effect from the incentive design versus a genuine activation problem, and close with a goal appropriately scoped to the activation team."
+          },
+          {
+            "stage": "Product Rationale",
+            "walkthrough": "Groww's business model depends on investors continuing to invest over time, since revenue is tied to ongoing transaction and asset-under-management activity, not a one-time account opening, so a cohort that invests once to claim a bonus and then disengages is close to worthless from a lifetime-value standpoint even though it looks identical to a genuine new investor in top-of-funnel metrics. Competitively, referral-driven growth is a common low-CAC lever across Indian fintech, but a bonus structured around a small minimum investment specifically risks attracting people optimizing for the reward rather than genuinely starting an investing habit. The mission this connects to is helping first-time investors build a lasting investing habit, which a reward-chasing cohort can directly undermine if the incentive isn't designed to select for genuine intent."
+          },
+          {
+            "stage": "Metric Framework",
+            "walkthrough": "The ecosystem players are new investors (value = an easy, low-friction way to start investing), referring existing users (value = a cash reward for a successful referral), and Groww (value = a growing base of investors who keep transacting, not one-time bonus claimants). To diagnose the drop, I'd first check the size and nature of this cohort's first investment: if a large share of the campaign's new investors put in exactly the minimum qualifying amount and never added to it, that's a strong signal the incentive selected for bonus-chasers rather than genuine first-time investors, distinct from Groww's typical organic and non-incentivized-referral cohorts. I'd also compare week-4 retention for this cohort's minimum-investment sub-segment against the sub-segment that invested meaningfully more than the minimum, since if the higher-investment sub-segment's retention looks normal while the minimum-investment sub-segment's retention has cratered, that isolates the incentive's design, not a broader product issue, as the driver. If retention were uniformly low regardless of first-investment size, that would instead point toward a genuine activation-experience problem that happened to coincide with the campaign timing, not the campaign itself."
+          },
+          {
+            "stage": "Goal-Setting",
+            "walkthrough": "Assuming the diagnosis confirms the drop concentrates in the minimum-investment, bonus-chasing sub-segment, I'd set a goal jointly with the growth team on future referral-campaign design rather than asking activation to fix retention for a cohort that was never going to convert as designed: specifically, redesigning the incentive to require a meaningfully higher minimum investment, or to pay out the bonus in installments tied to continued activity over the first month. For the activation team specifically, I'd set a goal on week-4 retention excluding future bonus-driven minimum-investment cohorts, protecting the metric from being diluted by acquisition-design choices outside activation's control, while defending the incentive-redesign recommendation with the clear gap shown between the minimum-investment and higher-investment sub-segments in this campaign. This bridges strategy to execution because growth directly controls campaign incentive structure going forward, while activation can be fairly held accountable only for the retention of users it actually has a chance to influence."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Holding the activation team accountable for a retention drop that's actually explained by an acquisition-incentive design decision made by a different team",
+        "Assuming all referral-driven users behave the same way without splitting by whether they invested exactly the minimum qualifying amount or genuinely more"
+      ],
+      "related": []
+    }
+  ]
+}

@@ -1,0 +1,565 @@
+{
+  "pack": "an-03",
+  "cases": [
+    {
+      "id": "an-tradeoff-001",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "metric-tradeoff",
+      "title": "Weigh engagement against well-being for Instagram's time-spent features",
+      "company": ["Instagram"],
+      "region": "global",
+      "industry": "social-media",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Instagram has shipped features like 'You're all caught up' (marking when a user has seen all new posts) alongside features that encourage continued browsing, like Explore and Reels autoplay. How would you think about the trade-off between time-spent and user well-being when deciding what to build next?",
+      "context": [
+        "Instagram has shipped 'You're all caught up' notices in the main feed, marking the point where a user has seen all new posts since their last visit.",
+        "Instagram also has features designed to extend session time, including an algorithmically ranked Explore tab and autoplaying Reels.",
+        "Meta has publicly discussed well-being-oriented features across its apps, including time-spent dashboards and reminder-to-take-a-break prompts."
+      ],
+      "assumptions": [
+        "assumed: advertising revenue is meaningfully correlated with time spent in the near term, creating real business pressure toward engagement-maximizing features",
+        "assumed: a meaningful share of users report, in surveys or public sentiment, wanting more control over how much time they spend on the app"
+      ],
+      "followUps": [
+        "How would you decide whether a proposed feature belongs on the engagement side or the well-being side before building it?",
+        "If a well-being feature reduces session time but user satisfaction scores rise, how would you defend keeping it to a revenue-focused stakeholder?",
+        "How would you tell if 'time well spent' is actually happening, versus just less time spent?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume near-term ad revenue correlates with time spent, creating real pressure toward engagement features, while a meaningful user segment also wants more control over their usage. Plan: frame why this is a genuine trade-off and not a false one, define the ecosystem and competing metrics, then propose how to actually decide between the two." },
+          { "stage": "Product Rationale", "walkthrough": "Instagram's business model is advertising, which historically rewards more time spent and more content viewed, but Instagram's long-term license to operate depends on users continuing to trust and want to use the product, and a reputation for being addictive or harmful to well-being is a real long-term brand and regulatory risk. This makes the trade-off genuinely strategic, not just a product nice-to-have: optimizing purely for short-term time-spent metrics can undermine the long-term user trust the business depends on." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the user (value = a mix of connection, entertainment, and control over their own time), advertisers (value = attention and ad impressions), and Instagram (value = both near-term ad revenue and long-term platform trust). A pure time-spent North Star would systematically favor engagement features and starve well-being investment, so I'd argue for a composite North Star like 'sessions rated positively in exit surveys' or a satisfaction-weighted engagement metric, paired with guardrails on both sides: minimum ad-revenue-per-user (protecting the business) and a well-being signal like self-reported control-over-usage or voluntary use of time-limit tools (protecting the user). Implementable metrics: session length, session frequency, exit-survey sentiment score, and adoption/retention of well-being tools like 'You're all caught up' or break reminders, all trackable from existing event logs and periodic survey instrumentation. Any single feature proposal should be evaluated against both sides of this composite metric before shipping, not against time-spent alone." },
+          { "stage": "Goal-Setting", "walkthrough": "For a well-being-focused feature team, I'd set a goal on adoption and voluntary continued use of a specific well-being tool (e.g., week-4 retention of users who enable break reminders) rather than a company-wide time-spent or revenue goal, since that's what the team actually controls and it's a genuine leading indicator of whether the feature is valued rather than ignored. I'd defend this goal to a revenue-focused stakeholder by tying it to the long-term trust guardrail: a user who trusts the platform to respect their time is a more durable long-term asset than marginal extra minutes today, and I'd propose measuring the net revenue effect over two to three quarters, not the first month, before judging the trade-off's true cost." }
+        ]
+      },
+      "pitfalls": [
+        "Treating time-spent and well-being as a zero-sum choice on every single feature, rather than recognizing some features can improve both",
+        "Judging a well-being feature's business cost only in the first month, before its long-term trust effect has had time to show up"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-tradeoff-002",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "metric-tradeoff",
+      "title": "Weigh GMV growth against take-rate for Uber's driver incentive structure",
+      "company": ["Uber"],
+      "region": "global",
+      "industry": "ride-hailing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Uber can grow gross bookings (GMV) by subsidizing driver incentives, which lowers Uber's effective take-rate (its share of each fare) in the near term. How would you think about the trade-off between GMV growth and take-rate?",
+      "context": [
+        "Uber reports both Gross Bookings (the total value of rides and deliveries transacted on its platform) and its take-rate (the share of gross bookings retained as revenue) in public financial disclosures.",
+        "Ride-hailing platforms commonly use driver incentives (bonuses for completing a set number of trips, surge-related earnings guarantees) to influence driver supply, especially in specific markets or time periods.",
+        "Uber operates in a competitive market with other ride-hailing platforms in most major geographies."
+      ],
+      "assumptions": [
+        "assumed: driver supply (number of active drivers and their online hours) directly affects rider wait times and trip completion rates in a given market",
+        "assumed: take-rate reductions from incentives are a near-term, adjustable lever rather than a permanent structural change to Uber's revenue share"
+      ],
+      "followUps": [
+        "How would you decide which specific markets or time windows deserve incentive spend versus which don't?",
+        "If a competitor is aggressively subsidizing drivers in one city, how does that change your recommendation?",
+        "How would you know if incentive spend is actually growing the market versus just shifting drivers from a competitor at a cost that won't sustain itself?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume driver supply directly affects rider experience (wait time, completion rate) in a given market, and that take-rate reductions from incentives are an adjustable near-term lever, not permanent. Plan: frame the ecosystem and why this is a real trade-off, define the metrics on both sides, then propose how to decide when incentive spend is worth the take-rate cost." },
+          { "stage": "Product Rationale", "walkthrough": "Uber's marketplace depends on having enough driver supply to keep wait times low and trip completion high, since a rider who can't get a ride quickly will simply use a competitor; but Uber's own profitability and investor expectations depend on take-rate, its actual revenue share of each transaction. This makes incentive spend a genuine two-sided investment decision: it can grow the market (more GMV, more riders retained by good service) or simply give away margin without changing the underlying supply-demand balance, depending on the specific market's competitive dynamics." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: riders (value = short wait times and reliable availability), drivers (value = predictable earnings), and Uber (value = sustainable revenue at scale). A GMV-only North Star would justify unlimited incentive spend regardless of profitability, while a take-rate-only North Star would starve driver supply in competitive markets and directly hurt the rider experience — so I'd propose a market-level 'contribution margin per trip after incentives' as the core decision metric, since it's implementable from existing trip and payout data and captures both sides jointly, paired with guardrails on rider wait time and trip completion rate (protecting the marketplace's basic function) and driver retention (protecting supply from eroding after an incentive program ends). Incentive spend should be evaluated market-by-market against this contribution margin, not as a single global lever, since competitive intensity and supply tightness vary a great deal by city." },
+          { "stage": "Goal-Setting", "walkthrough": "For a marketplace-balance team, I'd set a quarterly goal on improving contribution-margin-per-trip in a defined set of currently-negative-margin markets, rather than a blanket GMV or take-rate target, since that's the metric that actually reflects whether incentive spend in those specific markets is working. I'd defend prioritizing certain markets over an across-the-board GMV push by showing which markets have the clearest driver-supply constraint (via wait-time and completion-rate data) versus which are already well-supplied and would just be giving away margin for no marketplace benefit." }
+        ]
+      },
+      "pitfalls": [
+        "Treating incentive spend as a single global lever instead of evaluating it market-by-market against actual supply constraints",
+        "Optimizing take-rate in a supply-constrained market without checking the resulting hit to rider wait time and trip completion"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-tradeoff-003",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "metric-tradeoff",
+      "title": "Weigh host-supply growth against quality for Airbnb's Superhost program",
+      "company": ["Airbnb"],
+      "region": "global",
+      "industry": "travel-marketplace",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Airbnb's Superhost program sets a quality bar (response rate, review score, cancellation rate) that hosts must meet to earn the badge and its associated visibility boost. How would you think about the trade-off between keeping that bar strict (favoring quality) versus loosening it to grow the number of qualifying hosts (favoring supply)?",
+      "context": [
+        "Airbnb's Superhost program awards a badge to hosts who meet criteria including a minimum number of completed stays, a high overall rating, a low cancellation rate, and a high response rate, reviewed quarterly.",
+        "Superhost listings have historically received additional visibility and discovery benefits in Airbnb's search and browsing experience.",
+        "Airbnb operates as a two-sided marketplace connecting hosts (supply) with guests (demand) across a large number of geographic markets that vary in listing density."
+      ],
+      "assumptions": [
+        "assumed: Superhost-badge visibility meaningfully affects a listing's booking rate, based on how the program is positioned as a discovery benefit",
+        "assumed: the quality criteria (rating, cancellation rate, response rate) are reasonably correlated with actual guest experience quality"
+      ],
+      "followUps": [
+        "How would you evaluate whether loosening the bar in a specific under-supplied market is different from loosening it globally?",
+        "If Superhost qualification rates differ significantly between new and experienced hosts, how does that affect your recommendation?",
+        "How would you check whether the visibility boost is actually necessary to reward quality, versus quality already being self-reinforcing through guest reviews alone?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume the Superhost badge meaningfully affects booking rate through added visibility, and that its quality criteria are reasonably correlated with real guest experience. Plan: frame why this is a genuine two-sided trade-off, define the ecosystem and metrics, then propose a market-differentiated approach rather than a single global answer." },
+          { "stage": "Product Rationale", "walkthrough": "Airbnb's marketplace depends on both enough listing supply for guests to find a good option in their desired location and dates, and high enough quality that guests trust booking a stranger's home sight-unseen; the Superhost program is explicitly designed to reward the second while implicitly gating some of the visibility that drives the first. This makes the strictness of the bar a genuine strategic lever: too strict in a thin market starves supply visibility where it's needed most, too loose anywhere risks diluting the trust signal that makes the badge meaningful to guests." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: guests (value = confidence they're booking a reliable, good-quality stay), hosts (value = visibility and booking volume as a reward for quality), and Airbnb (value = overall marketplace trust and booking volume). A pure qualifying-host-count North Star would push toward loosening the bar everywhere, eroding the badge's meaning to guests, while a pure guest-satisfaction-score North Star ignores that thin markets need supply first. I'd propose evaluating markets separately on listing density (a proxy for supply thinness) and on Superhost-badge booking-rate lift (from existing booking and badge data), keeping the bar strict in well-supplied markets where quality differentiation matters most to guests, and only considering a modestly adjusted bar in genuinely thin markets, guardrailed by guest review scores for newly-qualifying hosts under any adjusted criteria (making sure a loosened bar doesn't quietly admit lower-quality hosts) and by badge booking-rate lift holding steady (confirming the badge still means something to guests)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the host-quality team, I'd set a goal specific to under-supplied markets: raise the Superhost qualification rate in a defined list of thin markets by a set percentage this quarter through host coaching and support rather than criteria loosening, since coaching addresses the actual gap (hosts not yet meeting the bar) without touching the bar's meaning everywhere else. Guest review scores for newly-qualifying hosts in those markets stay a hard guardrail owned jointly with the trust and safety team, so growth in badge count doesn't quietly come at the cost of guest trust." }
+        ]
+      },
+      "pitfalls": [
+        "Loosening the Superhost bar globally to solve what is actually a market-specific supply problem in a handful of thin geographies",
+        "Growing badge count without checking that newly-qualifying hosts under any adjusted criteria are actually delivering the same guest experience"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-tradeoff-004",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "metric-tradeoff",
+      "title": "Weigh meaningful interactions against raw engagement for a social feed ranking change",
+      "company": ["Meta"],
+      "region": "global",
+      "industry": "social-media",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "In 2018, Facebook publicly announced a News Feed ranking change to prioritize 'meaningful social interactions' between friends and family over passive content consumption, stating this could reduce time spent in the short term. How would you think about this kind of trade-off between a narrower quality-of-interaction metric and raw engagement?",
+      "context": [
+        "Facebook publicly announced in January 2018 a News Feed algorithm change prioritizing posts that generate conversation and meaningful interaction between people, over public content from businesses, brands, and media.",
+        "Facebook's public statement at the time said this change was expected to reduce the total time people spend on Facebook in the near term.",
+        "Facebook's business model is advertising, which is affected by both total time spent and the volume/quality of content shown."
+      ],
+      "assumptions": [
+        "assumed: 'meaningful social interaction' can be operationalized via signals like commenting, sharing to a friend, or engaging in back-and-forth conversation on a post, distinct from passive scrolling or a like",
+        "assumed: a short-term reduction in time spent following the change was an accepted, anticipated cost at the time, based on the public framing"
+      ],
+      "followUps": [
+        "How would you defend accepting a near-term time-spent decline to a stakeholder focused on quarterly ad revenue?",
+        "How would you distinguish a 'meaningful interaction' from an engagement-bait comment thread that isn't actually meaningful?",
+        "What would you want to see in the data a few quarters later to confirm the trade-off was worth it?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume meaningful interaction can be operationalized via signals like commenting and back-and-forth conversation distinct from passive scrolling, and that a near-term time-spent decline was an accepted, anticipated cost of this change. Plan: frame why the company made this trade-off deliberately, define the ecosystem and competing metrics, then propose how you'd defend and measure it." },
+          { "stage": "Product Rationale", "walkthrough": "Facebook's long-term value to users depends on feeling that time on the platform is genuinely valuable for staying connected to people they care about, not just a source of passive, low-value content consumption; if users come to feel their feed is mostly low-value, they may reduce usage far more severely over the long term than any near-term optimization would predict. The public framing of this change suggests the company judged long-term platform health and user trust to be worth more than short-term engagement, which is exactly the kind of trade-off a raw engagement-only North Star can't see, since it only measures the thing being deliberately, strategically reduced." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: individual users (value = genuine connection with people they know), publishers and brands (value = reach and engagement on their content, directly reduced by this change), and Facebook (value = a platform users trust enough to keep using long-term). A raw time-spent or engagement North Star would have argued against this change entirely, since it explicitly traded away some of both; the change implies the company adopted something closer to a meaningful-interaction rate (comments, replies, shares to a specific person) as a more relevant proxy for long-term platform health, implementable from existing interaction-type event logs, guardrailed by overall session frequency (making sure the platform isn't abandoned outright) and by publisher/business page reach (an explicit, acknowledged cost to a distinct stakeholder that needed separate mitigation, like the Page-specific tools Facebook built afterward)." },
+          { "stage": "Goal-Setting", "walkthrough": "For a feed-ranking team making this kind of change, I'd set a goal on meaningful-interaction rate specifically, accepting a defined, bounded near-term decline in total time spent as an explicitly budgeted cost rather than a surprise, and I'd defend this to a revenue-focused stakeholder by presenting the trade-off transparently upfront (this will cost X in the short term, we expect Y in long-term retention and trust) rather than by hiding the near-term cost. I'd check a few quarters later whether session frequency and self-reported satisfaction actually improved, which would validate the bet, versus whether the platform simply lost the reduced engagement without a retention benefit, which would mean the trade-off wasn't actually worth its cost." }
+        ]
+      },
+      "pitfalls": [
+        "Refusing any near-term engagement decline on principle, missing that a deliberate, bounded trade-off can be the right long-term call",
+        "Not defining upfront what evidence, a few quarters later, would confirm or disconfirm that the trade-off actually paid off"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-tradeoff-005",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "metric-tradeoff",
+      "title": "Weigh delivery speed against order accuracy for Zomato",
+      "company": ["Zomato"],
+      "region": "india",
+      "industry": "food-delivery",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Zomato could push delivery partners and kitchens harder to reduce average delivery time, but faster handling can increase the rate of missing items or wrong orders. How would you think about this trade-off between delivery speed and order accuracy?",
+      "context": [
+        "Zomato is a food delivery platform that displays an estimated delivery time to users before they order and tracks actual delivery time against that estimate.",
+        "Zomato allows users to report order issues including missing items and incorrect items through in-app support.",
+        "Zomato's restaurant partners are responsible for order preparation and packing before handoff to a delivery partner."
+      ],
+      "assumptions": [
+        "assumed: faster kitchen preparation time and faster packing are correlated with a higher rate of packing errors, based on typical speed-accuracy trade-offs in manual fulfillment processes",
+        "assumed: both delivery time and order-issue reports are logged per order and attributable to a specific restaurant partner"
+      ],
+      "followUps": [
+        "How would you tell whether a specific restaurant's speed-up is causing more errors, versus another restaurant achieving the same speed without more errors?",
+        "How would you decide whether to intervene by restaurant, or by a platform-wide policy change?",
+        "What would make you accept a slightly slower delivery time platform-wide in exchange for fewer order issues?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume faster kitchen prep and packing correlates with more packing errors, and that both delivery time and issue reports are logged per order and attributable to a specific restaurant. Plan: frame why this is a genuine trade-off, not just a case for pushing speed everywhere, define the ecosystem and metrics, then propose a restaurant-level rather than platform-wide approach." },
+          { "stage": "Product Rationale", "walkthrough": "Zomato's competitiveness depends partly on delivery speed, since users comparing delivery apps often weight estimated time heavily, but a wrong or missing order is a much worse experience than a slightly slow one, since it directly fails the core promise of getting the food you ordered — an order-issue is likely to depress repeat usage more than a few extra minutes of wait would. This means pushing speed as a blanket policy risks trading a soft, forgivable cost (mild wait-time increase avoided) for a hard, unforgivable one (a meaningfully worse order-issue rate) at some restaurants." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the user (value = getting the correct order reasonably quickly), the restaurant partner (value = throughput without excessive error-driven refund cost), and Zomato (value = a platform users trust for both speed and accuracy). Since neither speed nor accuracy alone is a good sole North Star — pure speed ignores the accuracy cost identified above, and pure accuracy could justify unnecessarily slow handling — I'd propose a joint restaurant-level metric like 'on-time and accurate delivery rate' (both conditions met), implementable by joining existing delivery-time and issue-report logs at the order level, guardrailed by delivery time itself (so the accuracy focus doesn't silently let speed regress with no accountability) and issue-report rate specifically (an early, direct signal of the trade-off going wrong at a given restaurant). Any restaurant showing a rising issue rate alongside a speed push should be flagged for coaching or a slower target, rather than applying a platform-wide speed policy uniformly." },
+          { "stage": "Goal-Setting", "walkthrough": "For the restaurant-operations team, I'd set a goal to raise the on-time-and-accurate delivery rate for a defined cohort of restaurants with currently below-average performance, rather than a blanket delivery-time reduction target, since that directly targets the joint metric rather than pushing one side of the trade-off in isolation. I'd keep issue-report rate as a hard guardrail specifically for any restaurant receiving speed-focused coaching, so an operational push doesn't quietly worsen the exact problem it's meant to avoid." }
+        ]
+      },
+      "pitfalls": [
+        "Pushing a platform-wide delivery-speed target without a restaurant-level accuracy guardrail, risking a rise in order issues at restaurants where the speed-accuracy trade-off is real",
+        "Treating delivery time and order accuracy as fully independent metrics instead of a joint outcome that should be measured and targeted together"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-goal-002",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "goal-setting",
+      "title": "Set a quarterly goal for Spotify's Discover Weekly team",
+      "company": ["Spotify"],
+      "region": "global",
+      "industry": "music-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Spotify's Discover Weekly is a personalized weekly playlist of recommended tracks, refreshed every Monday. As PM for the team owning it, what quarterly goal would you set, and how would you defend the number?",
+      "context": [
+        "Spotify's Discover Weekly is a personalized playlist of 30 tracks, refreshed automatically every Monday for each user based on their listening history.",
+        "Spotify's business model includes both an ad-supported free tier and a paid Premium subscription.",
+        "Spotify has publicly discussed the role of personalized playlists like Discover Weekly in driving music discovery and engagement."
+      ],
+      "assumptions": [
+        "assumed: 'save to library' and 'add to another playlist' actions on a track are logged and attributable back to its Discover Weekly origin",
+        "assumed: the team can influence the underlying recommendation model's tuning within a quarter, without needing a full model architecture change"
+      ],
+      "followUps": [
+        "If your goal is a save-rate lift, how would you make sure the team doesn't just recommend more familiar, lower-discovery tracks to inflate the number?",
+        "How would you defend this goal against a stakeholder who cares more about overall listening hours than about Discover Weekly specifically?",
+        "What would make you recommend a different goal than the one you just proposed?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume save and add-to-playlist actions on Discover Weekly tracks are logged and attributable to the playlist's origin, and that the team can meaningfully influence recommendation tuning within a quarter. Plan: frame the product and business context, define the ecosystem and metric logic, then propose and defend a specific team-level goal." },
+          { "stage": "Product Rationale", "walkthrough": "Spotify's core value proposition beyond a music library is helping users find things they wouldn't have found themselves, which is exactly what Discover Weekly is designed to do; its business model benefits from this both directly (differentiation from competitors with less personalization) and indirectly (more time spent, feeding both ad impressions and subscription retention). The mission connecting company strategy to this team specifically is 'make discovery feel as reliable and personal as a knowledgeable friend's recommendation.'" },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players are the listener (value = genuinely liking what's recommended), artists (value = discovery and streams from an audience that wouldn't have found them otherwise), and Spotify (value = engagement and differentiation). A company-level North Star here would be something like overall listening hours or retention, but that's too broad and lagging for a single feature team to own directly; the team needs an implementable, playlist-specific metric like save-to-library rate or add-to-other-playlist rate per Discover Weekly track, both trackable from existing event logs and both reasonable proxies for 'the recommendation was actually good,' distinct from a skip, which is a weaker and noisier signal." },
+          { "stage": "Goal-Setting", "walkthrough": "For the Discover Weekly team, I'd set a goal on raising save-or-add rate per playlist by a defined percentage this quarter, since it's directly actionable through recommendation-model tuning and it's a stronger discovery signal than raw play-through or skip rate. I'd guardrail this against artist/genre diversity within the playlist (a proxy for genuine discovery rather than recommending only very familiar, high-save-probability tracks to game the number) and against overall listening-hours trend (confirming the tuning change doesn't quietly reduce total engagement even if save rate rises), defending the goal to a hours-focused stakeholder by showing that genuine discovery is a leading indicator of long-term retention, even if its immediate effect on total hours is small." }
+        ]
+      },
+      "pitfalls": [
+        "Setting a save-rate goal that can be gamed by recommending only safe, highly-familiar tracks, undermining the actual discovery purpose of the feature",
+        "Picking a company-wide metric like total listening hours as the team's own goal when it's too lagging and too far from what the team directly controls"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-goal-003",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "goal-setting",
+      "title": "Set a quarterly goal for PhonePe's UPI reliability team",
+      "company": ["PhonePe"],
+      "region": "india",
+      "industry": "fintech-payments",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "PhonePe processes a large volume of UPI (Unified Payments Interface) transactions daily, where a failed or delayed transaction directly affects user trust. As PM for the team owning payment reliability, what quarterly goal would you set, and how would you defend the number?",
+      "context": [
+        "PhonePe is a major UPI payments app in India, processing person-to-person and merchant transactions over the UPI network, which is operated by NPCI (National Payments Corporation of India).",
+        "UPI transaction success depends on multiple parties in the chain: the paying app, the receiving app or merchant, the banks on both ends, and the NPCI switch itself, meaning a failure isn't always attributable to a single party.",
+        "PhonePe surfaces transaction status (success, pending, failed) to users within the app."
+      ],
+      "assumptions": [
+        "assumed: transaction failures are attributable, via logging, to a specific stage in the chain (PhonePe's own system, the receiving bank, or the NPCI switch) with reasonable but imperfect accuracy",
+        "assumed: PhonePe's reliability team can directly control and improve its own system's failure rate, but can only partially influence bank-side or NPCI-side failures through escalation and retry logic"
+      ],
+      "followUps": [
+        "How would you set a goal that's fair given the team can't control bank-side or NPCI-side failures directly?",
+        "How would you defend prioritizing reliability investment over a growth or new-feature initiative competing for the same engineering resources?",
+        "What would make you escalate a specific bank's failure rate to NPCI rather than trying to solve it within PhonePe alone?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume failures are attributable, with reasonable accuracy, to a specific stage in the multi-party UPI chain, and that PhonePe's team fully controls its own system's failure rate but only partially influences bank-side or NPCI-side failures. Plan: frame why reliability is strategically important here, define the ecosystem and metric logic, then propose a goal scoped to what the team actually controls." },
+          { "stage": "Product Rationale", "walkthrough": "PhonePe's entire value proposition is being a trusted, instant way to move money, and at UPI's transaction volume even a small failure rate translates into a large absolute number of frustrated users, some of whom may switch to a competing app after a bad experience. Because payments are often urgent (paying a vendor, splitting a bill in the moment), a failed or stuck transaction is a uniquely high-trust-cost failure mode compared to a typical app bug, which justifies treating reliability as a first-class, continuously-invested-in priority rather than a background maintenance concern." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the user (value = a transaction that reliably completes or fails fast and clearly, never gets stuck ambiguously), merchants (value = reliable settlement to keep accepting UPI), and PhonePe (value = trust that drives continued usage over competing apps). A single overall UPI-success-rate North Star would obscure the multi-party attribution problem, so I'd propose the team's core metric be 'PhonePe-attributable failure rate' — the share of failures traceable specifically to PhonePe's own systems, separate from bank- or NPCI-side failures, implementable via existing transaction-logging and failure-classification data. Guardrails: overall (all-cause) failure rate, so a narrow focus on PhonePe-attributable failures doesn't let total user-experienced failures drift unaddressed, and time-to-resolution for ambiguous 'pending' transactions specifically, since an unresolved pending state is often worse for trust than a clean, fast failure." },
+          { "stage": "Goal-Setting", "walkthrough": "For the reliability team, I'd set a goal to reduce PhonePe-attributable failure rate by a defined relative percentage this quarter, since that's the portion of the problem fully within the team's control and therefore fair to hold them accountable for, while tracking (but not being solely evaluated on) the all-cause failure rate and pending-resolution-time guardrails. I'd defend prioritizing this over a growth initiative by showing the estimated user-trust cost of the current failure volume at PhonePe's transaction scale, and by noting that reliability compounds — every user who has a bad payment experience is a retention risk that a growth feature can't offset if the core promise itself is shaky." }
+        ]
+      },
+      "pitfalls": [
+        "Holding the team accountable for an all-cause failure rate that includes bank-side and NPCI-side failures they can't directly control",
+        "Treating a 'pending' transaction as equivalent to a clean failure, missing that an unresolved ambiguous state is often worse for user trust"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-goal-004",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "goal-setting",
+      "title": "Set a quarterly goal for Notion's AI team",
+      "company": ["Notion"],
+      "region": "global",
+      "industry": "productivity-software",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Notion AI is offered as a paid add-on within Notion workspaces. As PM for the Notion AI team, what quarterly goal would you set, and how would you defend the number to a stakeholder focused on subscription revenue?",
+      "context": [
+        "Notion AI launched in 2023 as an in-editor writing assistant, later expanding to include Q&A that answers questions using a workspace's own content.",
+        "Notion AI has been offered as a paid add-on on top of the base Notion subscription.",
+        "Notion's core product is a workspace and notes tool used individually and by teams, with a freemium base subscription model."
+      ],
+      "assumptions": [
+        "assumed: Notion AI usage (writing-assistant invocations, Q&A queries) is logged per workspace and attributable to whether that workspace has purchased the AI add-on",
+        "assumed: the team can influence AI feature quality and discoverability within Notion's existing editor within a quarter, without needing a separate app or major infrastructure change"
+      ],
+      "followUps": [
+        "How would you make sure a usage-based goal doesn't reward low-value, one-off novelty usage over real habitual value?",
+        "How would you defend this goal if a stakeholder wants the team to focus purely on add-on conversion rate instead?",
+        "What would make you recommend narrowing the team's goal to just one AI capability (writing vs Q&A) instead of both?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume AI feature usage is logged per workspace and attributable to add-on purchase status, and that the team can meaningfully influence feature quality and discoverability within a quarter. Plan: frame the product and business context, define the ecosystem and metric logic, then propose and defend a goal that bridges usage value to the revenue stakeholder's concern." },
+          { "stage": "Product Rationale", "walkthrough": "Notion's core product already lets people organize freeform content themselves; the AI add-on's value proposition is saving time on writing and making a workspace's own existing content more useful through Q&A, monetized as a premium layer on top of the base subscription. The mission connecting this to company strategy is using AI to deepen the value of a workspace a customer has already invested in building, which should show up as both retention of the base subscription and incremental add-on revenue." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the individual user (value = time saved and easier access to their own workspace's knowledge), team admins/buyers (value = a justification for the added subscription cost), and Notion (value = incremental add-on revenue and stronger overall retention). A pure add-on-conversion-rate North Star risks the team chasing trial sign-ups without ensuring the feature is actually used well afterward, so I'd propose a usage-quality metric like 'workspaces with weekly-active AI usage among add-on subscribers' as the team's core metric, implementable from existing per-workspace usage logs, guardrailed by add-on renewal rate (confirming usage actually translates into subscribers staying) and by base-subscription churn among heavy AI users (checking the feature isn't just retained in isolation while the broader relationship weakens for some other reason)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the Notion AI team, I'd set a goal to raise the share of add-on subscribers with weekly-active AI usage by a defined percentage this quarter, rather than a pure new-subscription-conversion target, since sustained usage is what actually justifies the add-on's price to a buyer and predicts renewal. I'd defend this to a revenue-focused stakeholder by connecting it directly to renewal rate as the guardrail: an add-on with high trial conversion but low sustained usage will show up as elevated churn a quarter or two later, so investing in usage quality now protects the revenue number the stakeholder actually cares about longer-term." }
+        ]
+      },
+      "pitfalls": [
+        "Setting a pure trial-conversion goal that rewards sign-ups without ensuring the feature is used well enough afterward to justify renewal",
+        "Ignoring base-subscription churn among heavy AI users, missing a signal that usage and overall relationship health can diverge"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-goal-005",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "goal-setting",
+      "title": "Set a quarterly goal for Swiggy Instamart's dark-store expansion team",
+      "company": ["Swiggy Instamart"],
+      "region": "india",
+      "industry": "quick-commerce",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Swiggy Instamart's speed promise depends on having dark stores (fulfillment micro-warehouses) close enough to deliver in minutes. As PM for the team deciding where to open new dark stores, what quarterly goal would you set, and how would you defend the number?",
+      "context": [
+        "Swiggy Instamart is a quick-commerce grocery delivery service operating through a network of dark stores (delivery-only fulfillment locations) in Indian cities, competing with other quick-commerce players.",
+        "Quick-commerce delivery promises are typically framed around delivery within a short time window (commonly around 10-20 minutes), which depends on dark-store proximity to the customer.",
+        "Opening a new dark store involves real fixed costs (lease, inventory, staffing) that only become profitable once local order density reaches a sufficient level."
+      ],
+      "assumptions": [
+        "assumed: a new dark store takes a period of weeks to months to ramp up to a stable order-density level, based on how new-location ramp-up typically works in retail",
+        "assumed: expansion into a new area is evaluated using pre-launch demand signals (e.g., existing Swiggy food-delivery order density in that area) as a proxy for likely quick-commerce demand"
+      ],
+      "followUps": [
+        "How would you decide between opening more stores in already-strong cities versus expanding into new cities?",
+        "If a newly opened store is ramping up slower than expected, what would you do before deciding whether to keep it open?",
+        "How would you defend a goal that necessarily includes some stores that underperform, to a stakeholder focused purely on overall profitability?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume new dark stores take weeks to months to ramp to stable order density, and that pre-launch demand signals like existing food-delivery density are used as a proxy for expected quick-commerce demand. Plan: frame the strategic tension between speed-promise coverage and store-level profitability, define the ecosystem and metrics, then propose a goal that balances expansion volume against per-store health." },
+          { "stage": "Product Rationale", "walkthrough": "Instamart's core promise is delivery speed, which is structurally a function of dark-store density and placement — more coverage means more addresses can be served within the promised window, but each new store is a real fixed cost that only pays off once local order density is high enough. This makes expansion pace a genuinely strategic trade-off between growing addressable coverage (a competitive necessity in quick-commerce, where a competitor's dark store might otherwise win the area first) and store-level unit economics." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the customer (value = fast, reliable delivery within their area), Swiggy (value = both coverage/market share and unit-level profitability), and the broader quick-commerce competitive landscape (a real strategic pressure, since ceding an area to a competitor's dark store can be hard to win back later). A pure store-count North Star would push toward opening stores regardless of local demand quality, while a pure per-store-profitability North Star would make the team too conservative to win contestable new areas ahead of competitors — I'd propose a joint metric like 'new stores reaching target order density within their ramp window,' implementable from existing per-store order-volume tracking against a defined density threshold, guardrailed by average time-to-target-density (catching a systemic site-selection problem early) and overall network profitability (making sure aggressive expansion doesn't structurally outpace the stores actually ramping successfully)." },
+          { "stage": "Goal-Setting", "walkthrough": "For the expansion team, I'd set a goal on the number of new stores opened this quarter that reach target order density within their expected ramp window, rather than a raw store-count target, since that ties expansion pace directly to whether the sites chosen are actually working, not just how many opened. I'd defend accepting some underperforming stores as part of this goal to a pure-profitability stakeholder by framing site-selection as inherently probabilistic — not every bet will land — and by showing that the ramp-window guardrail catches a systemic problem (bad site selection generally) early, well before it shows up as a company-wide profitability issue, which is a faster and cheaper correction than waiting for the aggregate number to move." }
+        ]
+      },
+      "pitfalls": [
+        "Setting a raw store-count expansion target that rewards opening stores regardless of whether local demand actually supports them",
+        "Judging expansion success only on aggregate network profitability, which is too lagging to catch a systemic site-selection problem early"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-experiment-001",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "experiment",
+      "title": "Design and read out an A/B test for Netflix thumbnail personalization",
+      "company": ["Netflix"],
+      "region": "global",
+      "industry": "video-streaming",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Netflix personalizes which thumbnail image is shown for the same title to different users, based on their viewing history. Design an A/B test to evaluate a new thumbnail-personalization approach, and walk through how you'd read out the results.",
+      "context": [
+        "Netflix has publicly discussed personalizing artwork (thumbnails) shown for a given title differently to different users, based on viewing history and inferred preferences.",
+        "Netflix's interface shows a limited set of titles at a time on the browse screen, making thumbnail click-through a meaningful factor in whether a title gets watched.",
+        "Netflix tracks whether a user, after clicking a title, actually watches a meaningful portion of it, distinct from just clicking and abandoning quickly."
+      ],
+      "assumptions": [
+        "assumed: click-through rate on a thumbnail and post-click watch-completion rate for the same title are both logged and can be joined at the user-title level",
+        "assumed: the new personalization approach is tested against the current production approach as the control, not against a non-personalized baseline"
+      ],
+      "followUps": [
+        "If the new approach raises click-through but lowers post-click watch-completion, how would you interpret that combination?",
+        "How would you account for a novelty effect if the new thumbnails are simply more visually different or eye-catching, independent of relevance?",
+        "How long would you run this test before reading out results, and why?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume click-through and post-click watch-completion are both logged and joinable at the user-title level, and that the new approach is tested against the current production personalization as control, not a non-personalized baseline. Plan: define the ecosystem and why this matters, then focus mainly on experiment design and readout, since that's the core of the question." },
+          { "stage": "Product Rationale", "walkthrough": "Netflix's browse experience shows a limited set of titles at once, so a thumbnail's ability to signal relevance and quality quickly is a real lever on whether a good match for a user's taste actually gets discovered and watched, directly serving Netflix's retention-driving goal of helping people find something they'll enjoy." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players are the viewer (value = quickly finding something genuinely worth watching) and Netflix (value = retention driven by successful content discovery). I'd design the test as a randomized A/B split at the user level, treatment getting the new personalization approach and control the current production approach, with the primary metric being post-click watch-completion rate for the shown title, not raw click-through rate alone, since click-through can be inflated by simply more attention-grabbing imagery independent of actual relevance — exactly the novelty-effect risk this question flags. I'd also track click-through as a secondary metric to understand the full funnel, and I'd run the test long enough to cover at least one full week (to average over day-of-week viewing pattern differences) and ideally two to three weeks, watching for the treatment effect on click-through decaying over time, which would indicate a novelty effect from simply-different imagery rather than a genuine relevance improvement. If click-through rises but watch-completion doesn't (or falls), that combination suggests the new thumbnails are more attention-grabbing but less accurately signaling actual content fit, which I would treat as a fail on the primary metric, not a partial win." },
+          { "stage": "Goal-Setting", "walkthrough": "For a ship/no-ship decision, I'd require the new approach to show a statistically significant improvement in post-click watch-completion rate, sustained through at least the second half of the test window (to rule out a front-loaded novelty effect), before rolling out beyond the test population. If the team's quarterly goal is broader than this one experiment, I'd frame it as improving average watch-completion rate attributable to the browse-to-watch discovery flow overall, with this specific personalization approach as one lever contributing to that goal, not the goal itself." }
+        ]
+      },
+      "pitfalls": [
+        "Treating click-through rate alone as evidence of success, missing that more eye-catching but less relevant imagery can inflate clicks without improving actual content fit",
+        "Reading out results too early, before a possible novelty effect on click-through has had time to decay"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-experiment-002",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "experiment",
+      "title": "Design and read out an A/B test for a LinkedIn feed ranking change",
+      "company": ["LinkedIn"],
+      "region": "global",
+      "industry": "professional-networking",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "LinkedIn's feed ranking algorithm decides which posts appear and in what order. Design an A/B test for a proposed ranking change intended to increase meaningful professional engagement, and walk through how you'd read out the results, accounting for the risk of a novelty effect.",
+      "context": [
+        "LinkedIn's feed shows a ranked mix of posts from connections, followed pages/people, and suggested content, using a ranking system that weighs relevance and engagement signals.",
+        "LinkedIn has publicly discussed distinguishing between passive engagement (like) and more substantive engagement (a thoughtful comment, a share with commentary) in how it evaluates feed quality.",
+        "LinkedIn's feed ranking changes affect which posts (and therefore which creators and companies) receive visibility, making creators and pages a real stakeholder in ranking decisions."
+      ],
+      "assumptions": [
+        "assumed: comment quality (length, whether it's a substantive reply versus a generic one-word reaction) can be at least roughly proxied by existing engagement-type and content-length signals",
+        "assumed: the ranking change is evaluated primarily via a live randomized experiment, with any offline replay evaluation treated as a pre-screening step, not a substitute for the live test"
+      ],
+      "followUps": [
+        "How would you set up the test to detect a novelty effect specifically, rather than just noticing one after the fact?",
+        "If the treatment shows a short-term lift that partially decays over the test window, how would you decide whether to ship it?",
+        "How would you account for the creator/page stakeholder's interests in your readout, not just the viewer's engagement?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume comment quality can be roughly proxied by engagement-type and length signals, and that the live randomized experiment is the primary evaluation method, with offline replay as pre-screening only. Plan: briefly frame the ecosystem, then focus mainly on experiment design with explicit novelty-effect detection, since that's the crux of this question." },
+          { "stage": "Product Rationale", "walkthrough": "LinkedIn's value as a professional network depends on the feed surfacing genuinely useful professional content and interaction, not just maximizing raw engagement the way a general social feed might, since LinkedIn's differentiation and long-term trust rest on being seen as substantively useful for a career, not just another attention-maximizing feed." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: viewers (value = a feed worth their limited attention), creators and pages (value = visibility and reach for their content, directly affected by ranking changes), and LinkedIn (value = a platform seen as professionally valuable, supporting both engagement and advertiser trust). I'd design a randomized user-level A/B test, with the primary metric being a substantive-engagement rate (comments above a length/quality threshold, shares with added commentary) rather than raw engagement rate, which the framework itself is trying to move away from. To specifically detect a novelty effect, I'd pre-register a plan to examine the treatment effect broken out by week within the test window, expecting a genuine improvement to hold roughly steady or grow as users adapt, while a novelty effect from simply-different content ordering would show a treatment effect that's largest in week one and decays toward baseline by weeks three or four. I'd also track a creator/page-side metric — the distribution of impressions across creator segments (established vs. smaller/newer creators) — as a guardrail, since a ranking change optimized purely for viewer substantive-engagement could still systematically reduce visibility for a stakeholder segment in a way that matters for platform health even if viewer metrics look good." },
+          { "stage": "Goal-Setting", "walkthrough": "For a ship decision, I'd require the substantive-engagement lift to be statistically significant and hold (not meaningfully decay) through the back half of at least a three-to-four week test window, specifically to rule out the novelty-effect pattern described above, and I'd require the creator-visibility guardrail to stay within an acceptable band rather than shift dramatically toward only large creators. If the team's broader quarterly goal is feed quality, I'd frame it around sustained substantive-engagement rate as the target metric this and future ranking experiments should move, with creator-visibility distribution as a standing guardrail across all such experiments, not just this one." }
+        ]
+      },
+      "pitfalls": [
+        "Reading out a positive result after only one week, missing a novelty-effect decay pattern that would only show up by extending the test window and checking week-by-week",
+        "Evaluating a ranking change purely on viewer-side engagement metrics without a guardrail for how it redistributes visibility across creator segments"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-experiment-003",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "experiment",
+      "title": "Design and read out an A/B test for a Duolingo Super paywall change",
+      "company": ["Duolingo"],
+      "region": "global",
+      "industry": "edtech",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Duolingo is considering a change to when and how it presents the Super subscription paywall to free users. Design an A/B test to evaluate this change, considering both conversion and the risk of harming the free-tier learning experience.",
+      "context": [
+        "Duolingo offers a free ad-supported tier and a paid Super subscription that removes ads and the hearts (mistake-limit) mechanic.",
+        "Duolingo commonly surfaces the Super paywall at specific moments, such as when a free user runs out of hearts mid-lesson.",
+        "Duolingo's stated mission emphasizes making language learning accessible, including to users who never pay."
+      ],
+      "assumptions": [
+        "assumed: a proposed change would either alter the trigger moment (e.g., showing the paywall earlier or more frequently) or alter the paywall's messaging/design, tested against the current production paywall as control",
+        "assumed: free-tier lesson-completion rate and day-7 retention are both logged and available as secondary metrics alongside conversion"
+      ],
+      "followUps": [
+        "If the new paywall raises conversion but lowers free-tier day-7 retention, how would you weigh that trade-off?",
+        "How would you make sure a short-term conversion lift isn't just pulling forward subscriptions that would have happened anyway a bit later?",
+        "How would this test's design change if the proposed paywall change specifically targeted a segment, like long-tenured free users, rather than all free users?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume the proposed change alters either the paywall's trigger moment or its messaging, tested against the current production paywall as control, with free-tier lesson-completion and day-7 retention available as secondary metrics. Plan: briefly frame why this is a genuine trade-off given Duolingo's stated mission, then focus on experiment design and how to weigh conversion against free-tier experience." },
+          { "stage": "Product Rationale", "walkthrough": "Duolingo's subscription revenue depends on converting a share of free users, but its stated mission and much of its user base depend on the free tier remaining a genuinely good, non-punitive learning experience — a paywall that pushes too hard risks converting some marginal users while making enough other free users feel nagged or blocked that it hurts the broader free-tier experience the company's mission and reputation depend on." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the free user (value = a functional, non-frustrating learning experience even without paying), the converting user (value = an ad-free, unlimited-mistake experience worth paying for), and Duolingo (value = subscription revenue balanced against overall platform growth and reputation, which depends partly on free-tier goodwill). I'd design a randomized user-level A/B test with conversion rate to Super as the primary metric, but I would not treat conversion alone as sufficient for a ship decision — free-tier lesson-completion rate and day-7 retention for users who did NOT convert are essential secondary metrics here, specifically because the framework's stated failure mode is jumping to a headline metric without checking guardrails. I'd also distinguish a genuine net-new conversion lift from pulled-forward subscriptions by checking whether the conversion-rate lift persists in cumulative subscriptions measured a few weeks out, not just in the first days of the test." },
+          { "stage": "Goal-Setting", "walkthrough": "For a ship decision, I'd require a statistically significant conversion lift that persists in cumulative subscriptions over several weeks, combined with free-tier day-7 retention and lesson-completion rate for non-converters staying within an acceptable band of the control group, not just 'still positive on conversion.' If conversion rises meaningfully but non-converter retention drops enough to suggest real frustration, I would not ship the change as-is; I'd frame the team's broader quarterly goal around net Super subscriptions gained without a corresponding drop in free-tier day-7 retention, so future paywall experiments are held to the same joint bar, not evaluated on conversion in isolation." }
+        ]
+      },
+      "pitfalls": [
+        "Shipping a paywall change based on a conversion-rate lift alone, without checking whether it came at the cost of free-tier user experience and retention",
+        "Mistaking a short-term conversion lift from pulled-forward subscriptions for genuine net-new incremental revenue"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-experiment-004",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "experiment",
+      "title": "Design and read out an A/B test for an Airbnb search ranking change",
+      "company": ["Airbnb"],
+      "region": "global",
+      "industry": "travel-marketplace",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Airbnb is testing a change to how search results are ranked, intended to improve booking conversion. Design an A/B test to evaluate this change, considering effects on both guests and the host marketplace.",
+      "context": [
+        "Airbnb's search results are ranked using factors that can include price, reviews, host responsiveness, and other listing quality signals, for a given set of search dates and location.",
+        "Airbnb operates as a two-sided marketplace, where a search ranking change affects which host listings receive visibility and, in turn, bookings.",
+        "Airbnb tracks whether a search results in a completed booking, distinct from just a search or a listing view."
+      ],
+      "assumptions": [
+        "assumed: search-to-booking conversion rate and average host-listing visibility (impressions per listing) are both logged and measurable at the search-session level",
+        "assumed: the proposed ranking change is being tested against the current production ranking as control, in a specific set of markets before any broader rollout"
+      ],
+      "followUps": [
+        "How would you check whether a conversion lift is coming at the cost of concentrating bookings on a small number of already-popular listings?",
+        "How would you decide how long to run this test given seasonal travel-booking patterns?",
+        "What would you do if the ranking change improves conversion in some markets but not others?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume search-to-booking conversion and per-listing visibility are both measurable at the search-session level, and that the test runs against current production ranking as control in specific markets before any broader rollout. Plan: briefly frame the two-sided marketplace context, then focus on experiment design including the host-side guardrail." },
+          { "stage": "Product Rationale", "walkthrough": "Airbnb's marketplace depends on guests finding a good match efficiently (driving conversion) and on a broad base of hosts receiving enough visibility and bookings to keep listing on the platform, so a ranking change that improves conversion by concentrating visibility on a smaller set of already-strong listings could look like a clear win on the primary metric while quietly harming the host-side of the marketplace." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: guests (value = finding a good match quickly), hosts (value = fair visibility and booking opportunity), and Airbnb (value = overall marketplace health and booking volume). I'd design a randomized search-session-level A/B test with search-to-booking conversion rate as the primary metric, and I'd add host-visibility concentration (e.g., the share of total impressions or bookings going to the top decile of listings) as an explicit secondary/guardrail metric, since the framework's core risk here is a ranking change winning on conversion while eroding marketplace breadth. Given travel booking has real seasonal patterns, I'd run the test for at least a full booking cycle relevant to the test markets (long enough to cover typical day-of-week and short-term seasonal variation) rather than a very short window, and I'd analyze results broken out by market, since a change tuned on aggregate data could plausibly help in some markets and hurt in others depending on local listing density and competition." },
+          { "stage": "Goal-Setting", "walkthrough": "For a ship decision, I'd require a statistically significant conversion improvement that holds up market-by-market (or at minimum doesn't clearly hurt any tested market), combined with host-visibility concentration staying within an acceptable band relative to control. If conversion improves but visibility concentrates significantly onto fewer listings, I'd treat that as a genuine trade-off requiring an explicit decision, not an automatic no-ship, but one that should be made visibly weighing marketplace-breadth cost against the conversion gain, rather than shipped on the primary metric alone. I'd frame any follow-up team goal around 'conversion improvement without host-visibility concentration beyond a defined threshold,' so this becomes the shared bar for both this and future ranking experiments." }
+        ]
+      },
+      "pitfalls": [
+        "Shipping a ranking change based on an aggregate conversion lift without checking whether it concentrates visibility and bookings onto a much smaller set of listings",
+        "Analyzing results only in aggregate across all test markets, missing that the change could be helping some markets while hurting others"
+      ],
+      "related": []
+    },
+    {
+      "id": "an-experiment-005",
+      "track": "analytical",
+      "framework": "analytical",
+      "type": "experiment",
+      "title": "Design and read out an A/B test for a CRED rewards-mechanic change",
+      "company": ["CRED"],
+      "region": "india",
+      "industry": "fintech-rewards",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "CRED rewards users with points (CRED coins) for on-time credit card bill payments, redeemable for offers and rewards. CRED is testing a change to how many coins are awarded per payment. Design an A/B test to evaluate this change.",
+      "context": [
+        "CRED is an Indian fintech platform that rewards users with CRED coins for paying credit card bills on time through the app, redeemable for brand offers, auctions, and other rewards.",
+        "CRED's business model includes partnerships with brands offering rewards and deals to CRED's user base, alongside its own financial products.",
+        "CRED tracks on-time bill payment behavior and coin redemption activity for its users."
+      ],
+      "assumptions": [
+        "assumed: coin-award amount, on-time payment rate, and redemption activity are all logged per user and can be joined at the user level",
+        "assumed: the proposed change is an increase in coins awarded per on-time payment, tested against the current production coin amount as control"
+      ],
+      "followUps": [
+        "How would you check whether more coins actually cause more on-time payments, versus just rewarding behavior that would have happened anyway?",
+        "If the coin increase raises on-time payment rate but also increases CRED's reward-fulfillment cost significantly, how would you weigh that?",
+        "How would you decide if a segment of users (e.g., already-reliable payers vs. previously inconsistent payers) responds differently to the change?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          { "stage": "Assumptions and Game Plan", "walkthrough": "I'll assume coin-award amount, on-time payment rate, and redemption activity are all logged and joinable at the user level, and that the test is an increase in coins per on-time payment against the current amount as control. Plan: briefly frame why on-time payment behavior matters to CRED's model, then focus on experiment design including cost and segment considerations." },
+          { "stage": "Product Rationale", "walkthrough": "CRED's rewards mechanic exists to reinforce a specific desired financial behavior (on-time bill payment) while making the app itself valuable enough to check regularly, which supports engagement with CRED's broader financial products and brand-partnership business; a coin-amount change is fundamentally a question of whether more reward actually shifts behavior enough to justify its cost, or mostly rewards behavior that would have happened regardless." },
+          { "stage": "Metric Framework", "walkthrough": "Ecosystem players: the user (value = a reward for financial discipline they may already practice, or an incentive nudging them toward it), and CRED (value = a more consistently on-time and engaged user base, weighed against real reward-fulfillment cost). I'd design a randomized user-level A/B test with on-time payment rate as the primary metric, but I'd specifically segment the analysis by prior payment reliability (already-consistent payers versus previously inconsistent ones), since the framework's core question here is whether the increased reward causes new behavior change versus simply paying more for behavior that would have occurred anyway — I'd expect any genuine causal lift, if it exists, to concentrate in the previously-inconsistent segment, while already-reliable payers showing a similar 'lift' would actually indicate the extra cost is mostly non-causal. I'd track total reward-fulfillment cost per incremental on-time payment as a secondary economic metric, since a change that's directionally positive on payment rate could still be a poor trade if its cost per behavior-change is high relative to CRED's benefit from that behavior." },
+          { "stage": "Goal-Setting", "walkthrough": "For a ship decision, I'd require the coin increase to show a statistically significant on-time-payment-rate improvement concentrated meaningfully in the previously-inconsistent-payer segment (the causally plausible group), not just an aggregate lift that could be explained by already-reliable payers receiving a reward for unchanged behavior, and I'd weigh that against the incremental reward-fulfillment cost per additional on-time payment achieved. If the lift is real but concentrated in a specific segment, I'd recommend a segment-targeted coin increase rather than a blanket increase to all users, and I'd frame the team's broader goal around incremental on-time-payment rate per unit of reward cost, not on-time-payment rate or reward volume in isolation." }
+        ]
+      },
+      "pitfalls": [
+        "Reading an aggregate on-time-payment-rate lift as evidence of a causal effect without segmenting by prior payment reliability to check where the lift is actually concentrated",
+        "Evaluating the reward increase purely on behavior change without weighing it against the incremental fulfillment cost per unit of behavior change achieved"
+      ],
+      "related": []
+    }
+  ]
+}

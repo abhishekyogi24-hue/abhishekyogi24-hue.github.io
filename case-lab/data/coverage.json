@@ -1,0 +1,218 @@
+{
+  "generatedAt": "2026-09-10T02:35:46.227Z",
+  "themeCount": 27,
+  "gapCount": 5,
+  "coverage": {
+    "ai-product": {
+      "label": "AI product judgment",
+      "storyIds": [
+        "story-vertex-orchestrator",
+        "story-eval-system",
+        "story-search-explorer",
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "0-to-1": {
+      "label": "0-to-1 building",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-vertex-orchestrator",
+        "story-oli-trip-planner",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "rca": {
+      "label": "Root-cause diagnosis",
+      "storyIds": [
+        "story-priority-leads",
+        "story-cancel-exchange-funnel"
+      ],
+      "isGap": false
+    },
+    "funnel-optimization": {
+      "label": "Funnel optimization",
+      "storyIds": [
+        "story-cancel-exchange-funnel"
+      ],
+      "isGap": false
+    },
+    "data-driven-decision": {
+      "label": "Data-driven decisions",
+      "storyIds": [
+        "story-chatbot-origin",
+        "story-dialogflow-cx-kill",
+        "story-analytics-lead",
+        "story-priority-leads",
+        "story-cancel-exchange-funnel"
+      ],
+      "isGap": false
+    },
+    "stakeholder-management": {
+      "label": "Stakeholder management",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-compliance-rollout",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "cross-functional": {
+      "label": "Cross-functional alignment",
+      "storyIds": [
+        "story-compliance-rollout",
+        "story-priority-leads",
+        "story-chat-listing-page",
+        "story-oli-trip-planner",
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "influence-without-authority": {
+      "label": "Influence without authority",
+      "storyIds": [
+        "story-whatsapp-meta"
+      ],
+      "isGap": false
+    },
+    "conflict": {
+      "label": "Conflict & disagreement",
+      "storyIds": [],
+      "isGap": true
+    },
+    "saying-no": {
+      "label": "Saying no",
+      "storyIds": [
+        "story-typing-box-block",
+        "story-dialogflow-cx-kill"
+      ],
+      "isGap": false
+    },
+    "killed-a-project": {
+      "label": "Killing a project",
+      "storyIds": [
+        "story-dialogflow-cx-kill"
+      ],
+      "isGap": false
+    },
+    "failure": {
+      "label": "Failure & self-awareness",
+      "storyIds": [],
+      "isGap": true
+    },
+    "ambiguity": {
+      "label": "Ambiguity",
+      "storyIds": [],
+      "isGap": true
+    },
+    "prioritization": {
+      "label": "Prioritization",
+      "storyIds": [
+        "story-priority-leads",
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "customer-empathy": {
+      "label": "Customer empathy",
+      "storyIds": [
+        "story-chatbot-origin",
+        "story-typing-box-block",
+        "story-search-explorer"
+      ],
+      "isGap": false
+    },
+    "user-research": {
+      "label": "User research",
+      "storyIds": [
+        "story-chatbot-origin"
+      ],
+      "isGap": false
+    },
+    "metrics-ownership": {
+      "label": "Metrics ownership",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-vertex-orchestrator",
+        "story-eval-system",
+        "story-search-explorer"
+      ],
+      "isGap": false
+    },
+    "experimentation": {
+      "label": "Experimentation",
+      "storyIds": [
+        "story-chat-listing-page",
+        "story-search-explorer"
+      ],
+      "isGap": false
+    },
+    "phased-launch": {
+      "label": "Phased launches",
+      "storyIds": [
+        "story-compliance-rollout",
+        "story-oli-trip-planner"
+      ],
+      "isGap": false
+    },
+    "compliance-risk": {
+      "label": "Compliance & risk",
+      "storyIds": [
+        "story-compliance-rollout"
+      ],
+      "isGap": false
+    },
+    "technical-depth": {
+      "label": "Technical depth",
+      "storyIds": [
+        "story-typing-box-block",
+        "story-vertex-orchestrator",
+        "story-eval-system",
+        "story-chat-listing-page"
+      ],
+      "isGap": false
+    },
+    "mentoring": {
+      "label": "Mentoring",
+      "storyIds": [
+        "story-analytics-lead"
+      ],
+      "isGap": false
+    },
+    "feedback": {
+      "label": "Giving & receiving feedback",
+      "storyIds": [],
+      "isGap": true
+    },
+    "ethical-call": {
+      "label": "Ethical calls",
+      "storyIds": [],
+      "isGap": true
+    },
+    "leadership": {
+      "label": "Leadership",
+      "storyIds": [
+        "story-analytics-lead"
+      ],
+      "isGap": false
+    },
+    "execution-under-constraint": {
+      "label": "Execution under constraint",
+      "storyIds": [
+        "story-dialogflow-es-automation",
+        "story-typing-box-block",
+        "story-chat-listing-page",
+        "story-cancel-exchange-funnel"
+      ],
+      "isGap": false
+    },
+    "career-motivation": {
+      "label": "Career & motivation",
+      "storyIds": [
+        "story-analytics-lead"
+      ],
+      "isGap": false
+    }
+  }
+}

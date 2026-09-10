@@ -1,0 +1,746 @@
+{
+  "pack": "cc-02",
+  "cases": [
+    {
+      "id": "cc-marketplace-001",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "marketplace",
+      "title": "Balancing driver supply and rider demand as Uber launches in a new mid-size city",
+      "company": ["Uber"],
+      "region": "global",
+      "industry": "ride-hailing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Uber has launched UberX in a new mid-size city. App downloads and rider sign-ups are outpacing driver sign-ups, leading to frequent surge pricing and long wait times during evening peak hours. How would you address this supply-demand imbalance?",
+      "context": [
+        "Uber operates a two-sided marketplace connecting riders and drivers, using dynamic ('surge') pricing to balance real-time supply and demand.",
+        "Uber has historically used driver-side incentives such as guaranteed minimum earnings and sign-on bonuses when entering new cities, to build up driver supply ahead of rider demand.",
+        "Surge pricing is designed to increase driver supply during high-demand periods by raising fares, which is intended to draw more drivers online."
+      ],
+      "assumptions": [
+        "assumed: driver density in this city is currently roughly a third of what a mature market of similar population would have",
+        "assumed: rider demand has been pulled forward by an app-download marketing push that started before driver supply was seeded",
+        "assumed: the plan needs to show results within the next quarter, not a multi-year market-maturation timeline"
+      ],
+      "followUps": [
+        "How would you decide when to pull back rider-acquisition marketing versus push harder on driver supply?",
+        "Surge pricing is one lever. What's the risk of relying on it as the primary lever in a brand-new city?",
+        "How would you tell whether a driver incentive program is attracting drivers who stick around versus short-term opportunists who leave once bonuses end?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume driver density here is roughly a third of a mature market's, that rider demand was pulled forward by marketing ahead of driver supply, and that I need results within a quarter rather than a multi-year view. My plan: connect this to Uber's mission, treat drivers and riders as genuinely distinct segments, map the persona whose problem is most acute, then propose a solution that rebalances supply and demand without over-relying on surge pricing alone."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Uber's value isn't 'a car' as a feature, it's the confidence that a ride will reliably show up within a few minutes, wherever you are. My mission statement: 'make getting a ride as dependable as flipping a light switch.' Strategically, Uber's advantage in a new city is its existing global playbook for seeding driver supply and its brand recognition among prospective drivers, both of which a purely rider-focused launch would waste."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "This marketplace has two genuinely distinct sides, not one persona split two ways. On the demand side, riders want a ride to reliably arrive fast at a fair price, and their tolerance for a bad first experience is low since a long wait or high surge on their first ride can permanently sour their impression of the app. On the supply side, prospective drivers want confidence that driving for Uber in this specific city will actually be worth their time and fuel cost before they commit hours to it, and they're evaluating trip frequency and per-trip earnings, not the app's rider-facing polish at all. These needs don't overlap: a rider-facing fix like better ETAs does nothing for a driver deciding whether to sign up, and a driver bonus does nothing for a rider who's already had three bad rides."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a prospective driver's journey in this city: they hear about Uber, consider signing up, but see anecdotal reports (or experience directly as a rider) that trip requests are sparse outside peak surge windows, so the expected earnings don't clearly beat their current option, whether that's another gig or a competing platform. The problem isn't 'Uber needs more marketing' -- it's that early driver supply hasn't reached the density where trip frequency alone makes driving worthwhile without leaning on temporary bonuses, which is severe because a driver who tries the platform once during a slow period and earns little is unlikely to give it a second chance, and frequent because this happens to every new driver evaluating the platform in its first weeks. This ties back to the mission: reliability breaks down for riders exactly because supply hasn't reached the density that would make the marketplace self-sustaining."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three distinct levers: temporarily throttle rider-acquisition marketing spend in this city until driver density catches up, front-load driver-side guaranteed-earnings incentives concentrated on evening peak hours specifically, or lean harder on surge pricing alone and let the market self-correct. Plotting impact against effort, I'd prioritize a time-boxed, peak-hour-targeted driver earnings guarantee over broad surge reliance: it's higher impact because it directly seeds the density that makes trip frequency attractive to drivers without requiring riders to tolerate repeated high surge, and it's more controllable in effort than a blunt marketing throttle that Uber can't easily reverse once rider expectations of the city have already formed. The key risk is the incentive attracting drivers chasing the bonus who churn once it ends; the mitigation is tapering the guarantee gradually as measured trip-completion density rises, rather than cutting it off abruptly, so drivers experience real organic earnings before the subsidy disappears. This serves the mission because the reliability riders feel is only ever as good as the driver density underneath it."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating surge pricing as a complete fix rather than one lever, when overuse of surge alone can drive away exactly the riders a new city needs to retain",
+        "Designing the solution around riders alone, missing that early-stage driver supply has entirely separate incentives to solve for"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-marketplace-002",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "marketplace",
+      "title": "Setting Airbnb's host onboarding quality bar for a new international destination",
+      "company": ["Airbnb"],
+      "region": "global",
+      "industry": "travel-accommodation",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Airbnb wants to grow listings in a new international destination where it has very few hosts today. It's weighing whether to open host onboarding broadly to maximize available listings quickly, or restrict onboarding to hosts meeting the higher quality bar (professional photos, fast response rates, verified ID) it enforces in mature markets. How would you decide?",
+      "context": [
+        "Airbnb is a two-sided marketplace connecting hosts who list homes or rooms with guests seeking accommodations.",
+        "Airbnb runs a Superhost program recognizing hosts who meet criteria such as response rate, review score, and cancellation rate, and has used host-quality signals like verified ID and photo quality as ranking factors in search.",
+        "Airbnb has historically prioritized rapid listing growth in new geographies as part of its international expansion."
+      ],
+      "assumptions": [
+        "assumed: current listing density in this destination is well below what guest search demand in the region could support",
+        "assumed: enforcing the full mature-market quality bar meaningfully reduces the number of hosts who successfully onboard in the short term",
+        "assumed: guests researching this destination are comparing Airbnb's available inventory against hotels and other listing platforms with more established local supply"
+      ],
+      "followUps": [
+        "How would you sequence loosening or tightening the quality bar as listing density grows over time?",
+        "What's the risk to guest trust if the bar is set too low during this launch phase?",
+        "How would you tell whether low-bar hosts are converting into good long-term hosts, or just churning after one bad review?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume listing density here is well below regional guest demand, that the full mature-market quality bar would meaningfully slow host onboarding, and that guests are comparing Airbnb's inventory here against hotels and other platforms with more established local supply. My plan: connect this to Airbnb's mission, treat hosts and guests as distinct segments, identify the sharpest problem in this launch phase, then weigh a liquidity-first approach against a quality-first one."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Airbnb's value isn't 'a place to stay' as a feature, it's letting a traveler feel like they belong somewhere unfamiliar, through a real local space and a host who can vouch for the neighborhood. My mission statement: 'help people belong anywhere.' Strategically, Airbnb's core advantage over a hotel chain is exactly this variety and local texture, which depends on having enough real hosts in a destination for a guest to actually have a meaningful choice, not just one or two listings."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Hosts and guests need genuinely different things here, not variants of the same need. Prospective hosts in this new destination need a low-friction way to test whether hosting is worth their time, since most are individuals deciding whether to list a spare room for the first time, and a heavy verification and photography requirement upfront is a real barrier to that first attempt. Guests searching this destination need enough listings to actually compare, and among available listings, enough trust signals (reviews, verified ID, clear photos) to book confidently in an unfamiliar place, since a bad stay abroad is a much higher-stakes disappointment than a bad stay close to home. These are mutually exclusive: solving the host's onboarding friction by lowering the bar directly works against the guest's need for trustworthy listings to choose from."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a guest's journey searching this destination today: they open the app, find only a handful of listings, several with thin reviews or no verified ID badge, and either book anxiously, compare against a hotel instead, or abandon the search entirely. The problem isn't 'guests don't want an Airbnb here' -- it's that low listing density combined with a diluted quality bar compounds into a double loss of trust: too few choices, and too little confidence in the choices that exist, which is both frequent (every new guest researching this destination hits it) and severe (it can permanently push a first-time guest in this market to book a hotel instead). This ties to the mission because 'belonging anywhere' requires guests to trust the listings enough to actually choose a home over a hotel."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: open onboarding broadly with the full mature-market bar unchanged, drop the bar significantly to maximize listing count fast, or launch a tiered onboarding path where hosts start with a lighter bar but must hit specific milestones (a handful of completed stays, a minimum review score) within a set window to stay visible in default search results. On impact versus effort, I'd choose the tiered path: it's higher impact than a flat low bar because it still protects guest trust in default search, and it's lower effort to build than expecting to hand-verify every host to full mature-market standard from day one, since the milestone-based promotion can reuse Airbnb's existing review and rating infrastructure. The key risk is early guests having a worse experience with milestone-track hosts before they've proven out; the mitigation is clearly labeling new-host listings and capping their visibility in top search positions until they clear the milestone, so guests who prefer only proven hosts can filter for it, while adventurous guests can still discover new listings early. This serves the mission by growing the destination's inventory without asking guests to trade away the trust that makes staying with a stranger feel like belonging rather than a risk."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating listing growth and guest trust as the same problem, when a launch-phase market needs a solution that protects both sides at once, not one traded off against the other",
+        "Assuming the quality bar that works in a mature market should simply be copied wholesale into a nascent one, ignoring that it was calibrated for a market with far higher host supply to begin with"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-marketplace-003",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "marketplace",
+      "title": "Launching a new service category on Urban Company with almost no trained professionals",
+      "company": ["Urban Company"],
+      "region": "india",
+      "industry": "home-services",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Urban Company wants to launch appliance repair as a new service category in a city where it already runs cleaning and salon services. Early demand exists from its existing customer base, but there are very few verified, trained service professionals onboarded for this new category. How would you approach solving this supply-demand imbalance for the launch?",
+      "context": [
+        "Urban Company (formerly UrbanClap) is an Indian home-services marketplace connecting customers with trained, verified service professionals across categories including cleaning, salon, and appliance and home repairs.",
+        "Urban Company has publicly described running training programs for service professionals before allowing them onto the platform, as part of its quality-control approach.",
+        "Urban Company operates a demand-supply matching model, assigning jobs to nearby available professionals based on location, ratings, and availability."
+      ],
+      "assumptions": [
+        "assumed: existing app users already trusting Urban Company for cleaning or salon services are a meaningful early source of demand for a newly launched category in the same city",
+        "assumed: training and verifying a new service professional takes several weeks before they can be listed live on the platform",
+        "assumed: customer trust in Urban Company's quality bar is a major reason customers choose it over unverified local alternatives found through classifieds or word of mouth"
+      ],
+      "followUps": [
+        "How would you sequence which neighborhoods within the city to launch this category in first?",
+        "What's the risk of onboarding professionals faster by relaxing training standards, given Urban Company's trust-based positioning?",
+        "How would you decide when demand in this new category is strong enough to justify scaling professional supply further?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume existing cleaning and salon customers are a meaningful early demand source for this new category, that training a new professional takes several weeks, and that Urban Company's quality bar is a major reason customers pick it over unverified local alternatives. My plan: connect this to Urban Company's mission, treat customers and professionals as distinct segments, identify the sharpest problem in this specific launch, then weigh solutions on impact against effort given the training bottleneck."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Urban Company's value isn't 'booking a repair technician' as a feature -- that's already possible through classifieds or word of mouth -- it's the confidence that whoever shows up is trained, background-verified, and accountable if something goes wrong. My mission statement: 'make hiring a stranger into your home feel as safe as hiring someone you already trust.' Strategically, Urban Company's advantage over an unverified local marketplace is precisely this trust infrastructure, which is also exactly what makes a new category slow to launch, since trust can't be manufactured as fast as a listing can."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Customers and professionals need entirely different things in this launch. Customers who already trust Urban Company for cleaning or salon services want the same verified-professional guarantee extended to appliance repair, and their tolerance for an unverified or slow-to-arrive technician is low precisely because Urban Company itself trained them to expect otherwise. Prospective appliance-repair professionals, many of whom may already work independently or through informal channels, need a clear reason the weeks-long training and verification process is worth their time versus continuing to take jobs directly, since until they're live on the platform they earn nothing from it. These needs don't overlap: solving the professional's incentive to endure onboarding does nothing to address the customer's expectation of an already-verified technician on day one, and vice versa."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a professional's context: a skilled independent appliance repair technician hears about Urban Company's new category, but weighs several weeks of unpaid training and verification against continuing to take walk-in and referral jobs that pay immediately, and for many the near-term income loss outweighs the platform's longer-term promise of steadier demand. The problem isn't 'professionals don't want more customers' -- it's that the very training pipeline that creates customer trust also creates a real opportunity cost for exactly the skilled professionals Urban Company most wants to onboard, which is severe because a thin supply pipeline at launch directly limits how much of the existing customer demand can actually be served, and frequent because it recurs with every new professional considering the switch. This ties to the mission because trust that takes weeks to build for the professional is also trust the customer won't get to benefit from until that pipeline clears."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: wait until a full cohort of professionals completes standard training before launching publicly, launch immediately with a shortened, appliance-repair-specific fast-track training path, or subsidize professionals' income during training to reduce their opportunity cost of switching. On impact versus effort, I'd combine a shortened but still verified fast-track training path (scoped tightly to appliance repair's specific safety and quality requirements, not the full general onboarding curriculum) with a modest stipend for the professional's training period: this is higher impact than waiting, since it lets Urban Company start serving existing customer demand sooner without compromising the verification step customers actually value, and the stipend directly addresses the professional's real opportunity-cost problem without diluting quality standards. The key risk is a shortened training path missing something a full-length one would have caught; the mitigation is keeping the safety-critical and verification steps (background checks, appliance-specific certification) untouched while only shortening the general onboarding content that's less category-specific. This serves the mission because it protects the trust customers already extend to Urban Company while making the professional's path onto the platform less costly to take."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Focusing supply-side solutions only on recruiting more professionals, without addressing the real opportunity cost that keeps skilled independent technicians from bothering with a multi-week onboarding process",
+        "Relaxing training or verification standards broadly to speed up supply, eroding the exact trust advantage that differentiates Urban Company from an unverified local alternative"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-marketplace-004",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "marketplace",
+      "title": "Solving Upwork's cold-start problem for freelancers with no reviews",
+      "company": ["Upwork"],
+      "region": "global",
+      "industry": "freelance-marketplace",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "On Upwork, new freelancers with no reviews or work history struggle to win their first job, since clients strongly prefer freelancers with an established track record. This creates a cold-start problem where capable new freelancers can't break in, which over time could shrink the diversity and depth of freelance supply. How would you address this?",
+      "context": [
+        "Upwork is a two-sided freelance marketplace where clients post jobs and freelancers apply or are invited, with client reviews and job history visible on freelancer profiles.",
+        "Upwork has offered features such as a 'Rising Talent' badge to help newer freelancers stand out to clients despite limited work history.",
+        "Client-side reviews and ratings on freelancer profiles are widely reported by freelancers as a major factor in whether they win new work."
+      ],
+      "assumptions": [
+        "assumed: a meaningful share of qualified new freelancers leave the platform after failing to win any job within their first few weeks",
+        "assumed: clients disproportionately filter or sort search results by minimum star rating or minimum number of completed jobs",
+        "assumed: freelancer supply diversity across skills, price points, and availability is something Upwork's own long-run matching quality depends on"
+      ],
+      "followUps": [
+        "How would you prevent a 'new freelancer discovery' feature from being gamed by fake reviews or shell accounts colluding on early jobs?",
+        "How would you measure whether new-freelancer discovery features are actually improving client match quality, not just token diversity?",
+        "What's the risk to client trust of surfacing freelancers with no track record more prominently in search?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume a meaningful share of qualified new freelancers churn out after failing to win any early job, that clients disproportionately filter by rating and job count, and that freelancer supply diversity matters to Upwork's long-run matching quality. My plan: connect this to Upwork's mission, treat clients and freelancers as distinct segments, identify the sharpest problem facing new freelancers specifically, then propose a solution that helps them without eroding client trust."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Upwork's value isn't 'a place to post a job' as a feature, it's letting a business find the right skilled person for a specific task without the overhead of a full hire, and letting a skilled individual earn from their expertise without needing an employer. My mission statement: 'connect real skill to real work, wherever either one happens to be.' Strategically, Upwork's advantage over a generic job board is the depth and breadth of its freelancer pool, which depends on new, capable freelancers being able to actually break in rather than the pool calcifying around whoever joined earliest."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Clients and freelancers need fundamentally different things here. Clients posting a job want confidence that whoever they hire can actually deliver, and in the absence of firsthand knowledge of a freelancer, a track record of past reviews is the fastest available proxy for that confidence, so they naturally gravitate to freelancers who already have one. New freelancers, meanwhile, have real skill but no way to generate that same proxy, since reviews can only come from completed jobs, and no client wants to be the first to take a chance on them, creating a genuine chicken-and-egg problem specific to this side of the marketplace that a client-facing feature could never solve on its own."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a new, qualified freelancer's journey: they build a strong profile, apply to jobs matching their skills, but lose out repeatedly to applicants with existing reviews, even when their proposal and rate are competitive, and after enough rejections many conclude the platform doesn't work for someone starting out and leave. The problem isn't 'clients are being unreasonable' -- rating-based filtering is a rational response to real hiring risk -- it's that Upwork's own signals systematically starve new freelancers of the one thing (a completed job) that would let them generate the trust signal clients need, which is severe because it's a structural dead end, not a solvable-by-trying-harder problem, and frequent because it happens to every new freelancer regardless of actual skill. This ties to the mission because a marketplace that can't onboard new supply eventually narrows the very depth of skill it promises to connect clients to."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: badge new freelancers more prominently in search results regardless of client risk tolerance, build a lower-stakes 'trial task' mechanism where clients can hire a new freelancer for a small, capped-scope job at reduced risk, or rely entirely on freelancers self-marketing their way in without platform intervention. On impact versus effort, I'd prioritize the capped-scope trial-task mechanism: it directly targets the chicken-and-egg problem by giving clients a genuinely lower-risk way to generate the review a new freelancer needs, rather than just asking clients to take the same risk with better marketing dressing, and it's buildable as an extension of Upwork's existing job-posting and payment infrastructure rather than a new trust system built from scratch. The key risk is this mechanism being gamed through collusive fake reviews between connected client and freelancer accounts; the mitigation is capping how much weight a trial-task review carries toward a freelancer's visible rating until they've completed a few, and applying the same fraud-detection signals Upwork already uses for suspicious account clustering. This serves the mission by keeping the pipeline of new skilled supply open rather than letting the marketplace ossify around its earliest freelancers."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Trying to solve this purely with better visibility for new freelancers, without addressing that clients' rating-based filtering is a rational risk response, not just a bias to override",
+        "Ignoring the risk that any mechanism designed to help new freelancers generate trust signals faster can be gamed through collusive reviews if not paired with fraud detection"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-trust-001",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "trust-safety",
+      "title": "Reducing fake reviews and counterfeit listings on Amazon's marketplace",
+      "company": ["Amazon"],
+      "region": "global",
+      "industry": "e-commerce",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Amazon's third-party marketplace has long dealt with fake or incentivized product reviews and counterfeit listings that mimic legitimate brands' products. As the PM owning marketplace trust, how would you approach detecting and reducing this without over-penalizing legitimate sellers?",
+      "context": [
+        "Amazon's marketplace includes both Amazon-sold and third-party seller listings, with buyer-submitted star ratings and reviews visible on every product page.",
+        "Amazon has publicly acknowledged fake and incentivized reviews as an ongoing problem, and has taken enforcement action against sellers and review brokers, including banning accounts found buying or selling fake reviews.",
+        "Amazon has invested in anti-counterfeiting programs such as Brand Registry and Project Zero, which let brand owners help identify and remove counterfeit listings mimicking their products."
+      ],
+      "assumptions": [
+        "assumed: fake reviews and counterfeit listings are concentrated in a subset of high-competition, low-differentiation product categories rather than spread evenly across the catalog",
+        "assumed: automated detection can catch a meaningful share of fake-review patterns, such as review velocity and reviewer-account clustering, but not all of them",
+        "assumed: legitimate sellers bear real cost when enforcement has false positives, such as delayed listing approval or a suspended account pending review"
+      ],
+      "followUps": [
+        "How would you tell the difference between a seller who bought fake reviews and one who was targeted by a competitor's fake negative reviews?",
+        "What's your escalation path when a false positive suspends a legitimate seller's account, given how much revenue that costs them per day?",
+        "How would you measure whether your intervention is actually reducing consumer harm, not just reducing the visible symptom of review counts?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume fake reviews and counterfeits concentrate in a subset of high-competition categories, that automated detection catches a meaningful but incomplete share of fake-review patterns, and that legitimate sellers bear real cost from false-positive enforcement. My plan: connect this to Amazon's mission, treat buyers and sellers as distinct segments, name the specific harm and who bears it, then weigh an intervention's friction to legitimate sellers against the risk it mitigates."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Amazon's value isn't 'a wide product catalog' as a feature, it's the confidence to click 'buy' on something you've never held, from a seller you've never met, without worrying you've been deceived. My mission statement: 'make buying from a stranger online feel as safe as buying from a store you trust.' Strategically, Amazon's scale is both its advantage and its exposure here: the same catalog depth that makes it the default shopping destination also makes it the most attractive target for fraud at volume, so trust infrastructure has to scale as fast as the catalog does."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Buyers and legitimate sellers face different sides of this same problem. Buyers rely on star ratings and reviews as their primary signal of product quality before purchase, since they can't physically inspect the item, and manipulated signals directly corrupt the one tool they have to protect themselves. Legitimate sellers, meanwhile, are harmed twice over: they lose sales to competitors undercutting them with fake reviews or counterfeit versions of their own product, and they risk being caught in enforcement sweeps meant for bad actors, since aggressive automated detection can't perfectly distinguish a seller who bought reviews from one merely targeted by a competitor's fake negative reviews."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "The specific harm is consumer deception leading to real financial and sometimes safety cost: a buyer pays for what they believe is a genuine, well-reviewed product and instead receives a counterfeit, a mislabeled item, or one that doesn't match its inflated rating, and in categories like electronics or baby products a counterfeit can carry a genuine safety risk beyond wasted money. That cost is borne first by the deceived buyer, and second by the legitimate brand or seller whose product is being impersonated or unfairly outcompeted, since their reputation and revenue absorb damage they didn't cause. This is severe because it corrupts the core trust signal the entire marketplace depends on, and frequent because it recurs continuously across a catalog with millions of active listings, directly undermining the mission of making a stranger's storefront feel trustworthy."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: broad automated review-and-listing takedowns applied uniformly, a category-targeted detection system focused on the highest-risk product types identified through past enforcement data, or a brand-partnership model like Project Zero that gives brand owners direct tools to flag counterfeits of their own products. On impact versus effort, I'd prioritize the category-targeted detection system paired with expanding brand-partnership tools: it concentrates enforcement effort where the harm is most concentrated rather than spreading false-positive risk evenly across low-risk categories, and brand partnerships add a scalable human verification layer automated detection alone can't replicate. The real trade-off is friction versus risk: tighter automated enforcement catches more fraud but increases false-positive account suspensions that cost legitimate sellers real revenue and trust in the platform, so I'd pair any tightening with a fast, prioritized appeal path and would rather under-trigger slightly than let a legitimate seller's account sit suspended for days on an unverified signal. This serves the mission because protecting buyer trust without a fair process for sellers just replaces one form of unfairness with another."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating any spike in negative signals against a seller as proof of wrongdoing, without accounting for competitors' ability to manufacture fake negative signals against a legitimate seller",
+        "Optimizing purely for lower visible fake-review counts, which can be gamed by simply suppressing reviews rather than actually reducing underlying deception"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-trust-002",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "trust-safety",
+      "title": "Investing in moderator tooling versus centralized automated enforcement at Reddit",
+      "company": ["Reddit"],
+      "region": "global",
+      "industry": "social-media",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Reddit relies heavily on volunteer, community-specific moderators to enforce content rules within thousands of individual subreddits, alongside Reddit's own sitewide policies enforced by paid staff. As the PM for Reddit's trust and safety platform, how would you decide where to invest: helping volunteer moderators do their job better, or building more centralized, automated enforcement?",
+      "context": [
+        "Reddit is organized into thousands of individual communities called subreddits, each with volunteer moderators who set and enforce community-specific rules, alongside Reddit's own sitewide content policy enforced by paid Reddit staff.",
+        "Reddit has built moderator tooling over the years, including Automoderator (rule-based automated filtering) and mod queues, to help volunteer moderators manage content at scale.",
+        "Reddit has, at various points, banned specific subreddits and updated its sitewide content policy for violating platform-wide rules against prohibited content categories such as harassment and hate."
+      ],
+      "assumptions": [
+        "assumed: the large majority of day-to-day content moderation on Reddit is performed by unpaid volunteer moderators rather than paid Reddit staff",
+        "assumed: volunteer moderator time and attention is a finite, unpaid resource that doesn't scale linearly with content volume",
+        "assumed: a meaningful share of policy-violating content in fast-growing subreddits goes unactioned for a period before a volunteer moderator reviews it"
+      ],
+      "followUps": [
+        "How would you support a small subreddit with very few active moderators differently from a large, well-staffed one?",
+        "What's the risk of automated tooling flagging too aggressively and driving away legitimate community discussion?",
+        "How would you measure whether investment in moderator tooling is actually reducing user harm, versus just reducing the volume of reports moderators see?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume most day-to-day moderation is done by unpaid volunteers, that their time doesn't scale with content volume, and that a meaningful share of violating content in fast-growing subreddits goes unactioned for a period before review. My plan: connect this to Reddit's mission, treat volunteer moderators and everyday community members as distinct segments, name the specific harm and who bears it, then weigh the friction of tighter automated enforcement against the risk it mitigates."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Reddit's value isn't 'forums' as a feature, it's letting a genuinely niche interest -- however small -- find a real community with its own norms, run by the people who actually care about it. My mission statement: 'give every community, no matter how small, the tools to govern itself well.' Strategically, Reddit's advantage over a centrally-moderated platform is exactly this community self-governance model, which produces more contextually appropriate moderation than a one-size-fits-all sitewide policy could, but only if the volunteers running it aren't overwhelmed."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Volunteer moderators and everyday community members need different things from a trust and safety investment. Moderators need tools that reduce the sheer volume of judgment calls they have to make manually, since their unpaid time is the platform's actual bottleneck, not the underlying content volume itself; a moderator of a fast-growing subreddit is triaging a queue that grows faster than they can read it. Everyday members, particularly those targeted by harassment or exposed to harmful content, need that content actually removed before real damage is done, and they have no direct lever to speed that up themselves beyond reporting and waiting, meaning their experience of safety depends entirely on how well the moderator's tools and time hold up under load."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "The specific harm is that targets of harassment, and other users exposed to policy-violating content, are harmed in the gap between when content is posted and when an overloaded volunteer moderator finally reviews it, and in fast-growing communities that gap can stretch long enough for real damage -- pile-on harassment, spread of a harmful post -- to already have happened. That harm is borne directly by the affected user, and a second, less visible cost is borne by the volunteer moderators themselves, who absorb an uncompensated, unbounded labor burden trying to keep pace, a burden strongly linked to moderator burnout and communities losing their moderation team entirely. This is severe because real people are harmed in that gap, and frequent because it recurs in every subreddit whose growth outpaces its moderator team's capacity, directly threatening the mission of communities being able to govern themselves well."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: leave enforcement fully in volunteer moderators' hands with only manual tools, shift toward centralized, sitewide automated enforcement that acts independently of local moderator judgment, or invest in better-targeted automated tooling that flags likely violations for faster moderator review without removing their final judgment. On impact versus effort, I'd prioritize the third option: it directly shrinks the harm window by surfacing likely violations faster, without the friction cost of centralized automated removal overriding community-specific context a sitewide system can't reliably judge, such as a subreddit where dark humor is normal versus one where the same words are genuinely threatening. The trade-off is real: more aggressive automated flagging catches harm faster but risks false positives that suppress legitimate discussion and frustrate community members who feel over-policed, so I'd tune flagging thresholds per-subreddit based on that community's own historical moderation patterns rather than a single sitewide threshold, and keep a human moderator as the actor who takes final action rather than fully automating removal. This serves the mission because it strengthens, rather than replaces, the community self-governance model Reddit is built on."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating faster automated removal as strictly better without weighing how it can suppress legitimate, context-dependent community discussion a sitewide system can't judge accurately",
+        "Focusing only on reducing report volume moderators see, rather than the actual time-to-action on genuinely harmful content, which is the real driver of user harm"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-trust-003",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "trust-safety",
+      "title": "Balancing KYC friction against fraud risk in Paytm's onboarding flow",
+      "company": ["Paytm"],
+      "region": "india",
+      "industry": "fintech",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "Paytm, an Indian digital payments app, must comply with RBI's KYC (Know Your Customer) norms while minimizing friction in onboarding new users to its wallet and payments products. As the PM owning onboarding and fraud risk, how would you balance stricter identity verification against the risk of losing legitimate users to onboarding drop-off?",
+      "context": [
+        "Paytm is an Indian digital payments company offering a mobile wallet, UPI payments, and other financial services, regulated in part by the Reserve Bank of India (RBI).",
+        "RBI mandates KYC norms for wallet and payment-service users in India, with different verification tiers, such as minimum-KYC and full-KYC, unlocking different transaction and balance limits.",
+        "In 2024, the RBI took regulatory action restricting some operations of Paytm Payments Bank, citing persistent non-compliance identified through supervisory review, including KYC-related concerns."
+      ],
+      "assumptions": [
+        "assumed: a meaningful share of prospective users abandon signup when asked for full KYC documentation upfront, compared with a lighter minimum-KYC flow",
+        "assumed: fraud risk, including mule accounts used to move illicit funds, is disproportionately concentrated among accounts that never complete full KYC",
+        "assumed: full-KYC verification requires either a physical or video-based identity check that adds real friction beyond a purely digital minimum-KYC flow"
+      ],
+      "followUps": [
+        "Given RBI's 2024 action against Paytm Payments Bank, how would you weigh the cost of a compliance gap differently against a growth-conversion loss?",
+        "How would you segment which users need full KYC on day one versus which can start on minimum-KYC and upgrade later?",
+        "What's your plan if a fraud pattern is discovered concentrated in users who passed minimum-KYC but never completed full-KYC?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume a meaningful share of signups abandon when asked for full KYC upfront, that fraud risk concentrates among accounts that never complete full KYC, and that full-KYC requires a physical or video identity check that adds real friction. My plan: connect this to Paytm's mission, treat prospective users and existing verified users as distinct segments, name the specific harm and who bears it, then weigh KYC friction for legitimate users against the fraud and regulatory risk it mitigates."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Paytm's value isn't 'a payments app' as a feature, it's giving someone without easy access to traditional banking a fast, trustworthy way to pay, save, and move money digitally. My mission statement: 'bring half a billion Indians into the digital economy, safely.' Strategically, Paytm's advantage is its scale and reach into segments underserved by traditional banks, but that same reach and its role as regulated financial infrastructure means a compliance failure carries systemic consequences a smaller, non-financial app wouldn't face, as the 2024 RBI action against Paytm Payments Bank made concrete."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Prospective new users and already-onboarded users need different things from the KYC design. A prospective user signing up for the first time wants to start paying or receiving money as quickly as possible, often for an immediate, small need, and a heavy upfront full-KYC requirement can feel disproportionate to that small first transaction, pushing some legitimate users to abandon signup entirely in favor of a competitor with a lighter first step. An existing minimum-KYC user who wants to raise their transaction or balance limit, by contrast, has already demonstrated real usage and trust in the app, and is a fundamentally different persona: someone with a proven track record who needs a reason and a clear path to complete the heavier full-KYC step, not a reason to sign up in the first place."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "The specific harm is twofold and falls on different parties: legitimate prospective users bear the cost of a signup flow so heavy it pushes them away from a safe, useful financial tool and toward cash or a less regulated alternative, while the harm of insufficient KYC is borne by the broader financial system and by third parties, since under-verified accounts are a known vector for mule-account fraud and money laundering, and Paytm itself bears direct regulatory risk, as the 2024 RBI action illustrates, that a full compliance gap can restrict its core business operations. This is severe because a systemic compliance failure risks the platform's ability to operate at all, and frequent because every new signup is a fresh instance of this same friction-versus-risk trade-off, tying directly to the mission of bringing people into the digital economy safely, not just quickly."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: require full-KYC upfront for every new user, keep a permanently light minimum-KYC flow with no strong push toward full-KYC, or use a tiered flow where minimum-KYC unlocks limited functionality immediately while full-KYC is required to unlock higher balances and transaction limits, with clear in-app prompts as a user approaches those limits. On impact versus effort, I'd choose the tiered approach: it directly addresses the friction-versus-risk trade-off by letting legitimate low-usage users onboard fast while ensuring the users transacting at a scale where fraud risk and regulatory exposure are highest are exactly the ones required to complete full verification. The real weighing here is friction against risk: a fully upfront full-KYC requirement minimizes fraud risk but at a real cost of losing legitimate low-stakes users at signup, while a permanently light flow minimizes friction but leaves exactly the mule-account and regulatory risk RBI has already acted on; the tiered design accepts a small amount of exposure at the lowest usage tier in exchange for keeping legitimate users in the product, while closing that exposure before it reaches meaningful transaction volume. This serves the mission because it protects both halves of 'safely' and 'quickly' rather than sacrificing one for the other."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating KYC purely as a compliance checkbox rather than a product decision with a real, measurable cost in legitimate-user drop-off",
+        "Assuming a single flat KYC requirement can serve both a first-time small-transaction user and a high-volume user equally well, when their risk profiles and friction tolerance are genuinely different"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-platform-001",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "platform-api",
+      "title": "Deciding whether Stripe should keep supporting every API version forever",
+      "company": ["Stripe"],
+      "region": "global",
+      "industry": "developer-tools",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Stripe is well known for pinning each account to a specific API version and supporting old versions rather than forcing every integration onto the latest one. As Stripe's platform PM, would you continue an effectively unlimited-versions-forever policy as the API surface and merchant base keep growing, or introduce a deprecation policy? Walk through your reasoning.",
+      "context": [
+        "Stripe's public API documentation describes a versioning system where each Stripe account is pinned to a specific API version, and Stripe has committed to supporting older API versions rather than forcing all integrations onto the latest one.",
+        "Stripe's customers range from individual developers and small businesses to large enterprises, many of whom integrate directly with Stripe's API into custom billing and checkout systems.",
+        "Stripe publishes API changelogs describing additive and breaking changes, and documents how developers can opt into a newer version when ready."
+      ],
+      "assumptions": [
+        "assumed: the number of distinct API versions Stripe maintains has grown into the dozens or more over its history",
+        "assumed: maintaining many old versions carries real, ongoing engineering and testing cost that scales with the number of versions supported",
+        "assumed: a meaningful share of merchants still on old API versions would need real engineering effort on their side to upgrade"
+      ],
+      "followUps": [
+        "How would you decide whether to sunset support for API versions older than a certain age?",
+        "What would change your answer if a security vulnerability were found in a very old API version?",
+        "How would you communicate a deprecation timeline to developers without triggering mass integration panic?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume Stripe's supported version count has grown into the dozens, that maintaining each old version carries real ongoing engineering cost, and that many merchants on old versions would need genuine effort to upgrade. My plan: connect this to Stripe's mission, treat the two developer personas who integrate with Stripe as distinct segments with different workflows, identify the sharpest problem in the current policy, then weigh a change against Stripe's core promise of integration stability."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Stripe's value isn't 'a payments API' as a feature, it's letting a developer build a billing or checkout flow once and trust it will keep working without someone forcing a rewrite on someone else's schedule. My mission statement: 'make integrating payments something a developer does once and never has to revisit under duress.' Strategically, this exact promise -- pinned versions that don't silently break -- is Stripe's reputation among developers and a real competitive advantage over payment APIs known for surprise breaking changes."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The 'user' here is the developer integrating with Stripe, and two real personas exist within that group. A solo developer or small business's engineer built their integration once, has no dedicated platform team, and treats 'don't break my checkout' as close to their single highest priority, since they have no spare capacity to react quickly if something changes. A large enterprise's platform engineering team, by contrast, has dedicated capacity to plan and execute API migrations, but needs long advance notice and clear migration tooling to schedule that work against their own release calendar, since an unplanned mid-quarter migration competes with their own roadmap commitments."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping Stripe's own platform team's context: every additional supported API version adds a permanent testing and maintenance surface, since new features and bug fixes must be verified against every still-supported version, not just the latest, and this compounding cost grows every year the policy stays unlimited. The problem isn't 'developers want stability' -- that need is legitimate and shouldn't change -- it's that an unlimited-forever policy doesn't distinguish between versions still actively relied upon and versions with near-zero remaining usage, meaning Stripe pays a real and growing engineering tax to preserve stability even for versions almost nobody depends on anymore. This is severe because it's a compounding cost with no natural ceiling, and frequent because it recurs with every new version shipped, working against the mission's underlying promise, since a platform team stretched thin maintaining ancient versions has less capacity to keep the *current* integration experience excellent."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: keep the unlimited-versions-forever policy unchanged, switch to a hard cutoff after a fixed number of years for every version, or introduce a usage-based sunset policy that only deprecates a version once its live traffic has fallen below a minimal threshold, with a long, clearly communicated notice period and free migration-diffing tooling. On impact versus effort, I'd choose the usage-based sunset: it's higher impact than a blanket policy because it protects the solo-developer persona's core need (nothing breaks without warning, and versions still genuinely in use are never forced to move) while recovering engineering capacity from versions almost nobody uses, and it's a more targeted, defensible effort than either extreme. The key risk is a low-traffic version still being business-critical for one particular small merchant who can't easily migrate; the mitigation is a generous, individually-extendable notice window and dedicated migration support reserved for exactly that case, rather than a rigid deadline applied uniformly. This serves the mission because it protects the stability promise for everyone still actually relying on it, while keeping the platform healthy enough to keep that promise indefinitely."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating all developers integrating with Stripe as one persona, missing that a solo developer's tolerance for a forced migration is nothing like an enterprise platform team's",
+        "Proposing a rigid, calendar-based deprecation policy that ignores actual usage, punishing versions still genuinely relied upon just because they're old"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-platform-002",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "platform-api",
+      "title": "Redesigning Razorpay's API rate limits for both solo developers and flash-sale merchants",
+      "company": ["Razorpay"],
+      "region": "india",
+      "industry": "developer-tools",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Razorpay, an Indian payment gateway API used by businesses from solo developers to large enterprises, is seeing rate-limit-related support tickets rise as its merchant base grows and a few high-volume merchants occasionally spike traffic, for example during a flash sale. As the platform PM, how would you redesign rate limiting to serve both segments well?",
+      "context": [
+        "Razorpay is an Indian payment gateway offering APIs for payment acceptance, with public API documentation describing rate limits applied per API key or account.",
+        "Razorpay's merchant base spans individual developers and small businesses integrating basic payment acceptance, up to large enterprises with high-volume checkout flows such as e-commerce flash sales.",
+        "Payment gateway APIs generally need to guarantee predictable behavior at checkout, since a throttled or failed request during payment directly blocks a transaction."
+      ],
+      "assumptions": [
+        "assumed: Razorpay's current rate limits are set at a flat tier applying similarly regardless of a merchant's historical traffic pattern",
+        "assumed: a flash-sale traffic burst can be ten times or more a merchant's typical daily request volume for a short window",
+        "assumed: most rate-limit-related support tickets come from a small number of high-volume merchants rather than being spread evenly across the merchant base"
+      ],
+      "followUps": [
+        "How would you distinguish a legitimate flash-sale traffic spike from a bug or an unintentional retry storm in a merchant's own code?",
+        "What's the trade-off between letting merchants request a temporary rate-limit increase versus building fully dynamic, usage-based limits?",
+        "How would you roll out new rate limits without breaking existing integrations built against the old ones?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume today's rate limits are a flat tier regardless of a merchant's traffic history, that a flash-sale burst can run ten times or more a merchant's typical daily volume, and that most tickets come from a small number of high-volume merchants. My plan: connect this to Razorpay's mission, treat the two developer personas integrating with its API as distinct segments, identify the specific problem the flat rate limit creates, then weigh solutions on impact against effort."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Razorpay's value isn't 'process a payment' as a feature, it's letting any Indian business, from a solo developer's side project to a national retailer, accept money reliably without building payment infrastructure themselves. My mission statement: 'make accepting payment a solved problem, at whatever scale a business happens to be operating.' Strategically, serving businesses at wildly different scales on the same API is exactly Razorpay's value proposition, but it only holds if the API's own operational limits don't quietly punish the businesses at the largest end of that range."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The developer integrating with Razorpay's API splits into two real personas with different workflows. A solo developer or small business's integrator has low, steady traffic, no dedicated infrastructure team, and mostly never notices rate limits at all, but if they do hit one, they have no easy way to diagnose or escalate it themselves, since they likely lack a direct account manager relationship. A large enterprise merchant's engineering team runs high, generally predictable volume with occasional planned spikes, like a flash sale announced weeks in advance, and needs the ability to provision extra headroom ahead of a known event rather than discovering the limit only when checkout starts failing live."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the enterprise merchant's context during a flash sale: traffic surges well above normal volume exactly when checkout reliability matters most, since every throttled request at that moment is a blocked, revenue-losing transaction rather than a background inconvenience, and a flat rate limit that doesn't distinguish planned bursts from normal traffic forces the merchant to either over-provision permanently (paying for headroom they rarely use) or risk a checkout outage during their highest-stakes moment. The problem isn't 'Razorpay's limits are too low' as a blanket claim -- for most merchants they're fine -- it's that a single flat tier can't simultaneously protect platform stability and accommodate the legitimate, foreseeable burst behavior of its highest-volume segment, which is severe because a checkout failure during a flash sale directly costs the merchant real revenue at the worst possible moment, tying back to the mission of making payment acceptance a solved problem specifically at scale."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: raise the flat limit for everyone, build fully dynamic usage-based limits that auto-scale to each merchant's real-time traffic, or offer a self-serve, pre-approved burst-capacity request that a merchant can schedule ahead of a known high-traffic event. On impact versus effort, I'd prioritize the self-serve burst-capacity request as the near-term fix: it directly solves the enterprise merchant's actual pattern, planned bursts, without the platform-stability risk of raising the baseline limit for everyone or the engineering complexity of building a fully dynamic auto-scaling system from scratch, and it keeps the solo-developer persona's default experience unchanged and simple. I'd treat fully dynamic limits as a longer-term investment once burst-request usage data shows clear patterns worth automating. The key risk is a merchant requesting burst capacity for a real event but a bug or retry storm causing traffic that looks similar but isn't legitimate; the mitigation is capping approved burst windows to a specific, pre-scheduled time range and monitoring actual usage against the request, flagging deviations for review rather than blocking automatically. This serves the mission because it protects reliability for the business relying on Razorpay at its highest-stakes moment, without adding complexity most merchants never need."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Solving this by simply raising the flat rate limit for every merchant, which increases platform load risk without actually targeting the specific, foreseeable burst pattern causing the complaints",
+        "Designing the solution only around the enterprise persona's needs, forgetting that most integrators are the solo-developer persona who need the default experience to stay simple"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-platform-003",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "platform-api",
+      "title": "Speeding up experiment approval on Meta's internal experimentation platform without weakening guardrails",
+      "company": ["Meta"],
+      "region": "global",
+      "industry": "internal-developer-tools",
+      "difficulty": 3,
+      "timeboxMin": 45,
+      "prompt": "You're the PM for Meta's internal experimentation platform, used by thousands of internal product teams to run A/B tests across apps like Facebook and Instagram. Feature teams complain that getting a new experiment approved and launched takes too long, while the platform team is wary of loosening guardrails that catch statistically invalid or conflicting experiments. How would you approach this?",
+      "context": [
+        "Meta operates multiple large consumer apps, including Facebook, Instagram, and WhatsApp, and has publicly written, including via its engineering blog, about building internal, company-wide experimentation infrastructure used to run and analyze A/B tests across its products.",
+        "Running product experiments at large scale creates known statistical challenges, such as interaction effects between simultaneously running experiments and the risk of underpowered or invalid tests.",
+        "Internal platform and tooling teams at large tech companies typically serve other internal engineering and product teams as their direct customers, rather than external end users."
+      ],
+      "assumptions": [
+        "assumed: the experimentation platform enforces automated guardrails, such as minimum sample size or interaction-effect detection, before allowing an experiment to launch or before trusting its results",
+        "assumed: internal feature teams are evaluated partly on shipping velocity, creating real pressure to get experiments approved and launched quickly",
+        "assumed: a meaningful share of experiment-approval delays come from manual review steps rather than the underlying statistical computation itself"
+      ],
+      "followUps": [
+        "How would you prioritize which guardrail checks to automate first if you could only build one this quarter?",
+        "What's the risk of loosening review speed for teams with a strong track record of statistically sound experiments, versus applying the same bar to everyone?",
+        "How would you measure whether faster experiment approval is actually leading to better shipped decisions, not just more experiments run?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume the platform already enforces some automated guardrails before trusting an experiment's results, that feature teams face real velocity pressure, and that a meaningful share of approval delay comes from manual review rather than the statistical computation itself. My plan: connect this to the platform's mission, treat the internal teams using it as distinct developer personas, identify the specific bottleneck causing delay, then weigh a solution's speed gains against the statistical risk it could reintroduce."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "This platform's value isn't 'run an A/B test' as a feature, it's letting an internal team trust that a shipped change actually caused the metric movement they observed, rather than guessing. My mission statement, as the internal platform team: 'make it easy to do the statistically right thing and hard to accidentally do the wrong one.' Strategically, this platform's advantage over any individual team building their own ad-hoc experiment analysis is exactly its shared guardrails, which only deliver value if they're trusted and don't become a bottleneck so painful that teams look for ways around them."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The 'user' here is internal, and two real personas use this platform very differently. A growth PM on a mature surface runs frequent, individually low-stakes experiments as part of a constant iteration cadence, and for them the platform's manual review step is a genuine velocity tax relative to how much risk any single test actually carries, though the real risk in their case is cumulative: many simultaneous experiments on the same surface creating interaction effects no single review catches. A PM on a new feature team running their first major test to decide whether to launch at all has the opposite profile: this single decision is high-stakes and largely irreversible once shipped broadly, so they actually want more assurance the result is statistically sound, not less, even if it takes a bit longer."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping the growth PM's context: they queue a routine experiment, wait in a manual review queue sized for catching rare but serious statistical errors, and experience that wait as pure friction because their individual experiment genuinely is low-risk in isolation, while the review process doesn't distinguish their low-stakes, well-understood test from the new team's high-stakes, unprecedented one. The problem isn't 'review is too strict' -- the guardrails exist for real reasons, especially interaction effects across many concurrent experiments -- it's that a single, uniform manual review step applied to every experiment regardless of risk profile creates unnecessary delay for the majority of low-risk cases while not necessarily giving the highest-risk cases the depth of scrutiny they actually need. This is frequent, since it recurs on every experiment queued platform-wide, and ties to the mission because a bottleneck painful enough encourages teams to route around the platform entirely, which is worse for statistical rigor than a faster, better-targeted review."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "Three approaches: keep uniform manual review for every experiment, remove manual review entirely and rely solely on automated guardrails, or build a risk-tiered approval path where automated interaction-effect and sample-size checks handle the majority of low-risk, well-understood experiment types instantly, while a smaller set of high-stakes criteria, such as a first major test for a new feature or a change affecting a large percentage of traffic, routes to manual review. On impact versus effort, I'd choose the risk-tiered path: it's higher impact than removing review entirely because it preserves human judgment exactly where irreversible, high-stakes decisions warrant it, and it's a more targeted effort than trying to fully automate every kind of judgment call, since automating interaction-effect detection for the high-volume low-risk tier is a bounded, well-scoped engineering problem. The trade-off to watch is over-trusting automated tiering itself; the mitigation is starting the tiering criteria conservatively, auditing a sample of auto-approved experiments' outcomes regularly, and tightening or loosening the automated tier's scope based on what that audit finds, rather than treating the tiering rules as fixed. This serves the mission because it makes the statistically right path also the fast path for most experiments, instead of forcing every team to trade speed against rigor."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating faster experiment approval as an unambiguous win without weighing that a new feature team's first high-stakes test needs more scrutiny, not less",
+        "Applying the same review bar uniformly to every experiment regardless of risk profile, wasting review capacity on low-risk cases while not necessarily protecting the highest-risk ones any better"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-006",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Flipkart's next investment: quick commerce, tier-2/3 city penetration, or personalization",
+      "company": ["Flipkart"],
+      "region": "india",
+      "industry": "e-commerce",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Flipkart has three candidate investments for the next two quarters: scaling Flipkart Minutes, its quick-commerce grocery service, to more cities; deepening its core marketplace's tier-2 and tier-3 city penetration through regional-language support and last-mile logistics; or investing further in personalized recommendations and search on the core app. You can fund one properly. How do you decide?",
+      "context": [
+        "Flipkart is an Indian e-commerce marketplace, majority-owned by Walmart since 2018.",
+        "Flipkart launched Flipkart Minutes, a quick-commerce grocery delivery service, in 2024, competing with players including Blinkit, Zepto, and Swiggy Instamart.",
+        "Flipkart has publicly discussed tier-2 and tier-3 Indian cities as a significant growth driver for its core marketplace, including investment in regional-language app support and expanded logistics reach."
+      ],
+      "assumptions": [
+        "assumed: quick commerce requires materially higher near-term capital investment, such as dark stores and delivery fleet, than incremental improvements to the existing core marketplace",
+        "assumed: tier-2 and tier-3 city users are a large and still-growing share of Flipkart's new user acquisition relative to metro cities",
+        "assumed: search and recommendation improvements primarily benefit already-active core-marketplace users rather than driving new user acquisition"
+      ],
+      "followUps": [
+        "How would your answer change if Flipkart Minutes were losing significant share to a much better-funded competitor in its launch cities?",
+        "What signal in the first quarter would tell you that tier-2/3 investment isn't converting into real repeat usage?",
+        "How would you sequence these three if you could only guarantee funding one quarter at a time, not commit to all three eventually?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume quick commerce requires materially higher near-term capital than core-marketplace improvements, that tier-2/3 cities are a large and growing share of new user acquisition, and that personalization mainly benefits already-active users rather than driving new acquisition. My plan: connect this to Flipkart's mission, segment the users each bet primarily serves, identify the sharpest problem among them, then argue for one bet using an impact-versus-effort lens."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Flipkart's value isn't 'buying things online' as a feature, it's making the full breadth of products available to any Indian consumer, regardless of which city they live in or what language they're most comfortable shopping in. My mission statement: 'make online shopping equally easy for every Indian, not just the metro shopper.' Strategically, Flipkart's advantage over quick-commerce-only players is its existing pan-India logistics and marketplace depth, which a tier-2/3 investment builds on directly, while quick commerce asks Flipkart to compete on dark-store density against specialists already ahead in that specific race."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes existing metro shoppers, prospective tier-2/3 city shoppers who haven't fully adopted Flipkart, and quick-commerce grocery shoppers wanting fast delivery. The tier-2/3 segment scores highest on reach-times-underserved: it represents a large, still-growing population where the core barrier to adoption isn't awareness of Flipkart but real friction, language and delivery reliability, that Flipkart hasn't fully solved yet, whereas metro personalization improvements serve a smaller, already-well-served segment, and quick commerce targets a need Flipkart is entering late relative to established competitors."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a tier-2/3 prospective shopper's journey: they browse Flipkart in a language they're less comfortable with, worry about delivery reliability given their city's less-dense logistics network, and either abandon the purchase or default to a local shop they trust more. The problem isn't 'tier-2/3 users don't want to shop online' -- it's that language and delivery-reliability friction specifically block conversion for a segment that otherwise wants the product selection Flipkart offers, which is both frequent, recurring for every prospective shopper in this cohort, and severe, since an unreliable first delivery experience can permanently push a new shopper back to offline habits. This ties to the mission because 'equally easy for every Indian' fails exactly at this friction point."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "On an impact-versus-effort view, I'd prioritize tier-2/3 penetration this cycle: its impact is high because it targets Flipkart's largest underserved growth pool using capabilities, logistics and marketplace operations, Flipkart already has real strength in, and its effort, while real, is more incremental than quick commerce's from-scratch dark-store buildout. I'd hold personalization investment steady rather than accelerating it, since it mainly serves an already-well-served segment, and I'd keep Flipkart Minutes at a measured, learning-oriented pace rather than an aggressive scale-up, given how capital-intensive and competitive that race already is. The key risk of under-funding quick commerce is ceding more ground to faster-moving competitors; the mitigation is keeping Flipkart Minutes' current cities as a live testbed to refine unit economics before committing to a broader rollout, so Flipkart doesn't restart from zero once tier-2/3 investment matures."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating quick commerce as the obviously exciting bet without weighing how far behind Flipkart already is in dark-store density against dedicated competitors",
+        "Assuming personalization investment drives new user growth, when its real impact is concentrated among already-active users"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-007",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Zerodha's next priority: Fund House growth, new products, or Kite platform reliability",
+      "company": ["Zerodha"],
+      "region": "india",
+      "industry": "fintech",
+      "difficulty": 1,
+      "timeboxMin": 45,
+      "prompt": "Zerodha, India's largest stockbroker by client count, has three credible priorities: growing Zerodha Fund House, its mutual fund business; expanding into new financial products; or investing further in the reliability of its core Kite trading platform during high-volatility market days. As product lead, how do you prioritize?",
+      "context": [
+        "Zerodha is India's largest stockbroker by number of active clients, operating on a discount-brokerage, flat-fee model.",
+        "Zerodha launched Zerodha Fund House in 2023, entering the mutual fund asset management business.",
+        "Indian retail trading platforms, including Zerodha's Kite, have experienced publicly reported outages or slowdowns during periods of unusually high market volatility and trading volume."
+      ],
+      "assumptions": [
+        "assumed: Zerodha Fund House is an early-stage business relative to Zerodha's core broking revenue",
+        "assumed: high-volatility trading days produce request volume meaningfully above Kite's typical daily peak load",
+        "assumed: Zerodha's flat-fee, high-volume brokerage model means it earns relatively little per trade, making reliability at scale more about trust than incremental per-trade revenue"
+      ],
+      "followUps": [
+        "How would you defend prioritizing reliability to a growth-focused executive who sees Fund House as the bigger revenue opportunity?",
+        "If a major Kite outage happened during this quarter, how would that change everything else on this list?",
+        "How would you measure whether reliability investment is actually reducing the frequency or severity of high-volatility-day incidents?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume Zerodha Fund House is early-stage relative to core broking revenue, that high-volatility days produce request volume well above typical peak load, and that Zerodha's flat-fee model makes reliability more about trust than per-trade revenue. My plan: connect this to Zerodha's mission, segment the users and stakeholders most exposed by each option, identify the sharpest problem facing the highest-priority segment, then make an impact-versus-effort call."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Zerodha's value isn't 'cheap trades' as a feature, it's giving retail investors direct, unmediated access to the market at a price that doesn't punish frequent or small trades. My mission statement: 'make participating in the market as accessible and trustworthy as checking your bank balance.' Strategically, Zerodha's advantage is its scale and trusted brand among retail investors, but that trust is exactly what a platform outage during a high-volatility day, precisely when a trader most needs to act, puts directly at risk."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "The ecosystem includes active daily traders who depend on Kite functioning during volatile moments, long-term investors exploring mutual funds through Fund House, and prospective customers for entirely new financial products. Active traders on high-volatility days score highest on severity: for this segment, a platform slowdown at the exact moment they need to execute a trade isn't a minor inconvenience, it can mean a real financial loss they'll directly attribute to Zerodha, unlike a Fund House investor whose relationship with Zerodha isn't typically time-critical to the minute."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping an active trader's context on a high-volatility day: they see a fast-moving market, try to place or exit a position quickly, and if Kite is slow or unresponsive at that exact moment, they either lose the price they wanted or, worse, are stuck unable to act while the market moves against them. The problem isn't 'Zerodha needs more features' -- it's that platform reliability is being tested precisely when it matters most and the stakes are highest, which is severe because a bad experience here directly costs a trader real money and erodes trust in a way a missing feature never would, and it recurs every time volatility spikes, directly threatening the mission of the platform feeling as dependable as checking a bank balance."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "On impact versus effort, I'd prioritize Kite reliability investment this cycle: its impact is high because it protects the core trust the entire brokerage relationship depends on, and while scaling infrastructure for volatility-day peak load is real engineering effort, it's a more bounded, well-understood problem than building out a new financial product line from scratch. I'd keep Fund House investment at a steady pace rather than accelerating it, since it's an early-stage business where growth this quarter is less urgent than protecting the core trading experience, and I'd deprioritize new-product expansion further this cycle. The key risk of under-investing in Fund House is a slower ramp in a business Zerodha wants to diversify into; the mitigation is keeping a small dedicated team on it so it isn't starting from zero once reliability investment matures."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating reliability investment as 'boring' compared to new revenue lines like Fund House, without weighing how a trust failure on a high-volatility day directly costs traders real money",
+        "Assuming Fund House growth is automatically the priority just because it's a new revenue line, without checking whether it's actually the most urgent problem to solve"
+      ],
+      "related": []
+    },
+    {
+      "id": "cc-prioritization-008",
+      "track": "cross-cutting",
+      "framework": "product-sense",
+      "type": "prioritization",
+      "title": "Ola's next quarter: driver reliability, expanding autos and bikes, or a rider loyalty program",
+      "company": ["Ola"],
+      "region": "india",
+      "industry": "ride-hailing",
+      "difficulty": 2,
+      "timeboxMin": 45,
+      "prompt": "Ola's ride-hailing app offers rides across cars, auto-rickshaws, and bikes in India, competing with Uber and Rapido. Ola has three candidate priorities this year: improving driver-supply reliability and reducing ride cancellations, expanding its auto-rickshaw and bike categories into more cities, or investing in loyalty and subscription features to retain riders against aggressive competitor pricing. How would you prioritize?",
+      "context": [
+        "Ola is an Indian ride-hailing company offering rides across categories including cars, auto-rickshaws, and bikes, competing primarily with Uber and Rapido in the Indian market.",
+        "Ola has publicly faced user complaints and criticism regarding ride cancellations and driver reliability at various points.",
+        "Rapido, a competitor focused on bike-taxi and auto-rickshaw rides, has grown significantly in the Indian ride-hailing market in recent years."
+      ],
+      "assumptions": [
+        "assumed: ride cancellations are a larger share of failed trip attempts on Ola's platform than the category average",
+        "assumed: auto and bike categories carry a lower average fare but potentially higher trip volume and different driver-supply dynamics than cars",
+        "assumed: a loyalty or subscription feature would primarily retain existing riders rather than acquire meaningfully new ones"
+      ],
+      "followUps": [
+        "How would you decide whether a cancellation-reduction fix should target riders, drivers, or the matching algorithm itself?",
+        "What's the risk of expanding into more cities with auto and bike categories before fixing core reliability in existing ones?",
+        "How would you measure whether a loyalty program is actually reducing churn to Rapido and Uber, versus just rewarding riders who'd have stayed anyway?"
+      ],
+      "modelAnswer": {
+        "stages": [
+          {
+            "stage": "Clear Communication",
+            "walkthrough": "I'll assume cancellations are a larger share of failed trips on Ola than the category average, that auto and bike categories have different driver-supply dynamics than cars, and that a loyalty program would mainly retain existing riders rather than acquire new ones. My plan: connect this to Ola's mission, segment riders and drivers as distinct participants, identify the sharpest problem facing the highest-priority segment, then make an impact-versus-effort call across the three priorities."
+          },
+          {
+            "stage": "Product Motivation",
+            "walkthrough": "Ola's value isn't 'a ride-hailing app' as a feature, it's the confidence that requesting a ride will actually result in a ride, not a cancellation and a repeated search. My mission statement: 'make every ride request end in an actual ride.' Strategically, Ola's advantage is its broad category coverage across cars, autos, and bikes and its established brand in India, but that advantage means nothing if the core promise, a requested ride actually showing up, isn't reliably kept."
+          },
+          {
+            "stage": "Segmentation",
+            "walkthrough": "Riders and drivers face different sides of the reliability problem. Riders want a ride request to convert into an actual completed trip without repeated cancellations, and every cancellation directly erodes their trust and pushes them to compare against Uber or Rapido on their very next request. Drivers, meanwhile, cancel or avoid certain trips for their own rational reasons, such as a fare that doesn't cover the distance to pick up the rider or a low-value short trip, meaning a rider-facing fix alone, like better cancellation messaging, does nothing to address the driver-side incentive actually causing the cancellation."
+          },
+          {
+            "stage": "Problem Identification",
+            "walkthrough": "Mapping a rider's journey: they request a ride, a driver accepts, then cancels shortly after, often for a reason invisible to the rider, and the rider is forced to restart the search, frequently switching to a competitor app mid-search out of frustration. The problem isn't 'Ola needs more categories' -- it's that a completed-trip promise breaking at the exact moment of highest rider expectation (right after a driver accepts) is both the most frequent point of failure and the most severe, since it's the single interaction most likely to push a rider to open a competitor's app on the spot. This directly threatens the mission, since expanding into more cities or categories only multiplies the number of places this same broken promise can recur."
+          },
+          {
+            "stage": "Solution Development",
+            "walkthrough": "On impact versus effort, I'd prioritize driver-supply reliability and cancellation reduction this cycle: its impact is highest because it protects the core trip-completion promise across every category and city Ola already operates in, and while diagnosing and fixing the underlying driver incentives behind cancellations is real effort, it's more contained than either expanding into new cities or building a new loyalty system, and it compounds the value of both other bets once fixed. I'd hold new-city auto and bike expansion at a measured pace rather than accelerating it, since expanding a broken promise into more markets just multiplies the problem, and I'd deprioritize the loyalty program this cycle, since retaining riders is far less valuable if the underlying reason they might leave, unreliable rides, hasn't been fixed first. The key risk of focusing narrowly on reliability is ceding category expansion ground to Rapido in bikes and autos; the mitigation is running reliability fixes and a smaller, contained new-category pilot in parallel rather than fully sequential, so Ola doesn't fall further behind while fixing the core experience."
+          }
+        ]
+      },
+      "pitfalls": [
+        "Treating cancellations as a rider-experience problem alone, missing that drivers cancel for their own rational incentive reasons a rider-facing fix won't touch",
+        "Prioritizing loyalty features to fight competitor pricing before fixing the underlying reliability issue that's actually driving riders to compare apps in the first place"
+      ],
+      "related": []
+    }
+  ]
+}

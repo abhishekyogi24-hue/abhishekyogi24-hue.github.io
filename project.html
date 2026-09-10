@@ -629,6 +629,83 @@
         </div>
       </details>
     </article>
+
+    <article class="case-study" id="case-lab" data-accent-light="#7c3aed" data-accent-dark="#a78bfa" data-v2-meta="Personal · Daily PM interview practice">
+      <div class="case-head">
+        <h3>PM Case Lab</h3>
+        <p class="case-tag">0→1 · Daily case-study practice tool · Designed, built, and shipped end-to-end</p>
+      </div>
+
+      <p class="case-lede">
+        A personal PM interview trainer: one real-world product case in my inbox every morning — grounded in
+        actual company decisions, not invented scenarios — plus a practice site with a 45-minute timer, a
+        self-scoring rubric, a 75-question behavioural bank, and a story library pulled from my own work
+        history. Built around published interview frameworks, with two more I wrote myself for case types
+        those frameworks don't cover.
+      </p>
+
+      <p class="case-metrics-caption">What's in the library</p>
+      <div class="case-metrics">
+        <div class="metric"><span class="metric-value">159</span><span class="metric-label">Real-world cases</span></div>
+        <div class="metric"><span class="metric-value">4</span><span class="metric-label">Interview frameworks</span></div>
+        <div class="metric"><span class="metric-value">75</span><span class="metric-label">Behavioural questions</span></div>
+      </div>
+
+      <div class="case-links">
+        <a class="btn btn-primary" href="https://abhishekyogi.in/case-lab/" target="_blank" rel="noopener">Live demo →</a>
+        <a class="btn" href="https://github.com/abhishekyogi24-hue/abhishekyogi24-hue.github.io/tree/main/case-lab" target="_blank" rel="noopener">View source</a>
+      </div>
+
+      <details class="case-details">
+        <summary class="case-toggle">
+          <span class="case-toggle-closed">Show full case study</span>
+          <span class="case-toggle-open">Hide details</span>
+          <svg class="case-toggle-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div class="case-details-body">
+          <div class="case-grid">
+            <div>
+              <h4>Problem</h4>
+              <p>Most interview prep is either a book of generic prompts with no rubric, or a paid mock-interview service. I wanted daily reps against real company decisions, scored against the same dimensions an actual interviewer uses — and a way to turn my own work history into behavioural-interview stories instead of improvising them cold.</p>
+            </div>
+            <div>
+              <h4>The frameworks</h4>
+              <p>Product Sense and Analytical Thinking come from Lenny's Newsletter's published interview guides. Root-cause analysis and AI-product cases have no equivalent published framework, so I wrote both myself — a 7-step RCA structure and a 7-stage AI-product structure whose signature move is that "don't build this as AI" is a valid, scored answer, not a cop-out.</p>
+            </div>
+            <div>
+              <h4>Zero infrastructure, by design</h4>
+              <p>No server, no API key, no LLM at runtime. The library is static JSON; "today's case" is a pure function of the date, computed identically in the browser and in a small Google Apps Script — so the site and the daily email can never disagree about which case today is, and nothing can go down except GitHub Pages or Gmail.</p>
+            </div>
+            <div>
+              <h4>Stories from my own history</h4>
+              <p>My "Experience in Detail" doc — dense prose, not interview-shaped — got converted into 14 structured STAR stories, each anchored to a verbatim quote from the source so nothing got paraphrased into something I didn't actually do. A coverage map cross-references them against the 75 behavioural questions and flags the themes with no story yet as "stories to write," instead of leaving a silent gap.</p>
+            </div>
+          </div>
+
+          <div class="case-phase">
+            <h4>How I built it — vibe-coded, PM-led</h4>
+            <p>
+              Built solo with Claude Code, planned with Opus and implemented with Sonnet. The product judgment
+              was deciding what a good case actually teaches — every case anchors to a real, publicly verifiable
+              company decision, and any number that isn't public is explicitly tagged as an interviewer
+              assumption rather than presented as fact, so studying the library never means memorizing an
+              invented metric. I drove the framework design, the fact-verifiability rule, the day-selection
+              architecture, and the site's status-tracking model, then iterated against the built library and a
+              full local click-through before publishing.
+            </p>
+          </div>
+
+          <p class="case-challenge"><strong>Biggest challenge:</strong> keeping 159 cases factually honest — every
+          case had to separate what a company actually, verifiably did from what the exercise merely assumes for
+          the sake of the drill.</p>
+
+          <p class="case-metrics-caption">Skills this build demonstrates</p>
+          <div class="case-stack">
+            <span>Product Judgment</span><span>Interview Framework Design</span><span>Content Architecture</span><span>Google Apps Script</span><span>Client-Side State</span><span>Vibe Coding (Claude Code)</span><span>Opus-Plan / Sonnet-Build</span>
+          </div>
+        </div>
+      </details>
+    </article>
   </section>
 </main>
 
