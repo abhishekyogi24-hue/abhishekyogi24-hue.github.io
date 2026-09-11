@@ -209,6 +209,17 @@ details.followups { border: 1px solid var(--border); border-radius: 10px; paddin
 details.followups summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--ink-2); }
 details.followups ul { margin: 10px 0 0; }
 
+/* ---- Case brief shown above the timer on Practice, so you never have to go Back to re-read it ---- */
+details.case-brief {
+  border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; background: var(--surface);
+  box-shadow: var(--shadow); margin: 14px 0;
+}
+details.case-brief summary { cursor: pointer; font-weight: 650; font-size: 14px; color: var(--ink); list-style: none; }
+details.case-brief summary::-webkit-details-marker { display: none; }
+details.case-brief summary::before { content: '▾ '; color: var(--muted); }
+details.case-brief[open] summary { margin-bottom: 10px; }
+details.case-brief .case-detail { border: 0; padding: 0; background: transparent; box-shadow: none; }
+
 .stage-list { display: flex; flex-direction: column; gap: 10px; }
 .stage-row {
   border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; background: var(--surface-2);

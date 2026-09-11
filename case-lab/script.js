@@ -876,6 +876,11 @@ function renderPractice(caseId) {
       </select>
     </div>
 
+    <details class="case-brief" open>
+      <summary>Case details &amp; framework scaffold <span class="note" style="display:inline">— click to collapse</span></summary>
+      ${renderCaseDetailHTML(c, { showStart: false })}
+    </details>
+
     <div class="timer-panel">
       <div class="timer-top">
         <div class="timer-elapsed" id="timer-elapsed">00:00</div>
