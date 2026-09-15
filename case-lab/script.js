@@ -9,8 +9,12 @@ const LS_BEHAV = 'caselab_behav_v1';
 const LS_BEHAV_STATUS = 'caselab_behav_status_v1';
 const LS_THEME = 'caselab_theme_v1';
 const LS_ACTIVITY = 'caselab_activity_v1';
+const LS_LIVE = 'caselab_live_v1';
 const STATUSES = ['new', 'active', 'completed', 'bookmarked', 'skipped'];
 const TOTAL_TIMER_SEC = 45 * 60;
+const LIVE_MIN_WORDS = 5;
+const LIVE_MIN_SCORE = 4;
+const LIVE_SPEAK_WPM = 130;
 
 /* ============================== Global data ============================== */
 let FRAMEWORKS = {};
@@ -26,7 +30,8 @@ const state = {
   activeView: 'today',
   practiceCaseId: null,
   practiceReturnView: 'today',
-  casesFilter: { status: 'all', track: 'all', type: 'all', company: 'all', region: 'all', difficulty: 'all', q: '' }
+  casesFilter: { status: 'all', track: 'all', type: 'all', company: 'all', region: 'all', difficulty: 'all', q: '' },
+  live: { text: '', typeOverride: null, frameworkOverride: null, cls: null }
 };
 
 /* ============================== Small utilities ============================== */
@@ -402,7 +407,7 @@ function updateTimerDisplay() {
 
 /* ============================== View switching ============================== */
 function showView(name) {
-  ['today', 'cases', 'behavioural', 'stories', 'progress', 'practice'].forEach(v => {
+  ['today', 'cases', 'behavioural', 'stories', 'progress', 'live', 'practice'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (el) el.hidden = (v !== name);
   });
@@ -418,6 +423,7 @@ function switchTab(tab) {
   else if (tab === 'behavioural') renderBehavioural();
   else if (tab === 'stories') renderStories();
   else if (tab === 'progress') renderProgress();
+  else if (tab === 'live') renderLive();
   renderStats();
 }
 function jumpToQuestion(qid) {
@@ -531,16 +537,19 @@ function renderCaseDetailHTML(c, opts) {
       ${opts.showStart ? `<div><button type="button" class="btn" data-action="open-case" data-id="${esc(c.id)}">Start practice →</button></div>` : ''}
       <div>
         <p class="block-label">${esc(fw.label)} framework · ${esc(String(fw.totalMin || 45))} min</p>
-        <div class="stage-list">
-          ${(fw.stages || []).map(s => `
-            <div class="stage-row">
-              <div class="stage-row-top"><h4>${esc(s.name)}</h4><span class="stage-time">${esc(String(s.minMin))}–${esc(String(s.maxMin))} min</span></div>
-              <div class="stage-guidance">${esc(s.guidance)}</div>
-              <div class="stage-good">What good looks like: ${esc(s.whatGoodLooksLike)}</div>
-            </div>`).join('')}
-        </div>
+        ${stageListHTML(fw)}
       </div>
     </div>`;
+}
+function stageListHTML(fw) {
+  return `<div class="stage-list">
+    ${(fw.stages || []).map(s => `
+      <div class="stage-row">
+        <div class="stage-row-top"><h4>${esc(s.name)}</h4><span class="stage-time">${esc(String(s.minMin))}–${esc(String(s.maxMin))} min</span></div>
+        <div class="stage-guidance">${esc(s.guidance)}</div>
+        <div class="stage-good">What good looks like: ${esc(s.whatGoodLooksLike)}</div>
+      </div>`).join('')}
+  </div>`;
 }
 function renderReviewDigestHTML() {
   const len = (SCHEDULE.days || []).length;
@@ -958,6 +967,458 @@ function renderRubricWidget(c, fw) {
     <div class="note">${scoredCount}/${total} dimensions scored${scoredCount === total && total > 0 ? ' — case marked completed.' : '.'}</div>`;
 }
 
+/* ============================== Live case (interview co-pilot) ============================== */
+// No network call, no API key: a local keyword classifier guesses the case type, shows the
+// matching framework's real stage scaffold on screen immediately, and a "Copy AI prompt" button
+// packages everything into a prompt you paste into your own Claude/ChatGPT tab to get a full
+// model answer. The classifier is a best-effort guess, never presented as ground truth — a manual
+// type/framework override sits right next to it, equally prominent.
+
+const TYPE_TAXONOMY = {
+  'ai-0to1': { track: 'ai-product', framework: 'ai-product', label: 'AI 0-to-1' },
+  'ai-evals': { track: 'ai-product', framework: 'ai-product', label: 'AI Evals' },
+  'ai-guardrails': { track: 'ai-product', framework: 'ai-product', label: 'AI Guardrails' },
+  'ai-metrics': { track: 'ai-product', framework: 'ai-product', label: 'AI Metrics' },
+  'ai-ux-trust': { track: 'ai-product', framework: 'ai-product', label: 'AI UX & Trust' },
+  'comparative': { track: 'product-sense', framework: 'product-sense', label: 'Comparative' },
+  'define-metrics': { track: 'analytical', framework: 'analytical', label: 'Define Metrics' },
+  'design-0to1': { track: 'product-sense', framework: 'product-sense', label: 'Design 0-to-1' },
+  'experiment': { track: 'analytical', framework: 'analytical', label: 'Experiment' },
+  'funnel': { track: 'analytical', framework: 'analytical', label: 'Funnel' },
+  'goal-setting': { track: 'analytical', framework: 'analytical', label: 'Goal Setting' },
+  'growth-loop': { track: 'cross-cutting', framework: 'product-sense', label: 'Growth Loop' },
+  'improve-existing': { track: 'product-sense', framework: 'product-sense', label: 'Improve Existing' },
+  'marketplace': { track: 'cross-cutting', framework: 'product-sense', label: 'Marketplace' },
+  'metric-tradeoff': { track: 'analytical', framework: 'analytical', label: 'Metric Trade-off' },
+  'new-segment': { track: 'product-sense', framework: 'product-sense', label: 'New Segment' },
+  'platform-api': { track: 'cross-cutting', framework: 'product-sense', label: 'Platform / API' },
+  'pricing': { track: 'cross-cutting', framework: 'product-sense', label: 'Pricing' },
+  'prioritization': { track: 'cross-cutting', framework: 'product-sense', label: 'Prioritization' },
+  'rca': { track: 'analytical', framework: 'rca', label: 'Root Cause Analysis' },
+  'retention': { track: 'analytical', framework: 'analytical', label: 'Retention' },
+  'teardown': { track: 'product-sense', framework: 'product-sense', label: 'Teardown' },
+  'trust-safety': { track: 'cross-cutting', framework: 'product-sense', label: 'Trust & Safety' }
+};
+const TYPE_PRIORITY = ['rca', 'experiment', 'funnel', 'retention', 'marketplace', 'platform-api',
+  'growth-loop', 'pricing', 'trust-safety', 'prioritization', 'goal-setting', 'metric-tradeoff',
+  'define-metrics', 'ai-guardrails', 'ai-evals', 'ai-ux-trust', 'ai-metrics', 'ai-0to1',
+  'comparative', 'teardown', 'new-segment', 'design-0to1', 'improve-existing'];
+
+const SHORTHAND_MAP = [
+  [/\brca\b/g, 'root cause analysis'],
+  [/\bnsm\b/g, 'north star metric'],
+  [/\bab\s?test(ing)?\b/g, 'ab test experiment'],
+  [/\b(dau|wau|mau)\b/g, 'active users retention'],
+  [/\bd(1|7|14|28|30)\b/g, 'retention cohort'],
+  [/\bw(1|2|4)\b/g, 'retention cohort'],
+  [/\b(ctr|cvr|cr)\b/g, 'conversion rate'],
+  [/\bdrop ?offs?\b/g, 'dropoff'],
+  [/\b(0 ?[-to]+ ?1|zero to one)\b/g, 'zero to one'],
+  [/\b(llm|genai|gen ?ai|gpt|foundation model)\b/g, 'ai'],
+  [/\b(ml|machine learning)\b/g, 'ai model'],
+  [/\brag\b/g, 'ai retrieval'],
+  [/\bltv\b/g, 'lifetime value'], [/\bcac\b/g, 'acquisition cost'],
+  [/\b(mrr|arr)\b/g, 'revenue'], [/\bgmv\b/g, 'revenue volume'],
+  [/\bq[1-4]\b/g, 'quarterly'],
+  [/\b(okrs?|kr)\b/g, 'goal okr'],
+  [/\b(ts|t&s|tands)\b/g, 'trust safety'],
+  [/\bkyc\b/g, 'kyc verification'],
+  [/\bux\b/g, 'ux experience'],
+  [/\b(b2b|b2c|smb)\b/g, 'segment'],
+  [/\bpmf\b/g, 'product market fit'],
+  [/\bnps\b/g, 'metric satisfaction'],
+  [/\bfnl\b/g, 'funnel'], [/\bretn\b/g, 'retention'],
+  [/\bconvn?\b/g, 'conversion'], [/\busr\b/g, 'user'],
+  [/\bwk\b/g, 'week'], [/\bmkt\b/g, 'market'], [/\bmtrc\b/g, 'metric'],
+  [/\bexp\b/g, 'experiment'], [/\bseg\b/g, 'segment'], [/\bprod\b/g, 'product']
+];
+function normalizeCaseText(raw) {
+  let s = ' ' + String(raw || '').toLowerCase()
+    .replace(/[’'`]/g, '')
+    .replace(/[^a-z0-9%]+/g, ' ')
+    .replace(/\s+/g, ' ').trim() + ' ';
+  SHORTHAND_MAP.forEach(([re, sub]) => { s = s.replace(re, ' ' + sub + ' '); });
+  return ' ' + s.replace(/\s+/g, ' ').trim() + ' ';
+}
+
+const CLASSIFIER_RULES = [
+  { type: 'rca',
+    strong: [/\broot cause\b/, /\bwhy (did|has|is|would)\b[^.]{0,60}\b(drop|dropped|declin|fall|fell|down|decreas|spike|surge)/, /\b(dropped|fell|declined) (by )?\d+/],
+    phrases: ['root cause analysis', 'walk me through your root cause', 'diagnose the drop', 'drop in', 'decline in', 'fell by', 'dropped by', 'went down', 'hasnt recovered', 'stayed at that lower level', 'in a single week', 'over three days', 'week over week', 'day over day', 'what would you investigate', 'something broke', 'no code change'],
+    terms: ['drop', 'dropped', 'dropping', 'declin', 'plummet', 'fell', 'dip', 'spike', 'sudden', 'overnight', 'investigate', 'anomaly', 'regression', 'incident', 'diagnos'],
+    negative: ['funnel', 'retention cohort'] },
+  { type: 'funnel',
+    strong: [/\bfunnel\b/, /\bdropoff\b/, /\bwhere (are|do) (users|people) (falling|dropping) off\b/],
+    phrases: ['conversion funnel', 'signup to first', 'sign up to first', 'cart to purchase', 'checkout funnel', 'onboarding to first', 'add to cart but', 'never complete', 'abandon the flow', 'step in the flow', 'falling off', 'activation rate', 'first order', 'first trade', 'first match', 'complete checkout', 'analyze this funnel'],
+    terms: ['funnel', 'dropoff', 'abandon', 'checkout', 'cart', 'signup', 'onboarding', 'activation', 'completion', 'conversion', 'step', 'leaky'],
+    negative: ['root cause'] },
+  { type: 'retention',
+    strong: [/\bretention\b/, /\bcohort\b/, /\bchurn\b/],
+    phrases: ['retention curve', 'retention rate', 'retention dropped', 'repeat purchase', 'come back', 'stopped coming back', 'flattened', 'cohort curve', 'new user cohort', '30 day retention', 'week 4 retention', 'resurrect', 'stickiness', 'habit formation'],
+    terms: ['retention', 'retain', 'cohort', 'churn', 'repeat', 'resurrect', 'lapsed', 'dormant', 'stickiness'],
+    negative: [] },
+  { type: 'experiment',
+    strong: [/\bab test\b/, /\bexperiment\b/, /\bstatistical(ly)? significan/],
+    phrases: ['ab test experiment', 'split test', 'control group', 'treatment group', 'sample size', 'statistical significance', 'p value', 'how would you read out', 'holdout', 'novelty effect', 'power analysis', 'how would you test this', 'ship or not ship', 'rollout plan', 'randomiz'],
+    terms: ['experiment', 'control', 'treatment', 'variant', 'significance', 'holdout', 'randomiz', 'sample', 'power', 'hypothesis', 'bucket'],
+    negative: [] },
+  { type: 'define-metrics',
+    strong: [/\bhow would you measure (the )?success\b/, /\bmetric framework\b/, /\bnorth star\b/],
+    phrases: ['how would you measure', 'measure the success', 'define a metric', 'metric framework', 'success metrics', 'north star metric', 'guardrail metric', 'what metrics would you track', 'how do you know it is working', 'health metrics', 'counter metric', 'top line metric', 'define the kpi'],
+    terms: ['metric', 'metrics', 'measure', 'kpi', 'guardrail', 'instrument', 'dashboard', 'track'],
+    negative: ['trade off', 'tradeoff', 'quarterly goal'] },
+  { type: 'goal-setting',
+    strong: [/\b(quarterly|annual) goal\b/, /\bwhat goal would you set\b/, /\bdefend the number\b/],
+    phrases: ['set a goal', 'quarterly goal', 'goal for the quarter', 'goal for next quarter', 'what target would you set', 'defend the number', 'how would you defend', 'goal okr', 'key result', 'ambitious but achievable', 'how much should it move', 'what number would you commit'],
+    terms: ['goal', 'target', 'okr', 'quarterly', 'commit', 'forecast', 'defend'],
+    negative: [] },
+  { type: 'metric-tradeoff',
+    strong: [/\btrade ?off\b/, /\bat the expense of\b/, /\btension between\b/],
+    phrases: ['trade off', 'tradeoff', 'at the expense of', 'balance between', 'how would you think about the trade', 'one goes up while', 'short term versus long term', 'engagement versus', 'growth versus quality', 'well being', 'cannibaliz', 'would you still ship it', 'which metric wins', 'competing metrics'],
+    terms: ['tradeoff', 'tension', 'balance', 'cannibaliz', 'expense', 'sacrific', 'versus', 'conflict'],
+    negative: [] },
+  { type: 'ai-evals',
+    strong: [/\bgolden set\b/, /\bquality bar\b/, /\beval(s|uation)?\b/, /\bllm as a? ?judge\b/],
+    phrases: ['quality bar', 'golden set', 'offline eval', 'online eval', 'evaluate whether the model', 'good enough to ship', 'before rolling it out', 'regression test', 'ground truth', 'precision and recall', 'human labeling', 'annotator', 'benchmark suite', 'model version', 'is the new model better'],
+    terms: ['eval', 'evals', 'benchmark', 'groundtruth', 'precision', 'recall', 'annotat', 'label', 'regression', 'judge', 'accuracy'],
+    negative: [] },
+  { type: 'ai-guardrails',
+    strong: [/\bhallucinat/, /\bprompt injection\b/, /\bjailbreak\b/, /\bguardrail(s)? (for|against)\b/],
+    phrases: ['prompt injection', 'jailbreak', 'red team', 'harmful output', 'confidently wrong', 'made up', 'fabricat', 'personal data', 'data privacy', 'dpdp', 'gdpr', 'compliance risk', 'vendor lock in', 'vendor dependency', 'model dependency', 'legal liability', 'abuse of the model', 'misuse', 'safety policy', 'what could go wrong'],
+    terms: ['hallucinat', 'injection', 'jailbreak', 'privacy', 'pii', 'dpdp', 'gdpr', 'compliance', 'vendor', 'redteam', 'liability', 'guardrail', 'toxicity'],
+    negative: [] },
+  { type: 'ai-ux-trust',
+    strong: [/\b(design|ux) (the )?(trust|citation|confidence|correction|handoff)/, /\bhuman in the loop\b/, /\bhand ?off to a human\b/],
+    phrases: ['citation', 'cite sources', 'show confidence', 'confidence signal', 'trust the answer', 'let users correct', 'correct the answer', 'undo', 'human in the loop', 'hand off to a human', 'graceful fallback', 'when the model is wrong', 'accept or reject', 'inline suggestion', 'transparency', 'explainability', 'disclosure'],
+    terms: ['citation', 'confidence', 'trust', 'undo', 'correction', 'handoff', 'transparen', 'explainab', 'fallback', 'disclaimer'],
+    negative: [] },
+  { type: 'ai-metrics',
+    strong: [/\b(north star|nsm)\b[^.]{0,50}\b(ai|assistant|model|copilot|bot|agent)\b/, /\bacceptance rate\b/, /\bcontainment rate\b/],
+    phrases: ['north star metric', 'acceptance rate', 'containment rate', 'deflection rate', 'task completion rate', 'cost per query', 'cost per successful', 'token cost', 'edit distance', 'measure the assistant', 'measure the ai', 'how would you measure the model', 'adoption of the ai', 'which metric should decide'],
+    terms: ['acceptance', 'containment', 'deflection', 'metric', 'measure', 'cost', 'margin', 'adoption'],
+    negative: ['golden set', 'quality bar'] },
+  { type: 'ai-0to1',
+    strong: [/\bdesign\b[^.]{0,40}\bai\b/, /\bshould (we|they|[a-z]+) (build|add|use|launch)\b[^.]{0,30}\bai\b/, /\bzero to one\b[^.]{0,30}\bai\b/],
+    phrases: ['ai assistant', 'ai feature', 'ai powered', 'generative ai', 'ai agent', 'ai chatbot', 'ai copilot', 'build an ai', 'launch an ai', 'should we build this', 'why ai', 'ai first', 'new ai product', 'what should it do'],
+    terms: ['assistant', 'copilot', 'chatbot', 'agent', 'generative'],
+    negative: ['golden set', 'quality bar', 'north star metric', 'prompt injection', 'citation'] },
+  { type: 'comparative',
+    strong: [/\bwhy (did|do|might) [a-z0-9 ]{2,30} and [a-z0-9 ]{2,30} (diverge|differ|design|choose|take|go|make|build)/, /\bdiverged on\b/, /\bthese two (companies|products|platforms)\b/],
+    phrases: ['why might these two', 'two different', 'took different', 'different approaches', 'diverged on', 'why did they differ', 'whereas', 'while the other', 'one does x and the other', 'compare the two', 'contrast the two', 'same problem differently', 'why not copy'],
+    terms: ['diverge', 'differently', 'differ', 'contrast', 'comparative'],
+    negative: [] },
+  { type: 'teardown',
+    strong: [/\bteardown\b/, /\btear down\b/, /\bproduct critique\b/],
+    phrases: ['structured teardown', 'why it works', 'what you would improve', 'walk through a teardown', 'critique this product', 'favorite product', 'favourite product', 'least favorite product', 'what would you change about it', 'break down why this works', 'evaluate this product'],
+    terms: ['teardown', 'critique', 'dissect'],
+    negative: [] },
+  { type: 'design-0to1',
+    strong: [/\bdesign a (new )?product\b/, /\bassume nothing (exists|purpose built)\b/, /\bfrom scratch\b/],
+    phrases: ['design a product for', 'design a new product', 'build a product for', 'nothing exists today', 'doesnt exist today', 'from scratch', 'greenfield', 'brand new product', 'launch a new product', 'zero to one', 'blank slate', 'what would you build'],
+    terms: ['greenfield', 'scratch'],
+    negative: ['ai', 'improve'] },
+  { type: 'new-segment',
+    strong: [/\bfor (first time|new|underserved|rural|elderly|blind|low literacy)\b/, /\btier ?[23]\b/, /\bnew (market|geography|segment|audience)\b/],
+    phrases: ['tier 2', 'tier 3', 'first time users', 'first time online', 'non english', 'regional language', 'low literacy', 'underserved', 'rural users', 'elderly', 'senior citizens', 'accessibility', 'gig workers', 'small business owners', 'new geography', 'new market', 'expand to a new', 'users who have never', 'unbanked', 'underbanked'],
+    terms: ['segment', 'persona', 'underserved', 'rural', 'literacy', 'accessibility', 'demographic', 'newcomer'],
+    negative: [] },
+  { type: 'improve-existing',
+    strong: [/\bhow would you improve\b/, /\bimprove (the )?(engagement|conversion|discovery|onboarding|experience|retention of)\b/, /\bwhat would you change about\b/],
+    phrases: ['how would you improve', 'improve the experience', 'make it better', 'increase engagement', 'drive more usage', 'get more people to', 'grow usage of', 'existing feature', 'underused feature', 'more of our users', 'boost adoption'],
+    terms: ['improve', 'increase', 'boost', 'enhance', 'optimiz'],
+    negative: ['nothing exists today', 'from scratch'] },
+  { type: 'growth-loop',
+    strong: [/\bgrowth loop\b/, /\bviral(ity)? loop\b/, /\breferral (program|loop)\b/, /\bflywheel\b/],
+    phrases: ['growth loop', 'viral loop', 'acquisition loop', 'referral program', 'invite a friend', 'network effect', 'word of mouth', 'k factor', 'flywheel', 'content loop', 'ugc loop', 'self reinforcing', 'compounding growth', 'share with friends', 'loop mechanics'],
+    terms: ['loop', 'viral', 'referral', 'invite', 'flywheel', 'acquisition'],
+    negative: [] },
+  { type: 'marketplace',
+    strong: [/\bmarketplace\b/, /\bcold start\b/, /\b(supply and demand|demand and supply)\b/, /\btwo sided\b/],
+    phrases: ['supply and demand', 'two sided', 'buyers and sellers', 'drivers and riders', 'hosts and guests', 'supply side', 'demand side', 'liquidity', 'cold start', 'chicken and egg', 'matching', 'take rate', 'supply constrained', 'launch in a new city', 'seller onboarding', 'not enough supply'],
+    terms: ['marketplace', 'liquidity', 'supply', 'demand', 'buyers', 'sellers', 'hosts', 'drivers', 'riders', 'matching', 'coldstart'],
+    negative: [] },
+  { type: 'platform-api',
+    strong: [/\bapi\b/, /\bdeveloper platform\b/, /\bsdk\b/, /\brate limit\b/],
+    phrases: ['api version', 'rate limits', 'third party developers', 'developer experience', 'developer platform', 'integration partners', 'webhook', 'backwards compatibility', 'deprecate', 'internal platform', 'platform team', 'open up the platform', 'ecosystem of developers', 'self serve integration'],
+    terms: ['api', 'sdk', 'platform', 'developer', 'integration', 'webhook', 'deprecat', 'versioning', 'ratelimit', 'ecosystem'],
+    negative: [] },
+  { type: 'pricing',
+    strong: [/\bpricing\b/, /\bprice (increase|change|point|it)\b/, /\bpackag(e|ing)\b[^.]{0,30}\b(tier|plan|subscription|premium)\b/, /\bpaywall\b/],
+    phrases: ['how would you price', 'price increase', 'raise prices', 'pricing strategy', 'packaging', 'plan tiers', 'free tier', 'premium tier', 'paywall', 'willingness to pay', 'monetiz', 'freemium', 'bundling', 'per seat', 'usage based pricing', 'discount', 'subscription tier'],
+    terms: ['pricing', 'price', 'tier', 'packaging', 'paywall', 'monetiz', 'freemium', 'subscription', 'discount', 'bundle'],
+    negative: [] },
+  { type: 'prioritization',
+    strong: [/\bprioriti[sz]/, /\b(which|what) (one )?would you (build|pick|choose|do) (first|next)\b/, /\bthree (credible )?(bets|options|initiatives|directions)\b/],
+    phrases: ['how would you prioritize', 'how would you prioritise', 'which one would you build', 'what would you build first', 'three options', 'three bets', 'next quarter roadmap', 'limited resources', 'where would you invest', 'sequencing', 'pick one of these', 'rank these', 'impact versus effort', 'rice score', 'say no to'],
+    terms: ['prioritiz', 'prioritis', 'roadmap', 'backlog', 'bet', 'invest', 'sequence', 'rank'],
+    negative: [] },
+  { type: 'trust-safety',
+    strong: [/\btrust and safety\b/, /\b(fraud|counterfeit|harassment|moderation|scam)\b/],
+    phrases: ['trust and safety', 'fake reviews', 'counterfeit', 'bad actors', 'policy violation', 'content moderation', 'moderator tooling', 'harassment', 'misinformation', 'kyc verification', 'fraud risk', 'spam', 'scam', 'underage', 'account takeover', 'report and appeal'],
+    terms: ['fraud', 'abuse', 'spam', 'scam', 'moderation', 'moderator', 'counterfeit', 'harassment', 'kyc', 'misinformation', 'safety', 'enforcement'],
+    negative: [] }
+];
+const AI_SIGNAL_RE = /\b(ai|model|assistant|copilot|chatbot|agent|hallucinat|prompt|retrieval|inference|embedding|summariz|recommendation model|classifier)\b/;
+
+function scoreRule(rule, hay, aiSignal) {
+  let score = 0;
+  const hits = { strong: [], phrases: [], terms: [] };
+  (rule.strong || []).forEach(re => { if (re.test(hay)) { score += 5; hits.strong.push(re.source); } });
+  (rule.phrases || []).forEach(p => { if (hay.includes(' ' + p + ' ') || hay.includes(p)) { score += 3; hits.phrases.push(p); } });
+  (rule.terms || []).forEach(t => { if (hay.includes(t)) { score += 1; hits.terms.push(t); } });
+  (rule.negative || []).forEach(n => { if (hay.includes(n)) score -= 2; });
+  if (rule.type.indexOf('ai-') === 0) score += aiSignal ? 2 : -5;
+  return { score, hits };
+}
+function classifyCaseText(raw) {
+  const trimmed = String(raw || '').trim();
+  const words = trimmed ? trimmed.split(/\s+/).length : 0;
+  if (!trimmed) return { status: 'empty', ranked: [], top: null, confidence: 'none', words: 0, aiSignal: false };
+  const hay = normalizeCaseText(trimmed);
+  const aiSignal = AI_SIGNAL_RE.test(hay);
+  const ranked = CLASSIFIER_RULES.map(rule => {
+    const { score, hits } = scoreRule(rule, hay, aiSignal);
+    return { type: rule.type, score, hits };
+  }).sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    if (b.hits.strong.length !== a.hits.strong.length) return b.hits.strong.length - a.hits.strong.length;
+    const pa = TYPE_PRIORITY.indexOf(a.type), pb = TYPE_PRIORITY.indexOf(b.type);
+    if (pa !== pb) return pa - pb;
+    return a.type.localeCompare(b.type);
+  });
+  const s1 = ranked[0] ? ranked[0].score : 0;
+  const s2 = ranked[1] ? ranked[1].score : 0;
+  if (words < LIVE_MIN_WORDS || s1 < LIVE_MIN_SCORE) {
+    return { status: 'unsure', ranked, top: null, confidence: 'low', words, aiSignal };
+  }
+  const confidence = (s1 - s2 >= 3) ? 'high' : 'medium';
+  return { status: 'ok', ranked, top: ranked[0].type, confidence, words, aiSignal };
+}
+
+function liveSelection() {
+  const cls = state.live.cls || classifyCaseText(state.live.text);
+  const isOverridden = !!state.live.typeOverride;
+  const type = state.live.typeOverride || cls.top || 'improve-existing';
+  const meta = TYPE_TAXONOMY[type] || TYPE_TAXONOMY['improve-existing'];
+  const frameworkKey = state.live.frameworkOverride || meta.framework;
+  const fw = getFrameworkForCase({ framework: frameworkKey });
+  return { type, typeLabel: meta.label, track: meta.track, frameworkKey, fw, isOverridden, confidence: cls.confidence, status: cls.status, cls };
+}
+function rubricReadOnlyHTML(fw) {
+  if (!(fw.rubric || []).length) return '';
+  return `<div>
+    ${fw.rubric.map(r => `
+      <div class="rubric-row">
+        <div class="rubric-dim">${esc(r.dimension)}</div>
+        <div class="rubric-levels">
+          ${['weak', 'solid', 'strong'].map(level => `
+            <div class="rubric-level static ${level}"><b>${level}</b><p>${esc(r[level] || '')}</p></div>`).join('')}
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+function buildLivePrompt(sel, caseText) {
+  const fw = sel.fw;
+  const cls = sel.cls;
+  const stagesBlock = (fw.stages || []).map((s, i) =>
+    `${i + 1}. ${s.name} (${s.minMin}–${s.maxMin} min)\n` +
+    `   What to do: ${s.guidance}\n` +
+    `   What good looks like: ${s.whatGoodLooksLike}` +
+    ((s.pitfalls || []).length ? `\n   Avoid: ${s.pitfalls.join('; ')}` : '')
+  ).join('\n\n');
+  const rubricBlock = (fw.rubric || []).map(r =>
+    `- ${r.dimension}\n    weak:   ${r.weak}\n    solid:  ${r.solid}\n    strong: ${r.strong}`
+  ).join('\n');
+  const altText = (cls && cls.ranked && cls.ranked.length > 1)
+    ? `; the runners-up it considered were ${cls.ranked.slice(1, 3).map(r => (TYPE_TAXONOMY[r.type] || {}).label || r.type).join(' and ')}`
+    : '';
+  const classifierNote = sel.isOverridden
+    ? `I chose this framework by hand on my practice site, so treat it as deliberate.`
+    : (sel.status === 'unsure'
+      ? `My practice site could NOT confidently classify this case — the framework below is a default, not a judgement. Decide for yourself whether it fits before you use it.`
+      : `A local keyword classifier on my practice site (no AI, just keyword scoring) guessed this is a "${sel.typeLabel}" case with ${sel.confidence} confidence${altText}. It is often wrong on short or unusual prompts.`);
+  return `You are an experienced product-management interview coach. I am sitting in a live PM interview right now and need a model answer I can read out loud in the next few minutes. Speed and specificity matter more than hedging.
+
+=== 1. THE CASE, EXACTLY AS I TYPED IT ===
+
+The text below is likely fragmented, abbreviated, mistyped or half-finished, because I typed it under time pressure while the interviewer was still talking. Do NOT ask me clarifying questions and do NOT wait for more input — there is no time for a second turn. Instead:
+- Reconstruct the most probable full interview prompt from the fragments.
+- Expand shorthand (e.g. "nsm" = North Star metric, "d30 ret" = 30-day retention, "rca" = root cause analysis, "ab" = A/B test, "dau/mau" = daily/monthly active users, "0-1" = zero to one, "t&s" = trust and safety).
+- Silently fix typos and missing words. Fill obvious gaps with the most standard version of that case.
+- State your reconstruction in ONE sentence, prefixed "READING IT AS:", before anything else.
+
+<case>
+${caseText}
+</case>
+
+=== 2. THE FRAMEWORK TO ANSWER IN ===
+
+${classifierNote}
+
+The framework is "${fw.label}", ${fw.totalMin || 45} minutes total. Its stages, with the real timeboxes I will be held to:
+
+${stagesBlock || '(stage data unavailable — use your own best structure for this framework)'}
+
+=== 3. WHAT TO PRODUCE ===
+
+Step 1 — Sanity check. If "${fw.label}" is genuinely the wrong shape for this case, say so in one line starting "FRAMEWORK CHECK:", name the framework you would use instead and why in under 25 words, and then answer using YOUR framework, not mine. If it fits, write "FRAMEWORK CHECK: fits." and continue. Do not be polite about this — a wrong framework costs me the interview.
+
+Step 2 — The model answer. Write it stage by stage, using the exact stage names above as headings, in the order above. For each stage:
+- Write the words I should actually SAY, in first person and in spoken English ("I'll assume...", "The segment I'd focus on is...", "The reason I'd rank that first is..."). Not bullet-point shorthand, not an essay.
+- Keep each stage sayable inside its stated timebox at about ${LIVE_SPEAK_WPM} words per minute of speech. Put the approximate word count in brackets after each heading so I can see it fits.
+- Be specific to THIS case: name real segments, real metric definitions with timeframes, real numbers, real trade-offs. Never write placeholder text like "the relevant metric" or "[insert example]". If you need a number, invent a plausible one and flag it as an assumption.
+- Hit the "What good looks like" line for that stage, and dodge the "Avoid" items.
+- End each stage with one line beginning "↳ if pressed:" giving the single sharpest sentence I can add if the interviewer digs into that stage.
+
+Step 3 — Then add exactly three short sections:
+- "IF THEY PUSH BACK" — the three most likely follow-up questions for this specific case, each with a two-sentence answer.
+- "TRAPS" — the three mistakes that would most damage this answer, in one line each.
+- "30-SECOND VERSION" — the entire answer compressed into something I can say in 30 seconds if I run out of time.
+
+=== 4. HOW I WILL BE GRADED ===
+
+This is the rubric my interviewer is effectively using:
+
+${rubricBlock || '(rubric unavailable)'}
+
+After the answer, grade your own answer against each dimension in one line — weak / solid / strong, plus what would push it one level up.
+
+Output plain text. Short paragraphs. No preamble, no "great question", no restating these instructions. Start at the READING IT AS line.`;
+}
+async function copyTextToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (e) { /* fall through to legacy path */ }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return !!ok;
+  } catch (e) { return false; }
+}
+function liveTypeSelectHTML(selected) {
+  const byTrack = {};
+  Object.keys(TYPE_TAXONOMY).forEach(t => { const tr = TYPE_TAXONOMY[t].track; (byTrack[tr] = byTrack[tr] || []).push(t); });
+  const trackOrder = ['product-sense', 'analytical', 'ai-product', 'cross-cutting'];
+  return `<select id="live-type-select" class="status-select" aria-label="Case type">
+    ${trackOrder.filter(tr => byTrack[tr]).map(tr => `
+      <optgroup label="${esc(titleCase(tr))}">
+        ${byTrack[tr].sort((a, b) => TYPE_TAXONOMY[a].label.localeCompare(TYPE_TAXONOMY[b].label)).map(t =>
+          `<option value="${esc(t)}" ${t === selected ? 'selected' : ''}>${esc(TYPE_TAXONOMY[t].label)}</option>`).join('')}
+      </optgroup>`).join('')}
+  </select>`;
+}
+function liveFrameworkSelectHTML(selected) {
+  const keys = ['product-sense', 'analytical', 'rca', 'ai-product'];
+  return `<select id="live-framework-select" class="status-select" aria-label="Framework">
+    ${keys.map(k => `<option value="${esc(k)}" ${k === selected ? 'selected' : ''}>${esc((resolveFramework(k) || {}).label || titleCase(k))}</option>`).join('')}
+  </select>`;
+}
+function renderLive() {
+  const el = document.getElementById('view-live');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="sec-head"><h2>Live case</h2><span class="count">for when you're mid-interview</span></div>
+    <p class="note">Paste or type the case the interviewer just gave you — fragments and shorthand are fine. This guesses the case type locally (no AI on this device) and shows the matching framework instantly. Use "Copy AI prompt" to get a full model answer from a Claude/ChatGPT tab you already have open.</p>
+    <textarea id="live-input" class="live-input" placeholder="e.g. why did checkout conversion drop 12% last week for zomato, or design a product for gig workers…">${esc(state.live.text)}</textarea>
+    <div id="live-result"></div>`;
+  const ta = document.getElementById('live-input');
+  if (ta) { ta.selectionStart = ta.selectionEnd = ta.value.length; }
+  updateLiveResult();
+}
+function liveGuessHTML(sel) {
+  const cls = sel.cls;
+  let badgeHTML;
+  if (sel.isOverridden) {
+    badgeHTML = `<span class="badge accent">${esc(sel.typeLabel)}</span><span class="badge neutral">manually chosen</span>`;
+  } else if (sel.status === 'empty') {
+    badgeHTML = `<span class="badge neutral">nothing typed yet</span>`;
+  } else if (sel.status === 'unsure') {
+    badgeHTML = `<span class="badge neutral">not classified — pick a type</span>`;
+  } else {
+    badgeHTML = `<span class="badge accent">${esc(sel.typeLabel)}</span><span class="badge ${sel.confidence === 'high' ? 'fresh' : 'verify'}">${esc(sel.confidence)} confidence</span>`;
+  }
+  const alternates = (!sel.isOverridden && cls && cls.ranked && cls.ranked.length > 1 && sel.status !== 'empty')
+    ? `<div class="live-controls"><span class="flabel">Also considered</span>${cls.ranked.slice(1, 3).filter(r => r.score > 0).map(r =>
+        `<button type="button" class="chip-btn" data-action="live-pick-type" data-type="${esc(r.type)}">${esc((TYPE_TAXONOMY[r.type] || {}).label || r.type)} · ${r.score}</button>`).join('')}</div>`
+    : (sel.status === 'unsure' ? `<p class="note">Type a bit more, or pick the case type yourself below.</p>` : '');
+  const whyDetails = (!sel.isOverridden && cls && cls.top)
+    ? (() => {
+        const top = cls.ranked.find(r => r.type === cls.top);
+        const kw = top ? [...top.hits.strong, ...top.hits.phrases, ...top.hits.terms].slice(0, 8) : [];
+        return kw.length ? `<details class="followups"><summary>Why this guess</summary><ul class="plain">${kw.map(k => `<li>${esc(k)}</li>`).join('')}</ul></details>` : '';
+      })()
+    : '';
+  return `
+    <div class="live-guess">
+      <div class="live-controls">${badgeHTML}</div>
+      ${alternates}
+      <div class="live-controls">
+        <span class="flabel">Case type</span>${liveTypeSelectHTML(sel.type)}
+        <span class="flabel">Framework</span>${liveFrameworkSelectHTML(sel.frameworkKey)}
+        ${sel.isOverridden ? `<button type="button" class="btn ghost small" data-action="live-reset">Reset to auto-guess</button>` : ''}
+      </div>
+      ${whyDetails}
+    </div>`;
+}
+function updateLiveResult() {
+  const wrap = document.getElementById('live-result');
+  if (!wrap) return;
+  const sel = liveSelection();
+  if (sel.status === 'empty') {
+    wrap.innerHTML = `${liveGuessHTML(sel)}<div class="empty">Paste or type the case prompt above — even a few fragments will do. The framework scaffold appears here instantly.</div>`;
+    return;
+  }
+  const fw = sel.fw;
+  const prompt = buildLivePrompt(sel, state.live.text);
+  wrap.innerHTML = `
+    ${liveGuessHTML(sel)}
+    <div class="case-detail">
+      <p class="block-label">${esc(fw.label)} framework · ${esc(String(fw.totalMin || 45))} min</p>
+      ${stageListHTML(fw)}
+      ${frameworkPitfalls(fw).length ? `<details class="followups"><summary>Pitfalls to avoid</summary><ul class="plain">${frameworkPitfalls(fw).map(p => `<li>${esc(p)}</li>`).join('')}</ul></details>` : ''}
+      ${(fw.rubric || []).length ? `<details class="followups"><summary>Rubric you'll be scored against</summary>${rubricReadOnlyHTML(fw)}</details>` : ''}
+    </div>
+    <div class="live-actions">
+      <button type="button" class="btn" id="live-copy-btn" data-action="live-copy">Copy AI prompt</button>
+      <button type="button" class="btn ghost small" data-action="live-clear">Clear</button>
+    </div>
+    <details class="followups"><summary>Preview the exact prompt</summary><textarea class="live-prompt-box" id="live-prompt-fallback" readonly>${esc(prompt)}</textarea></details>`;
+}
+function saveLiveDraft() {
+  lsSet(LS_LIVE, { text: state.live.text, typeOverride: state.live.typeOverride, frameworkOverride: state.live.frameworkOverride, updatedAt: new Date().toISOString() });
+}
+let liveSaveTimer = null;
+let liveClassifyTimer = null;
+function debounceSaveLiveDraft() {
+  clearTimeout(liveSaveTimer);
+  liveSaveTimer = setTimeout(saveLiveDraft, 400);
+}
+function debounceClassifyLive() {
+  clearTimeout(liveClassifyTimer);
+  liveClassifyTimer = setTimeout(() => {
+    state.live.cls = classifyCaseText(state.live.text);
+    updateLiveResult();
+  }, 250);
+}
+function loadLiveDraft() {
+  const saved = lsGet(LS_LIVE, null);
+  if (saved && typeof saved === 'object') {
+    state.live.text = saved.text || '';
+    state.live.typeOverride = saved.typeOverride || null;
+    state.live.frameworkOverride = saved.frameworkOverride || null;
+    state.live.cls = state.live.text ? classifyCaseText(state.live.text) : null;
+  }
+}
+
 /* ============================== Export / Import ============================== */
 function buildExportPayload() {
   return {
@@ -968,7 +1429,8 @@ function buildExportPayload() {
     status: lsGet(LS_STATUS, {}),
     behavioural: lsGet(LS_BEHAV, {}),
     behavStatus: lsGet(LS_BEHAV_STATUS, {}),
-    activity: lsGet(LS_ACTIVITY, {})
+    activity: lsGet(LS_ACTIVITY, {}),
+    live: lsGet(LS_LIVE, null)
   };
 }
 function exportJSON() {
@@ -1003,6 +1465,7 @@ function importJSON(file) {
     lsSet(LS_BEHAV, data.behavioural);
     lsSet(LS_BEHAV_STATUS, data.behavStatus);
     if (isPlainObject(data.activity)) lsSet(LS_ACTIVITY, data.activity);
+    if (isPlainObject(data.live)) { lsSet(LS_LIVE, data.live); loadLiveDraft(); }
     afterMutation();
     alert('Import complete.');
   };
@@ -1075,6 +1538,62 @@ function wireEvents() {
   storiesEl.addEventListener('click', e => {
     const goto = e.target.closest('[data-action="goto-question"]');
     if (goto) { jumpToQuestion(goto.dataset.qid); return; }
+  });
+
+  const liveEl = document.getElementById('view-live');
+  liveEl.addEventListener('input', e => {
+    if (e.target.id === 'live-input') {
+      state.live.text = e.target.value;
+      debounceSaveLiveDraft();
+      debounceClassifyLive();
+    }
+  });
+  liveEl.addEventListener('change', e => {
+    if (e.target.id === 'live-type-select') {
+      state.live.typeOverride = e.target.value;
+      state.live.frameworkOverride = null;
+      saveLiveDraft();
+      updateLiveResult();
+      return;
+    }
+    if (e.target.id === 'live-framework-select') {
+      state.live.frameworkOverride = e.target.value;
+      saveLiveDraft();
+      updateLiveResult();
+    }
+  });
+  liveEl.addEventListener('click', e => {
+    const pick = e.target.closest('[data-action="live-pick-type"]');
+    if (pick) { state.live.typeOverride = pick.dataset.type; state.live.frameworkOverride = null; saveLiveDraft(); updateLiveResult(); return; }
+    if (e.target.closest('[data-action="live-reset"]')) { state.live.typeOverride = null; state.live.frameworkOverride = null; saveLiveDraft(); updateLiveResult(); return; }
+    if (e.target.closest('[data-action="live-clear"]')) {
+      if (!confirm('Clear the pasted case and start over?')) return;
+      state.live = { text: '', typeOverride: null, frameworkOverride: null, cls: null };
+      saveLiveDraft();
+      renderLive();
+      return;
+    }
+    const copyBtn = e.target.closest('[data-action="live-copy"]');
+    if (copyBtn) {
+      const sel = liveSelection();
+      const prompt = buildLivePrompt(sel, state.live.text);
+      copyTextToClipboard(prompt).then(ok => {
+        const btn = document.getElementById('live-copy-btn');
+        if (ok) {
+          if (btn) { const orig = 'Copy AI prompt'; btn.textContent = 'Copied ✓'; setTimeout(() => { if (btn.isConnected) btn.textContent = orig; }, 2000); }
+        } else {
+          const box = document.getElementById('live-prompt-fallback');
+          if (box) {
+            const details = box.closest('details');
+            if (details) details.open = true;
+            box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            box.focus(); box.select();
+          }
+        }
+        recordActivity();
+        renderStats();
+      });
+    }
   });
   behavEl.addEventListener('change', e => {
     const sel = e.target.closest('[data-behav-status-for]');
@@ -1158,6 +1677,7 @@ async function init() {
   try { COVERAGE = await fetchJSON('./data/coverage.json'); } catch (e) { COVERAGE = null; }
 
   DAY_INDEX = computeDayIndex(SCHEDULE.epoch || '2026-09-14', getDayOverride());
+  loadLiveDraft();
 
   const cParam = new URLSearchParams(location.search).get('c');
   if (cParam && getCaseById(cParam)) {

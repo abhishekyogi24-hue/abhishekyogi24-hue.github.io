@@ -377,10 +377,33 @@ table.coverage td.gap { color: var(--verify); font-weight: 600; }
 footer { border-top: 1px solid var(--border); margin-top: 44px; padding: 24px 0 48px; color: var(--muted); font-size: 13px; }
 footer .stamp { font-family: var(--mono); font-size: 12px; }
 
+/* ---- Live case (interview co-pilot) ---- */
+.live-input {
+  width: 100%; min-height: 150px; resize: vertical;
+  border: 1px solid var(--border-strong); border-radius: 12px;
+  background: var(--surface); color: var(--ink); padding: 12px 14px;
+  font-size: 15px; line-height: 1.55; font-family: var(--sans);
+}
+.live-guess {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px; margin: 14px 0;
+}
+.live-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.live-controls .flabel { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.live-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+.rubric-level.static { cursor: default; }
+.live-prompt-box {
+  width: 100%; min-height: 220px; resize: vertical; margin-top: 10px;
+  font-family: var(--mono); font-size: 12px; line-height: 1.5;
+  border: 1px solid var(--border-strong); border-radius: 10px;
+  background: var(--surface-2); color: var(--ink-2); padding: 10px 12px;
+}
+
 @media (max-width: 640px) {
   .stats { grid-template-columns: repeat(2, 1fr); }
   .container { padding: 0 16px; }
   .rubric-levels { grid-template-columns: 1fr; }
   .star-grid { grid-template-columns: 1fr; }
+  .live-controls { flex-direction: column; align-items: stretch; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
