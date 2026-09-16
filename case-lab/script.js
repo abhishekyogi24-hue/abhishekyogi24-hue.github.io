@@ -15,6 +15,14 @@ const TOTAL_TIMER_SEC = 45 * 60;
 const LIVE_MIN_WORDS = 5;
 const LIVE_MIN_SCORE = 4;
 const LIVE_SPEAK_WPM = 130;
+// Base URL of the chatbot-worker deployment (see ../chatbot-worker/README.md,
+// "Live case answers"). Empty = inline "Get answer" is off and the "Copy AI
+// prompt" fallback is the primary path — nothing here ever assumes it's set.
+const LIVE_WORKER_URL = '';
+const LIVE_FIRST_BYTE_TIMEOUT_MS = 15000;
+const LIVE_IDLE_TIMEOUT_MS = 20000;
+const LIVE_ANSWER_MAX_STORED_CHARS = 60000;
+const LIVE_SUBMIT_DEBOUNCE_MS = 600;
 
 /* ============================== Global data ============================== */
 let FRAMEWORKS = {};
@@ -31,7 +39,12 @@ const state = {
   practiceCaseId: null,
   practiceReturnView: 'today',
   casesFilter: { status: 'all', track: 'all', type: 'all', company: 'all', region: 'all', difficulty: 'all', q: '' },
-  live: { text: '', typeOverride: null, frameworkOverride: null, cls: null }
+  live: {
+    text: '', typeOverride: null, frameworkOverride: null, cls: null,
+    answer: '', answerStatus: 'idle', answerError: null, answerCode: null,
+    answerFor: null, answerAt: null, abort: null, partial: false,
+    workerReachable: null, lastSubmitAt: 0
+  }
 };
 
 /* ============================== Small utilities ============================== */
@@ -1327,12 +1340,17 @@ function renderLive() {
   if (!el) return;
   el.innerHTML = `
     <div class="sec-head"><h2>Live case</h2><span class="count">for when you're mid-interview</span></div>
-    <p class="note">Paste or type the case the interviewer just gave you — fragments and shorthand are fine. This guesses the case type locally (no AI on this device) and shows the matching framework instantly. Use "Copy AI prompt" to get a full model answer from a Claude/ChatGPT tab you already have open.</p>
+    <p class="note">Paste or type the case the interviewer just gave you — fragments and shorthand are fine. This guesses the case type locally (no AI on this device) and shows the matching framework instantly.</p>
     <textarea id="live-input" class="live-input" placeholder="e.g. why did checkout conversion drop 12% last week for zomato, or design a product for gig workers…">${esc(state.live.text)}</textarea>
-    <div id="live-result"></div>`;
+    <div id="live-result"></div>
+    <div id="live-answer"></div>`;
   const ta = document.getElementById('live-input');
   if (ta) { ta.selectionStart = ta.selectionEnd = ta.value.length; }
   updateLiveResult();
+  renderLiveAnswer();
+  // Fire-and-forget: only used to soften the error copy if the worker is known
+  // unreachable before the user even tries — never gates submission.
+  liveHealthCheck().then(() => { if (state.live.workerReachable === false) updateLiveResult(); });
 }
 function liveGuessHTML(sel) {
   const cls = sel.cls;
@@ -1387,14 +1405,33 @@ function updateLiveResult() {
       ${frameworkPitfalls(fw).length ? `<details class="followups"><summary>Pitfalls to avoid</summary><ul class="plain">${frameworkPitfalls(fw).map(p => `<li>${esc(p)}</li>`).join('')}</ul></details>` : ''}
       ${(fw.rubric || []).length ? `<details class="followups"><summary>Rubric you'll be scored against</summary>${rubricReadOnlyHTML(fw)}</details>` : ''}
     </div>
-    <div class="live-actions">
-      <button type="button" class="btn" id="live-copy-btn" data-action="live-copy">Copy AI prompt</button>
-      <button type="button" class="btn ghost small" data-action="live-clear">Clear</button>
-    </div>
+    ${liveActionsHTML()}
     <details class="followups"><summary>Preview the exact prompt</summary><textarea class="live-prompt-box" id="live-prompt-fallback" readonly>${esc(prompt)}</textarea></details>`;
 }
+function liveActionsHTML() {
+  const st = state.live;
+  const busy = st.answerStatus === 'loading' || st.answerStatus === 'streaming';
+  const configured = liveWorkerConfigured();
+  const unreachableNote = (configured && st.workerReachable === false)
+    ? ` — the answer service didn't respond to a health check, but Enter will still try`
+    : '';
+  const actions = `
+    ${configured ? `<button type="button" class="btn" id="live-answer-btn" data-action="live-answer" ${busy ? 'disabled' : ''}>${busy ? 'Getting answer…' : 'Get answer'}</button>` : ''}
+    <button type="button" class="btn ${configured ? 'ghost small' : ''}" id="live-copy-btn" data-action="live-copy">Copy AI prompt</button>
+    <button type="button" class="btn ghost small" data-action="live-clear">Clear</button>`;
+  const note = configured
+    ? `Press <b>Enter</b> to get a model answer here · <b>Shift+Enter</b> for a new line${unreachableNote}`
+    : `Inline answers aren't set up on this device — <b>Enter</b> copies the prompt for your own Claude/ChatGPT tab.`;
+  return `<div class="live-actions">${actions}</div><p class="note">${note}</p>`;
+}
 function saveLiveDraft() {
-  lsSet(LS_LIVE, { text: state.live.text, typeOverride: state.live.typeOverride, frameworkOverride: state.live.frameworkOverride, updatedAt: new Date().toISOString() });
+  const st = state.live;
+  const answerToStore = (st.answer && st.answer.length <= LIVE_ANSWER_MAX_STORED_CHARS) ? st.answer : '';
+  lsSet(LS_LIVE, {
+    text: st.text, typeOverride: st.typeOverride, frameworkOverride: st.frameworkOverride,
+    answer: answerToStore, answerFor: st.answerFor, answerAt: st.answerAt,
+    updatedAt: new Date().toISOString()
+  });
 }
 let liveSaveTimer = null;
 let liveClassifyTimer = null;
@@ -1416,6 +1453,304 @@ function loadLiveDraft() {
     state.live.typeOverride = saved.typeOverride || null;
     state.live.frameworkOverride = saved.frameworkOverride || null;
     state.live.cls = state.live.text ? classifyCaseText(state.live.text) : null;
+    state.live.answer = saved.answer || '';
+    state.live.answerFor = saved.answerFor || null;
+    state.live.answerAt = saved.answerAt || null;
+    // Never restore a busy status — a page load always starts idle/done, never mid-request.
+    state.live.answerStatus = state.live.answer ? 'done' : 'idle';
+    state.live.partial = false;
+  }
+}
+
+/* ---- Live case: inline AI answer (backend-assisted, additive to the local classifier above) ---- */
+// The local classifier and buildLivePrompt()/"Copy AI prompt" are untouched and stay fully
+// functional with LIVE_WORKER_URL empty or the worker unreachable — this section only adds an
+// optional inline path on top. See chatbot-worker/src/live-case-prompt.js for the server twin.
+function liveWorkerConfigured() { return !!LIVE_WORKER_URL; }
+
+async function liveHealthCheck() {
+  if (!liveWorkerConfigured() || state.live.workerReachable !== null) return;
+  try {
+    const ac = new AbortController();
+    const t = setTimeout(() => ac.abort(), 4000);
+    const res = await fetch(LIVE_WORKER_URL + '/health', { signal: ac.signal });
+    clearTimeout(t);
+    state.live.workerReachable = !!res.ok;
+  } catch (e) {
+    state.live.workerReachable = false;
+  }
+}
+
+function liveRequestPayload(sel) {
+  const cls = sel.cls || {};
+  const alternates = (cls.ranked || []).slice(1, 3).filter(r => r.score > 0).map(r => (TYPE_TAXONOMY[r.type] || {}).label || r.type);
+  return {
+    caseText: state.live.text,
+    framework: {
+      key: sel.frameworkKey, label: sel.fw.label, totalMin: sel.fw.totalMin,
+      stages: (sel.fw.stages || []).map(s => ({ name: s.name, minMin: s.minMin, maxMin: s.maxMin, guidance: s.guidance, whatGoodLooksLike: s.whatGoodLooksLike, pitfalls: s.pitfalls || [] })),
+      rubric: (sel.fw.rubric || []).map(r => ({ dimension: r.dimension, weak: r.weak, solid: r.solid, strong: r.strong }))
+    },
+    classifier: { typeLabel: sel.typeLabel, confidence: sel.confidence, status: sel.status, overridden: sel.isOverridden, alternates },
+    speakWpm: LIVE_SPEAK_WPM,
+    stream: true
+  };
+}
+
+// Parses the model's "## Heading [~N words]" output contract. Tolerant of a
+// truncated final section, since this runs on every streamed chunk.
+function parseLiveAnswer(text) {
+  const result = { readingAs: '', frameworkCheck: '', sections: [] };
+  if (!text) return result;
+  const headingLineRe = /^##\s+(.+?)\s*$/m;
+  const firstMatch = headingLineRe.exec(text);
+  const firstHeadingIndex = firstMatch ? firstMatch.index : -1;
+  const preamble = firstHeadingIndex === -1 ? text : text.slice(0, firstHeadingIndex);
+  const readingMatch = preamble.match(/READING IT AS:\s*(.+)/i);
+  if (readingMatch) result.readingAs = readingMatch[1].trim();
+  const fwMatch = preamble.match(/FRAMEWORK CHECK:\s*(.+)/i);
+  if (fwMatch) result.frameworkCheck = fwMatch[1].trim();
+  if (firstHeadingIndex === -1) return result;
+
+  const body = text.slice(firstHeadingIndex);
+  const re = /^##\s+(.+?)\s*$/gm;
+  const marks = [];
+  let m;
+  while ((m = re.exec(body)) !== null) marks.push({ index: m.index, heading: m[1], len: m[0].length });
+  for (let i = 0; i < marks.length; i++) {
+    const start = marks[i].index + marks[i].len;
+    const end = i + 1 < marks.length ? marks[i + 1].index : body.length;
+    const wordMatch = marks[i].heading.match(/^(.*?)\s*\[~?\s*(\d+)\s*words?\]$/i);
+    result.sections.push({
+      heading: (wordMatch ? wordMatch[1] : marks[i].heading).trim(),
+      wordHint: wordMatch ? wordMatch[2] : null,
+      body: body.slice(start, end).trim()
+    });
+  }
+  return result;
+}
+
+function renderLiveAnswer() {
+  const wrap = document.getElementById('live-answer');
+  if (!wrap) return;
+  const st = state.live;
+  if (st.answerStatus === 'idle' && !st.answer && !st.answerError) { wrap.innerHTML = ''; return; }
+
+  const busy = st.answerStatus === 'loading' || st.answerStatus === 'streaming';
+  const parsed = parseLiveAnswer(st.answer);
+  const sel = liveSelection();
+
+  let statusText = '';
+  if (st.answerStatus === 'loading') statusText = 'Contacting the answer service…';
+  else if (st.answerStatus === 'streaming') statusText = 'Writing the answer…';
+  else if (st.answerStatus === 'done' && st.partial) statusText = 'Stopped — partial answer kept';
+  else if (st.answerStatus === 'done') statusText = 'Done';
+
+  const metaChips = [];
+  if (parsed.readingAs) metaChips.push(`<span class="badge neutral">READING IT AS: ${esc(parsed.readingAs)}</span>`);
+  if (parsed.frameworkCheck) {
+    const fits = /^fits\.?$/i.test(parsed.frameworkCheck);
+    metaChips.push(`<span class="badge ${fits ? 'fresh' : 'verify'}">FRAMEWORK CHECK: ${esc(parsed.frameworkCheck)}</span>`);
+  }
+
+  const stagesHTML = parsed.sections.map(s => {
+    const is30s = /30-SECOND VERSION/i.test(s.heading);
+    const paras = s.body.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+    return `<div class="walkthrough-stage${is30s ? ' live-answer-30s' : ''}">
+      <h4>${esc(s.heading)}${s.wordHint ? ` <span class="stage-time">~${esc(s.wordHint)} words</span>` : ''}</h4>
+      ${paras.map(p => `<p${/^(↳|if pressed)/i.test(p) ? ' class="live-if-pressed"' : ''}>${esc(p)}</p>`).join('')}
+    </div>`;
+  }).join('');
+
+  const skeleton = (busy && !stagesHTML)
+    ? `<div class="live-skeleton" style="width:70%"></div><div class="live-skeleton" style="width:92%"></div><div class="live-skeleton" style="width:55%"></div>`
+    : '';
+
+  let errorHTML = '';
+  if (st.answerStatus === 'error') errorHTML = `<div class="live-answer-error"><p>${esc(st.answerError || 'Something went wrong.')}</p></div>`;
+  else if (st.answerStatus === 'done' && st.partial) errorHTML = `<div class="live-answer-error"><p>The answer was cut off — what's above is still usable.</p></div>`;
+
+  const stopBtn = busy ? `<button type="button" class="btn ghost small" data-action="live-stop">Stop</button>` : '';
+  const retryBtn = (st.answerStatus === 'error' && st.answerCode !== 'rate_limited' && st.answerCode !== 'origin_not_allowed')
+    ? `<button type="button" class="btn ghost small" data-action="live-answer-retry">Retry</button>` : '';
+  const regenBtn = (st.answerStatus === 'done')
+    ? `<button type="button" class="btn ghost small" data-action="live-regenerate">Regenerate</button>` : '';
+
+  wrap.innerHTML = `
+    <div class="model-answer live-answer" id="live-answer-card">
+      <div class="live-answer-head">
+        <p class="block-label">Model answer${sel.typeLabel ? ` · ${esc(sel.typeLabel)}` : ''}</p>
+        ${busy ? '<span class="live-spinner" aria-hidden="true"></span>' : ''}
+        <span class="live-answer-status" role="status" aria-live="polite">${esc(statusText)}</span>
+        ${stopBtn}${regenBtn}${retryBtn}
+      </div>
+      ${metaChips.length ? `<div class="live-answer-meta">${metaChips.join('')}</div>` : ''}
+      ${errorHTML}
+      <div class="model-answer-stages" id="live-answer-body">${stagesHTML}${skeleton}</div>
+    </div>`;
+}
+
+let liveAnswerRenderScheduled = false;
+function scheduleLiveAnswerRender() {
+  if (liveAnswerRenderScheduled) return;
+  liveAnswerRenderScheduled = true;
+  requestAnimationFrame(() => { liveAnswerRenderScheduled = false; renderLiveAnswer(); });
+}
+
+function abortLiveCase() {
+  const st = state.live;
+  if (st.abort) { try { st.abort.abort(); } catch (e) {} }
+  st.abort = null;
+  if (st.answer) { st.answerStatus = 'done'; st.partial = true; } else { st.answerStatus = 'idle'; }
+  saveLiveDraft();
+  renderLiveAnswer();
+  updateLiveResult();
+}
+
+async function submitLiveCase(opts) {
+  opts = opts || {};
+  const st = state.live;
+  if (st.answerStatus === 'loading' || st.answerStatus === 'streaming') return;
+
+  const trimmed = (st.text || '').trim();
+  const wordCount = trimmed ? trimmed.split(/\s+/).length : 0;
+  if (wordCount < LIVE_MIN_WORDS) {
+    st.answerError = 'Type a few more words, then press Enter.';
+    st.answerCode = null;
+    renderLiveAnswer();
+    return;
+  }
+
+  const sel = liveSelection();
+  const signature = sel.frameworkKey + '|' + trimmed;
+
+  if (!opts.force && st.answerFor === signature && st.answer && st.answerStatus === 'done') {
+    const card = document.getElementById('live-answer-card');
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+  const now = Date.now();
+  if (!opts.force && now - st.lastSubmitAt < LIVE_SUBMIT_DEBOUNCE_MS) return;
+  st.lastSubmitAt = now;
+
+  if (!liveWorkerConfigured()) {
+    // No backend configured — Enter still does something useful: the same
+    // copy-to-clipboard the "Copy AI prompt" button does.
+    const prompt = buildLivePrompt(sel, st.text);
+    const ok = await copyTextToClipboard(prompt);
+    if (ok) {
+      const btn = document.getElementById('live-copy-btn');
+      if (btn) { const orig = 'Copy AI prompt'; btn.textContent = 'Copied ✓'; setTimeout(() => { if (btn.isConnected) btn.textContent = orig; }, 2000); }
+    } else {
+      const box = document.getElementById('live-prompt-fallback');
+      if (box) { const d = box.closest('details'); if (d) d.open = true; box.scrollIntoView({ behavior: 'smooth', block: 'center' }); box.focus(); box.select(); }
+    }
+    recordActivity();
+    renderStats();
+    return;
+  }
+
+  st.answer = '';
+  st.answerStatus = 'loading';
+  st.answerError = null;
+  st.answerCode = null;
+  st.partial = false;
+  st.answerFor = signature;
+  renderLiveAnswer();
+  updateLiveResult();
+  const anchor = document.getElementById('live-answer');
+  if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const ac = new AbortController();
+  st.abort = ac;
+  let watchdog = setTimeout(() => ac.abort(), LIVE_FIRST_BYTE_TIMEOUT_MS);
+  const bump = () => { clearTimeout(watchdog); watchdog = setTimeout(() => ac.abort(), LIVE_IDLE_TIMEOUT_MS); };
+  const canStream = typeof ReadableStream !== 'undefined' && typeof Response !== 'undefined' && 'body' in Response.prototype;
+  const payload = liveRequestPayload(sel);
+  payload.stream = canStream;
+  let sawStop = false;
+
+  try {
+    const res = await fetch(LIVE_WORKER_URL + '/live-case', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: ac.signal
+    });
+    clearTimeout(watchdog);
+
+    if (!res.ok) {
+      let data = null;
+      try { data = await res.json(); } catch (e) {}
+      st.answerCode = (data && data.code) || (res.status === 429 ? 'rate_limited' : (res.status === 403 ? 'origin_not_allowed' : 'upstream_failed'));
+      st.answerError = (data && data.error) || ('The answer service returned an error (' + res.status + ').');
+      st.answerStatus = 'error';
+      return;
+    }
+
+    // Trust the ACTUAL response Content-Type, not just our own capability flag —
+    // a server can legitimately answer a streamed request with plain JSON (or
+    // vice versa isn't possible, but defend the one direction that matters).
+    const isEventStream = (res.headers.get('Content-Type') || '').indexOf('text/event-stream') !== -1;
+    if (canStream && res.body && isEventStream) {
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let buffer = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        bump();
+        buffer += decoder.decode(value, { stream: true });
+        const frames = buffer.split('\n\n');
+        buffer = frames.pop();
+        for (const frame of frames) {
+          for (const line of frame.split('\n')) {
+            if (!line.startsWith('data:')) continue;
+            const jsonStr = line.slice(5).trim();
+            if (!jsonStr || jsonStr === '[DONE]') continue;
+            let evt;
+            try { evt = JSON.parse(jsonStr); } catch (e) { continue; }
+            if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') {
+              st.answer += evt.delta.text;
+              st.answerStatus = 'streaming';
+              scheduleLiveAnswerRender();
+            } else if (evt.type === 'message_stop') {
+              sawStop = true;
+            } else if (evt.type === 'error') {
+              st.answerCode = 'upstream_error';
+              st.answerError = (evt.error && evt.error.message) || 'The answer service reported an error mid-stream.';
+              sawStop = true;
+            }
+          }
+        }
+      }
+      st.answerStatus = 'done';
+      st.partial = !sawStop && !!st.answer;
+      if (!st.answer && !st.answerError) { st.answerStatus = 'error'; st.answerCode = 'empty_answer'; st.answerError = 'No answer was generated.'; }
+      if (st.answer) st.answerAt = new Date().toISOString();
+    } else {
+      const data = await res.json();
+      st.answer = data.answer || '';
+      st.answerStatus = st.answer ? 'done' : 'error';
+      st.partial = false;
+      if (!st.answer) { st.answerCode = 'empty_answer'; st.answerError = 'No answer was generated.'; }
+      else st.answerAt = new Date().toISOString();
+    }
+  } catch (e) {
+    clearTimeout(watchdog);
+    if (e && e.name === 'AbortError') {
+      if (st.answer) { st.answerStatus = 'done'; st.partial = true; }
+      else { st.answerStatus = 'error'; st.answerCode = 'timeout'; st.answerError = "Timed out waiting for the answer service — you can retry, or use Copy AI prompt instead."; }
+    } else {
+      st.answerStatus = 'error';
+      st.answerCode = 'network_error';
+      st.answerError = "Couldn't reach the answer service — check your connection, or use Copy AI prompt instead.";
+    }
+  } finally {
+    clearTimeout(watchdog);
+    st.abort = null;
+    saveLiveDraft();
+    recordActivity();
+    renderLiveAnswer();
+    updateLiveResult();
+    renderStats();
   }
 }
 
@@ -1548,6 +1883,14 @@ function wireEvents() {
       debounceClassifyLive();
     }
   });
+  liveEl.addEventListener('keydown', e => {
+    if (e.target.id !== 'live-input') return;
+    if (e.key !== 'Enter') return;
+    if (e.isComposing || e.keyCode === 229) return; // IME composition — never hijack
+    if (e.shiftKey || e.altKey) return; // Shift+Enter (or Alt+Enter) = newline, textarea default
+    e.preventDefault();
+    submitLiveCase({ source: 'enter' });
+  });
   liveEl.addEventListener('change', e => {
     if (e.target.id === 'live-type-select') {
       state.live.typeOverride = e.target.value;
@@ -1568,11 +1911,21 @@ function wireEvents() {
     if (e.target.closest('[data-action="live-reset"]')) { state.live.typeOverride = null; state.live.frameworkOverride = null; saveLiveDraft(); updateLiveResult(); return; }
     if (e.target.closest('[data-action="live-clear"]')) {
       if (!confirm('Clear the pasted case and start over?')) return;
-      state.live = { text: '', typeOverride: null, frameworkOverride: null, cls: null };
+      if (state.live.abort) { try { state.live.abort.abort(); } catch (err) {} }
+      state.live = {
+        text: '', typeOverride: null, frameworkOverride: null, cls: null,
+        answer: '', answerStatus: 'idle', answerError: null, answerCode: null,
+        answerFor: null, answerAt: null, abort: null, partial: false,
+        workerReachable: state.live.workerReachable, lastSubmitAt: 0
+      };
       saveLiveDraft();
       renderLive();
       return;
     }
+    if (e.target.closest('[data-action="live-answer"]')) { submitLiveCase({ source: 'button' }); return; }
+    if (e.target.closest('[data-action="live-answer-retry"]')) { submitLiveCase({ source: 'retry', force: true }); return; }
+    if (e.target.closest('[data-action="live-regenerate"]')) { submitLiveCase({ source: 'regenerate', force: true }); return; }
+    if (e.target.closest('[data-action="live-stop"]')) { abortLiveCase(); return; }
     const copyBtn = e.target.closest('[data-action="live-copy"]');
     if (copyBtn) {
       const sel = liveSelection();

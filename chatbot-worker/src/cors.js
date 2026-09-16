@@ -5,6 +5,8 @@ export const ALLOWED_ORIGINS = [
   "https://abhishekyogi24-hue.github.io",
   "http://localhost:4321", // local dev preview
   "http://127.0.0.1:4321",
+  "http://localhost:8080", // case-lab local dev (python3 -m http.server 8080)
+  "http://127.0.0.1:8080",
 ];
 
 export function corsHeaders(origin) {

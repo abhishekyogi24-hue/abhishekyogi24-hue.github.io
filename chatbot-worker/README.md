@@ -41,8 +41,32 @@ git add kb/ && git commit -m "Refresh Abhi AI knowledge base" && git push
 |---|---|---|
 | `/chat` | POST | `{ messages[], style?: "text"\|"voice" }` → `{ reply, mode, sources[] }`. Main chat endpoint. |
 | `/retrieve` | POST | `{ query }` → `{ chunks[] }`. Retrieval only, no LLM call — the reusable knowledge layer for a future voice interface. |
+| `/live-case` | POST | `{ caseText, framework, classifier, speakWpm, stream? }` → `{ answer }` (or an SSE stream). Powers Case Lab's Live tab ("Get answer") — a separate, unrelated product from Abhi AI sharing this same worker for its already-configured API key, CORS allowlist, and rate limiting. See `src/live-case-prompt.js`. |
 | `/health` | GET | Liveness check. |
 | `/kb-meta` | GET | `{ chunkCount, sources }` — what the Worker currently has loaded. |
+
+### Live case answers (Case Lab)
+
+`/live-case` is roughly **10x costlier per call** than `/chat` — it generates a
+full stage-by-stage 45-minute interview answer (up to 8,000 output tokens)
+instead of a short chat reply. It has its own rate-limit bucket
+(`LIVE_RATE_LIMIT_PER_DAY = 20` per IP), separate from `/chat`'s, but both
+still no-op the limit entirely if `RATE_LIMIT_KV` isn't bound — **binding it
+is strongly recommended for this route specifically**, more so than for
+`/chat`.
+
+Case Lab's `script.js` has its own `LIVE_WORKER_URL` constant (empty by
+default — inline answers stay off, and the "Copy AI prompt" fallback keeps
+working, until you set it). After any `wrangler deploy`, set it to this
+Worker's base URL and push:
+
+```js
+// case-lab/script.js
+const LIVE_WORKER_URL = 'https://portfolio-chatbot.<your-subdomain>.workers.dev';
+```
+
+Case Lab's own local-dev origins (`http://localhost:8080`, `:8080` on
+127.0.0.1 — see `case-lab/README.md`) are already in `ALLOWED_ORIGINS`.
 
 ## One-time deploy (~5 minutes)
 
@@ -102,15 +126,20 @@ Pay-per-use on your Anthropic key. Each chat is roughly 4-6K input tokens
 (canonical facts + retrieved context + conversation) and a few hundred output
 tokens — at Sonnet 5 pricing ($3 / $15 per 1M input/output tokens, $2 / $10
 introductory through 2026-08-31) that's a little over a cent per message.
-**Set an explicit monthly spend cap in the Anthropic Console** — nothing in
-this Worker enforces one on its own. The `MAX_MESSAGES` / `MAX_TOKENS` caps in
-`src/worker.js` bound the size of any single request. Cloudflare Workers'
-free tier covers 100,000 requests/day.
+A `/live-case` call is bigger — up to 8,000 output tokens for a full
+stage-by-stage answer — so figure roughly **10-15 cents per live case answer**
+at Sonnet 5 output pricing, versus roughly a cent per `/chat` message.
 
-## Rate limiting (optional but recommended)
+**Set an explicit monthly spend cap in the Anthropic Console** — nothing in
+this Worker enforces one on its own. The `MAX_MESSAGES` / `MAX_TOKENS` (and,
+for `/live-case`, `LIVE_MAX_TOKENS`) caps in `src/worker.js` bound the size of
+any single request. Cloudflare Workers' free tier covers 100,000 requests/day.
+
+## Rate limiting (optional but recommended — strongly recommended for `/live-case`)
 
 Without it, anyone who finds the Worker URL can send unlimited requests
-against your API key. To enable a per-IP daily cap:
+against your API key — at `/live-case`'s per-call cost, this matters more
+than it does for `/chat`. To enable a per-IP daily cap:
 
 ```bash
 wrangler kv:namespace create RATE_LIMIT_KV
