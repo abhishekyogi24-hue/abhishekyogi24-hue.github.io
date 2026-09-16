@@ -270,16 +270,34 @@ function apportion(total, weights) {
 
 const weeklySlotCounts = apportion(6, trackCounts); // { track: slots per week (Mon-Sat) }
 
-// Build a stable Mon..Sat -> track assignment array (index 0 = Monday ... 5 = Saturday).
+// Base Mon..Sat multiset of tracks, in the weekly proportions above (order irrelevant —
+// it gets reshuffled fresh per week below).
 const weeklyTrackPattern = [];
 for (const t of tracks) {
   for (let i = 0; i < weeklySlotCounts[t]; i++) weeklyTrackPattern.push(t);
 }
-// Deterministically shuffle once so the same track doesn't always land on Monday.
-const shuffledPattern = seededShuffle(weeklyTrackPattern, hashStringToSeed("case-lab-weekly-pattern"));
-// Pad/truncate defensively to exactly 6.
-while (shuffledPattern.length < 6) shuffledPattern.push(tracks[0]);
-shuffledPattern.length = 6;
+while (weeklyTrackPattern.length < 6) weeklyTrackPattern.push(tracks[0]);
+weeklyTrackPattern.length = 6;
+
+// A fresh shuffle of that same multiset for EVERY week (seeded by week index, so it's
+// deterministic and reproducible across rebuilds) — otherwise the same weekday would
+// draw the same track for the entire 26-week schedule (e.g. every single Monday being
+// "analytical" forever), which reads as monotonous even though the exact case differs.
+// Also nudges away from repeating last week's Saturday track on this week's Monday.
+const weekPatternCache = new Map();
+function patternForWeek(weekIndex) {
+  if (weekPatternCache.has(weekIndex)) return weekPatternCache.get(weekIndex);
+  let pattern = seededShuffle(weeklyTrackPattern, hashStringToSeed(`case-lab-weekly-pattern-w${weekIndex}`));
+  if (weekIndex > 0) {
+    const prevSaturdayTrack = weekPatternCache.get(weekIndex - 1)[5];
+    if (pattern[0] === prevSaturdayTrack) {
+      const swapIdx = pattern.findIndex((t, i) => i > 0 && t !== prevSaturdayTrack);
+      if (swapIdx > 0) [pattern[0], pattern[swapIdx]] = [pattern[swapIdx], pattern[0]];
+    }
+  }
+  weekPatternCache.set(weekIndex, pattern);
+  return pattern;
+}
 
 // Per-track, deterministically shuffled queues of case ids, cycled as needed.
 const queues = {};
@@ -318,32 +336,59 @@ function targetDifficultyForRamp(posInBlock, blockLen) {
   return 3;
 }
 
+// Groups of case types that FEEL the same to a candidate even when the exact type
+// string (and even the track/framework) differs — e.g. "define a metric" and "define
+// an AI metric" are both "a metrics case" back to back. Consecutive-day picking avoids
+// repeating a family, not just an exact type, so two flavors of the same drill can't
+// land on adjacent days.
+const TYPE_FAMILY = {
+  "define-metrics": "metrics", "ai-metrics": "metrics", "goal-setting": "metrics", "metric-tradeoff": "metrics",
+  "rca": "diagnosis",
+  "funnel": "funnel-retention", "retention": "funnel-retention",
+  "experiment": "experiment",
+  "design-0to1": "zero-to-one", "ai-0to1": "zero-to-one", "new-segment": "zero-to-one",
+  "teardown": "zero-to-one", "improve-existing": "zero-to-one",
+  "comparative": "comparative",
+  "ai-evals": "ai-trust", "ai-guardrails": "ai-trust", "ai-ux-trust": "ai-trust",
+  "prioritization": "strategy", "pricing": "strategy", "growth-loop": "strategy",
+  "marketplace": "strategy", "trust-safety": "strategy", "platform-api": "strategy"
+};
+function typeFamily(type) { return TYPE_FAMILY[type] || type; }
+
 function pickCaseForSlot({ track, targetDifficulty, prevType, companyLastSeenDay, dayIndex }) {
   const wantsTrack = track;
   const withinTrack = (id) => caseById.get(id)?.track === wantsTrack;
+  const prevFamily = prevType ? typeFamily(prevType) : null;
 
   // Best-effort predicate: right track, right (or closest) difficulty, different
-  // type from the previous day, and no company used in the last 14 days.
+  // type FAMILY from the previous day (not just exact type), and no company used in
+  // the last 14 days.
   const strongPredicate = (id) => {
     const cse = caseById.get(id);
     if (!cse) return false;
     if (cse.difficulty !== targetDifficulty) return false;
-    if (prevType && cse.type === prevType) return false;
+    if (prevFamily && typeFamily(cse.type) === prevFamily) return false;
     if (cse.company.some((co) => companyLastSeenDay.has(co) && dayIndex - companyLastSeenDay.get(co) < 14)) return false;
     return true;
   };
   const mediumPredicate = (id) => {
     const cse = caseById.get(id);
     if (!cse) return false;
-    if (prevType && cse.type === prevType) return false;
+    if (prevFamily && typeFamily(cse.type) === prevFamily) return false;
     if (cse.company.some((co) => companyLastSeenDay.has(co) && dayIndex - companyLastSeenDay.get(co) < 14)) return false;
     return true;
   };
-  const weakPredicate = (id) => {
+  // Relax the family check to an exact-type check (the original, narrower guarantee)
+  // before relaxing further, so a small library still gets SOME adjacency guard.
+  const looserPredicate = (id) => {
     const cse = caseById.get(id);
     if (!cse) return false;
     if (prevType && cse.type === prevType) return false;
     return true;
+  };
+  const weakPredicate = (id) => {
+    const cse = caseById.get(id);
+    return !!cse;
   };
 
   let picked = nextFromQueue(wantsTrack, strongPredicate);
@@ -351,6 +396,9 @@ function pickCaseForSlot({ track, targetDifficulty, prevType, companyLastSeenDay
 
   picked = nextFromQueue(wantsTrack, mediumPredicate);
   if (picked && mediumPredicate(picked)) return picked;
+
+  picked = nextFromQueue(wantsTrack, looserPredicate);
+  if (picked && looserPredicate(picked)) return picked;
 
   picked = nextFromQueue(wantsTrack, weakPredicate);
   if (picked && weakPredicate(picked)) return picked;
@@ -376,8 +424,9 @@ for (let i = 0; i < scheduleLength; i++) {
     continue;
   }
 
-  // Monday=1 .. Saturday=6 maps to pattern index 0..5
-  const track = shuffledPattern[weekday - 1];
+  // Monday=1 .. Saturday=6 maps to pattern index 0..5; each week gets its own shuffle.
+  const weekIndex = Math.floor(i / 7);
+  const track = patternForWeek(weekIndex)[weekday - 1];
 
   const blockLen = 28;
   const posInBlock = i % blockLen;
