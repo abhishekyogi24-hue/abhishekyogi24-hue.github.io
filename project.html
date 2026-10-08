@@ -439,17 +439,17 @@
       </div>
 
       <p class="case-lede">
-        A personal job-hunt system that surfaces fully-remote Product Manager &amp; AI-PM roles I can actually
-        apply to. Every weekday morning it sweeps ~30 job portals plus LinkedIn, keeps only roles posted in the
-        last 48 hours and open to India-based applicants, verifies every link is a live posting, and ranks them
-        freshest-first on one dashboard — with a daily email digest so a fresh opening never slips past.
+        A personal job-hunt system that surfaces genuinely fully-remote Product Manager &amp; AI-PM roles open to
+        India-based applicants. Every weekday morning a scheduled workflow pulls candidates from LinkedIn and
+        remote-only boards, reads each posting's own description to confirm it's actually remote, and publishes a
+        rolling 7-day board — freshest first, with an archive for the roles I missed.
       </p>
 
       <p class="case-metrics-caption">How it cuts the noise</p>
       <div class="case-metrics">
-        <div class="metric"><span class="metric-value">~30</span><span class="metric-label">Portals swept daily</span></div>
-        <div class="metric"><span class="metric-value">48h</span><span class="metric-label">Freshness window</span></div>
-        <div class="metric"><span class="metric-value">100%</span><span class="metric-label">Links verified live</span></div>
+        <div class="metric"><span class="metric-value">7d</span><span class="metric-label">Rolling freshness window</span></div>
+        <div class="metric"><span class="metric-value">15</span><span class="metric-label">Remote-first companies checked by name</span></div>
+        <div class="metric"><span class="metric-value">8am</span><span class="metric-label">IST weekdays, auto-refresh</span></div>
       </div>
 
       <div class="case-links">
@@ -472,20 +472,25 @@
             </div>
             <div>
               <h4>Approach</h4>
-              <p>One daily automation instead of five browser tabs: deep-paginate LinkedIn's guest API across
-              keyword variants, pull remote boards and Indian portals, dedupe, and rank freshest-first — because a
-              role posted an hour ago has far fewer applicants than one that's been up two weeks.</p>
+              <p>One daily automation instead of five browser tabs: search LinkedIn's guest API across keyword
+              variants and 15 remote-first companies by name, pull We Work Remotely and RemoteOK, dedupe, and rank
+              freshest-first — because a role posted an hour ago has far fewer applicants than one that's been up
+              two weeks.</p>
             </div>
             <div>
               <h4>The catch I designed around</h4>
-              <p>Job boards lie about "remote" — LinkedIn's own remote filter returned explicitly on-site roles. So
-              the system opens each posting to confirm the workplace type and that the link is live before it ever
-              shows up, and flags anything it can't confirm rather than hiding it.</p>
+              <p>Job boards lie about "remote" — LinkedIn's own remote filter returned explicitly on-site roles, and
+              its public pages have no workplace field at all. So the system reads each posting's full description,
+              keeps only roles that explicitly say remote, and drops on-site or hybrid ones — even when the title
+              contradicts its own location. The board is small on purpose: genuinely remote India PM roles are
+              scarce, so it stays honest instead of padded.</p>
             </div>
             <div>
-              <h4>Daily delivery</h4>
-              <p>A scheduled cloud agent runs at 8am IST and a Google Apps Script emails the fresh roles straight to
-              my inbox — dashboard, morning digest, and email all kept in sync.</p>
+              <h4>Daily delivery &amp; triage</h4>
+              <p>A scheduled GitHub Actions workflow refreshes the board every weekday around 8am IST and commits it
+              back to the repo, so the live site updates itself. Every card can be marked Applied, Ignored or
+              Deleted, and roles that age off the board without being applied to land in an Archive instead of
+              vanishing.</p>
             </div>
           </div>
 
@@ -505,7 +510,7 @@
 
           <p class="case-metrics-caption">Skills this build demonstrates</p>
           <div class="case-stack">
-            <span>Product Judgment</span><span>Automation (Cron / Apps Script)</span><span>Web Scraping</span><span>LinkedIn Guest API</span><span>Data Verification</span><span>Freshness Ranking</span><span>Vibe Coding (Claude Code)</span><span>Client-Side Dashboard</span>
+            <span>Product Judgment</span><span>Automation (GitHub Actions)</span><span>Web Scraping</span><span>LinkedIn Guest API</span><span>Data Verification</span><span>Freshness Ranking</span><span>Vibe Coding (Claude Code)</span><span>Client-Side Dashboard</span>
           </div>
         </div>
       </details>

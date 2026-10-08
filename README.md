@@ -22,6 +22,10 @@ this same repo.
   indexed JSON the Worker retrieves from.
 - **`job-radar/`** — a self-updating job-hunt dashboard with its own scheduled
   GitHub Actions workflow. [Its own README](job-radar/README.md) has the details.
+- **`case-lab/`** — a daily PM interview-practice tool: one real-world case a day (159 in the
+  library, graded against four frameworks), a 75-question behavioural bank, and STAR stories
+  from my own work history. Static JSON, no server. [Its own README](case-lab/README.md)
+  has the details.
 - **`plant-protector.html`** — a standalone, bring-your-own-API-key plant
   diagnosis tool. Single file, no build step, no backend.
 

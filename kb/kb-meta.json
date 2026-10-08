@@ -1,11 +1,11 @@
 {
-  "version": "17f8982d5d",
-  "builtAt": "2026-08-06T04:58:13.996634+00:00",
-  "chunkCount": 81,
+  "version": "9b92eed05b",
+  "builtAt": "2026-10-08T17:27:54.751744+00:00",
+  "chunkCount": 110,
   "liteChunkCount": 35,
   "sources": {
-    "core": 15,
-    "site": 52,
+    "core": 19,
+    "site": 77,
     "resume": 3,
     "gdoc": 11
   }
