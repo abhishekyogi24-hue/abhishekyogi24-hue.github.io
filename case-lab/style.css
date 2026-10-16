@@ -346,6 +346,13 @@ table.coverage td.gap { color: var(--verify); font-weight: 600; }
   font-size: 13px; color: var(--ink-2); margin-bottom: 8px;
 }
 .gap-card b { color: var(--verify); }
+.gap-card .btn { margin-left: 8px; }
+.story-form { border-style: solid; background: var(--surface); display: flex; flex-direction: column; gap: 10px; }
+.story-form .answer-field input {
+  width: 100%; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface);
+  color: var(--ink); padding: 9px 11px; font-size: 13.5px; font-family: var(--sans);
+}
+.story-form .answer-field textarea { min-height: 56px; }
 
 /* ---- Progress ---- */
 .progress-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
