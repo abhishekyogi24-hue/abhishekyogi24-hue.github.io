@@ -11,6 +11,7 @@ const LS_THEME = 'caselab_theme_v1';
 const LS_ACTIVITY = 'caselab_activity_v1';
 const LS_LIVE = 'caselab_live_v1';
 const LS_USER_STORIES = 'caselab_userstories_v1';
+const LS_STORY_EDITS = 'caselab_storyedits_v1';
 const STATUSES = ['new', 'active', 'completed', 'bookmarked', 'skipped'];
 const TOTAL_TIMER_SEC = 45 * 60;
 const LIVE_MIN_WORDS = 5;
@@ -280,7 +281,15 @@ function getBehavQuestions() {
 // "Link stories" list. Export JSON is the backup.
 function getUserStories() { const v = lsGet(LS_USER_STORIES, []); return Array.isArray(v) ? v : []; }
 function saveUserStories(list) { lsSet(LS_USER_STORIES, list); }
-function allStories() { return STORIES.concat(getUserStories()); }
+// Edits to the Doc-derived stories (data/stories.json) are stored as per-story overrides, never written
+// back to the source: "Reset to original" just deletes the override.
+function getStoryEdits() { const v = lsGet(LS_STORY_EDITS, {}); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
+function saveStoryEdits(obj) { lsSet(LS_STORY_EDITS, obj); }
+function allStories() {
+  const edits = getStoryEdits();
+  return STORIES.map(st => (edits[st.id] ? Object.assign({}, st, edits[st.id], { edited: true }) : st)).concat(getUserStories());
+}
+function baseStoryById(id) { return STORIES.find(x => x.id === id) || null; }
 function getQuestionById(qid) {
   return getBehavQuestions().find(q => q.id === qid) || null;
 }
@@ -814,7 +823,7 @@ function storyCardHTML(s) {
         <div class="star-field"><div class="flabel">Result</div><p>${esc(s.result || '')}</p></div>
       </div>
       ${s.sourceQuote ? `<blockquote class="quote">&ldquo;${esc(s.sourceQuote)}&rdquo;</blockquote>` : ''}
-      ${s.isUser ? `<div class="live-actions"><span class="badge accent">Written on this site</span><button type="button" class="btn ghost small" data-action="story-edit" data-id="${esc(s.id)}">Edit</button><button type="button" class="btn ghost small" data-action="story-delete" data-id="${esc(s.id)}">Delete</button></div>` : ''}
+      <div class="live-actions">${s.isUser ? '<span class="badge accent">Written on this site</span>' : (s.edited ? '<span class="badge verify">Edited by you</span>' : '')}<button type="button" class="btn ghost small" data-action="story-edit" data-id="${esc(s.id)}">Edit</button>${s.isUser ? `<button type="button" class="btn ghost small" data-action="story-delete" data-id="${esc(s.id)}">Delete</button>` : ''}${s.edited ? `<button type="button" class="btn ghost small" data-action="story-reset" data-id="${esc(s.id)}">Reset to original</button>` : ''}</div>
       ${tagChips ? `<div class="star-field"><div class="flabel">Answers these interview questions</div><div class="tag-row">${tagChips}</div></div>` : ''}
     </article>`;
 }
@@ -833,11 +842,19 @@ function storyGapCardHTML(theme) {
   return `<div class="gap-card"><b>${esc(themeLabel(theme))}</b> — no story yet.
     <button type="button" class="btn ghost small" data-action="story-write" data-theme="${esc(theme)}">Write this story</button></div>`;
 }
+function metricsToText(metrics) { return (metrics || []).map(m => (m.label ? m.label + ': ' : '') + m.value).join('; '); }
+function textToMetrics(text) {
+  return String(text || '').split(';').map(x => x.trim()).filter(Boolean).map(part => {
+    const i = part.indexOf(':');
+    return i > 0 ? { label: part.slice(0, i).trim(), value: part.slice(i + 1).trim() } : { label: 'Result', value: part };
+  }).filter(m => m.value);
+}
 function storyFormHTML(theme, story) {
   const v = story || {};
   const prompt = STORY_GAP_PROMPTS[theme] || 'A specific situation from your own work. Keep it first-person and concrete.';
-  const resultMetric = (v.metrics && v.metrics[0]) ? v.metrics[0].value : '';
+  const selected = (v.themes && v.themes.length) ? v.themes : [theme];
   const field = (id, label, val, rows) => `<div class="answer-field"><label for="${id}">${label}</label><textarea id="${id}" rows="${rows || 3}">${esc(val || '')}</textarea></div>`;
+  const themeBoxes = getBehavThemesList().map(t => `<label class="story-theme-opt"><input type="checkbox" class="sf-theme" value="${esc(t)}" ${selected.includes(t) ? 'checked' : ''}> ${esc(themeLabel(t))}</label>`).join('');
   return `<div class="gap-card story-form" data-theme="${esc(theme)}" data-id="${esc(v.id || '')}">
     <p class="block-label">${story ? 'Edit story' : 'Write a story'} · ${esc(themeLabel(theme))}</p>
     <p class="note">${esc(prompt)}</p>
@@ -847,7 +864,9 @@ function storyFormHTML(theme, story) {
     ${field('sf-task', 'Task', v.task, 2)}
     ${field('sf-action', 'Action — what YOU did', v.action, 4)}
     ${field('sf-result', 'Result', v.result)}
-    <div class="answer-field"><label for="sf-metric">Result metric (optional)</label><input id="sf-metric" type="text" value="${esc(resultMetric)}" placeholder="e.g. CSAT 62% → 80%"></div>
+    <div class="answer-field"><label for="sf-metric">Metrics (optional) — Label: value; Label: value</label><input id="sf-metric" type="text" value="${esc(metricsToText(v.metrics))}" placeholder="e.g. CSAT: 62% → 80%; Containment: 53%"></div>
+    <div class="answer-field"><label>Interview themes this story fits (pick any)</label><div class="story-theme-grid">${themeBoxes}</div></div>
+    ${v.sourceQuote ? `<p class="note">Source line from your Doc (not editable): “${esc(v.sourceQuote)}”</p>` : ''}
     <p class="note" id="sf-error" hidden></p>
     <div class="live-actions">
       <button type="button" class="btn" data-action="story-save">Save story</button>
@@ -860,26 +879,34 @@ function saveStoryFromForm() {
   if (!ed) return;
   const val = id => ((document.getElementById(id) || {}).value || '').trim();
   const errEl = document.getElementById('sf-error');
+  const fail = msg => { if (errEl) { errEl.textContent = msg; errEl.hidden = false; } };
   const title = val('sf-title'), situation = val('sf-situation'), action = val('sf-action'), result = val('sf-result');
-  if (!title || !situation || !action || !result) {
-    if (errEl) { errEl.textContent = 'Title, Situation, Action and Result are required — Task and the metric are optional.'; errEl.hidden = false; }
-    return;
+  if (!title || !situation || !action || !result) return fail('Title, Situation, Action and Result are required — Task and Metrics are optional.');
+  const themes = Array.from(document.querySelectorAll('.sf-theme:checked')).map(c => c.value);
+  if (!themes.length) return fail('Pick at least one interview theme so the story can be matched to questions.');
+
+  const users = getUserStories();
+  const userStory = ed.id ? users.find(x => x.id === ed.id) : null;
+  const baseStory = ed.id && !userStory ? baseStoryById(ed.id) : null;
+  const current = userStory || (baseStory ? allStories().find(x => x.id === ed.id) : null) || { themes: [], questionTags: [] };
+  // Keep question tags in step with theme changes: drop tags only reachable via a removed theme,
+  // add every question in a newly-added theme, leave hand-tuned cross-theme tags alone.
+  const qs = getBehavQuestions(), prevThemes = current.themes || [];
+  const keep = (current.questionTags || []).filter(id => { const q = qs.find(x => x.id === id); return q && (themes.includes(q.theme) || !prevThemes.includes(q.theme)); });
+  const added = qs.filter(q => themes.includes(q.theme) && !prevThemes.includes(q.theme)).map(q => q.id);
+  const questionTags = Array.from(new Set(keep.concat(added)));
+  const fields = { title, company: val('sf-company'), situation, task: val('sf-task'), action, result, metrics: textToMetrics(val('sf-metric')), themes, questionTags };
+
+  if (baseStory) {
+    const edits = getStoryEdits();
+    const norm = (k, v) => (k === 'themes' || k === 'questionTags') ? JSON.stringify((v || []).slice().sort()) : JSON.stringify(v === undefined ? (k === 'company' || k === 'task' ? '' : []) : v);
+    const same = Object.keys(fields).every(k => norm(k, fields[k]) === norm(k, baseStory[k]));
+    if (same) delete edits[baseStory.id]; else edits[baseStory.id] = fields; // an unchanged save isn't an edit
+    saveStoryEdits(edits);
+  } else {
+    const story = Object.assign({ id: userStory ? userStory.id : 'user-' + Date.now(), role: '', period: '', tags: ['written-on-site'], sourceQuote: '', isUser: true }, userStory || {}, fields);
+    saveUserStories(userStory ? users.map(x => (x.id === userStory.id ? story : x)) : users.concat([story]));
   }
-  const list = getUserStories();
-  const existing = ed.id ? list.find(x => x.id === ed.id) : null;
-  const theme = existing ? ((existing.themes || [])[0] || ed.theme) : ed.theme;
-  const metric = val('sf-metric');
-  const story = {
-    id: existing ? existing.id : 'user-' + Date.now(),
-    title, company: val('sf-company'), role: '', period: '',
-    situation, task: val('sf-task'), action, result,
-    metrics: metric ? [{ label: 'Result', value: metric }] : [],
-    themes: [theme], tags: ['written-on-site'],
-    // Surfaces this story as a "Suggested from your stories" chip on every question in its theme.
-    questionTags: getBehavQuestions().filter(q => q.theme === theme).map(q => q.id),
-    sourceQuote: '', isUser: true
-  };
-  saveUserStories(existing ? list.map(x => (x.id === existing.id ? story : x)) : list.concat([story]));
   state.storyEditor = null;
   recordActivity();
   afterMutation();
@@ -1842,7 +1869,8 @@ function buildExportPayload() {
     behavStatus: lsGet(LS_BEHAV_STATUS, {}),
     activity: lsGet(LS_ACTIVITY, {}),
     live: lsGet(LS_LIVE, null),
-    userStories: lsGet(LS_USER_STORIES, [])
+    userStories: lsGet(LS_USER_STORIES, []),
+    storyEdits: lsGet(LS_STORY_EDITS, {})
   };
 }
 function exportJSON() {
@@ -1879,6 +1907,7 @@ function importJSON(file) {
     if (isPlainObject(data.activity)) lsSet(LS_ACTIVITY, data.activity);
     if (isPlainObject(data.live)) { lsSet(LS_LIVE, data.live); loadLiveDraft(); }
     if (Array.isArray(data.userStories)) lsSet(LS_USER_STORIES, data.userStories);
+    if (isPlainObject(data.storyEdits)) lsSet(LS_STORY_EDITS, data.storyEdits);
     afterMutation();
     alert('Import complete.');
   };
@@ -1954,7 +1983,13 @@ function wireEvents() {
     const write = e.target.closest('[data-action="story-write"]');
     if (write) { state.storyEditor = { theme: write.dataset.theme, id: null }; renderStories(); return; }
     const edit = e.target.closest('[data-action="story-edit"]');
-    if (edit) { const st = getUserStories().find(x => x.id === edit.dataset.id); if (st) { state.storyEditor = { theme: (st.themes || [])[0], id: st.id }; renderStories(); } return; }
+    if (edit) { const st = allStories().find(x => x.id === edit.dataset.id); if (st) { state.storyEditor = { theme: (st.themes || [])[0], id: st.id }; renderStories(); const f = document.querySelector('.story-form'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'center' }); } return; }
+    const reset = e.target.closest('[data-action="story-reset"]');
+    if (reset) {
+      if (!confirm('Discard your edits and restore this story to the version from your Experience Doc?')) return;
+      const edits = getStoryEdits(); delete edits[reset.dataset.id]; saveStoryEdits(edits);
+      state.storyEditor = null; afterMutation(); return;
+    }
     const del = e.target.closest('[data-action="story-delete"]');
     if (del) {
       if (!confirm('Delete this story? This cannot be undone (unless you have an Export JSON backup).')) return;

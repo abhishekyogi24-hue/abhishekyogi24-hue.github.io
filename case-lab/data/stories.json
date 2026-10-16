@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T03:49:47.624Z",
+  "generatedAt": "2026-10-16T02:11:35.413Z",
   "stories": [
     {
       "id": "story-chatbot-origin",
@@ -478,6 +478,225 @@
         "beh-008",
         "beh-010"
       ]
+    },
+    {
+      "id": "story-self-serve-cancel-exchange",
+      "title": "Launching Self-Serve Cancel and Exchange on the Chatbot",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "Before self-serve flows existed on the chatbot, users had to either call an agent or get transferred to an agent on chat to cancel or exchange a booking — there was no automation flow available.",
+      "task": "I wanted to automate cancel and exchange end to end on the chatbot, because the problem came directly from user feedback and because it would free agent bandwidth for tasks that could be automated.",
+      "action": "I started by understanding the automated APIs already backing the agent's platform and facilitated discussions with the API owners and the tech team. I wrote the PRD covering all the use cases and designed the user flow on the chatbot. For UI/UX I worked with the design team on mocks and reviewed them with leaders, iterating until we had the final experience. I groomed the requirement with tech, and after a few sprints QA tested it and, post UAT, we went live with an A/B test. Non-automated cases still go to agents — the chatbot only handles the automated ones. On exchange, 80% of cases are city/date changes, which is where the revenue lies.",
+      "result": "Once live, cancel converted at about 80 a day and exchange at about 50 a day.",
+      "metrics": [
+        {
+          "label": "Cancel converted",
+          "value": "80/day"
+        },
+        {
+          "label": "Exchange converted",
+          "value": "50/day"
+        }
+      ],
+      "themes": [
+        "0-to-1",
+        "cross-functional",
+        "stakeholder-management",
+        "customer-empathy"
+      ],
+      "tags": [
+        "chatbot",
+        "cancel",
+        "exchange",
+        "prd"
+      ],
+      "questionTags": [
+        "beh-003",
+        "beh-022",
+        "beh-053",
+        "beh-049"
+      ],
+      "sourceQuote": "Discovery of problems came from user feedback directly and want to reduce agent’s bandwidth for automated tasks."
+    },
+    {
+      "id": "story-otp-sms",
+      "title": "Adding OTP via SMS to Fix the Last Step of the Exchange Funnel",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "On the exchange funnel I saw room to improve between the OTP step and success. All OTPs at Fareportal went by email only, and we were getting complaints that some customers didn't have access or couldn't even find our email.",
+      "task": "I needed the OTP to reach customers another way, and that meant getting teams outside my own to make it happen.",
+      "action": "I started a discussion about sending the OTP by SMS as well. The SMS service already existed, but this was the first time it would be used for this purpose, so I coordinated with the SMS team and the backend API team that provides the OTP, created the workflow, and had OTP via SMS ready within a sprint.",
+      "result": "OTP to success increased by 8%.",
+      "metrics": [
+        {
+          "label": "OTP → success",
+          "value": "+8%"
+        }
+      ],
+      "themes": [
+        "funnel-optimization",
+        "cross-functional",
+        "customer-empathy",
+        "influence-without-authority"
+      ],
+      "tags": [
+        "otp",
+        "sms",
+        "exchange"
+      ],
+      "questionTags": [
+        "beh-010",
+        "beh-025",
+        "beh-049",
+        "beh-053"
+      ],
+      "sourceQuote": "Therefore, we started a discussion to give OTP via SMS as well."
+    },
+    {
+      "id": "story-refund-details-upfront",
+      "title": "Answering Refund Questions Upfront on the Cancel Flow",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "Once the cancel flow was live I tracked the whole funnel and reviewed chats, and saw an opportunity at the 'Show refund details' step.",
+      "task": "Work out what users actually needed at that step and close the gap.",
+      "action": "Reading the chats, I saw users expected to know when they would receive the refund if they cancelled now, and some asked why they had to pay a cancellation fee when they already had travel insurance. I started giving those answers upfront through the UI/UX instead of leaving users to ask.",
+      "result": "It increased the next-step transition by almost 15%.",
+      "metrics": [
+        {
+          "label": "Next-step transition",
+          "value": "+~15%"
+        }
+      ],
+      "themes": [
+        "customer-empathy",
+        "funnel-optimization",
+        "data-driven-decision",
+        "user-research"
+      ],
+      "tags": [
+        "cancel",
+        "refund",
+        "chat-audit"
+      ],
+      "questionTags": [
+        "beh-049",
+        "beh-010",
+        "beh-053"
+      ],
+      "sourceQuote": "Tracking the funnel and reviewing chats, we see an opportunity at “Show refund details” step"
+    },
+    {
+      "id": "story-ai-agents-feedback-loop",
+      "title": "Building AI Agents to Turn Chat Transcripts and Complaints into Backlog Items",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "A big part of my day-to-day was reviewing chat transcripts and customer feedback to decide the next improvements to the chat experience.",
+      "task": "I wanted that review to be systematic rather than manual, so improvements kept flowing without depending on me reading everything.",
+      "action": "Using Copilot, I built two AI agents. One fetches chat transcripts weekly, analyzes them, and returns sentiment, key improvements and bugs. The other fetches all negative comments weekly, identifies the core themes, picks the top themes, runs through the comments, works out the key actions that could improve things, and auto-creates them on the Azure board.",
+      "result": "The weekly review of transcripts and negative feedback now runs as an agent workflow, and the resulting actions land on the Azure board automatically.",
+      "metrics": [],
+      "themes": [
+        "ai-product",
+        "data-driven-decision",
+        "customer-empathy",
+        "technical-depth"
+      ],
+      "tags": [
+        "copilot",
+        "agents",
+        "azure-board"
+      ],
+      "questionTags": [
+        "beh-049"
+      ],
+      "sourceQuote": "Build AI Agent to fetch chat transcripts on weekly basis, analyze and give the sentiment, keys of improvements, bugs."
+    },
+    {
+      "id": "story-asked-for-product",
+      "title": "Asking for a Move into Product — and Earning a Bigger Product",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "I was leading analytics for Operations Product, supporting multiple PMs with analysis, dashboards and impact analysis, and I wanted to move into product.",
+      "task": "Get a real product to own and prove I could run it.",
+      "action": "I told my manager directly where I wanted to grow and explicitly asked for product. He gave me my first product, the Priority Leads Tool — Ops was maintaining priority cases in Excel. I coordinated with Ops leaders, turned their experience into priority rules and use cases, validated them with data, and worked with a developer to generate the leads in the CRM.",
+      "result": "The rules shipped, and the leaders gave my manager strong feedback on my thinking, which got me trusted with a bigger product — the early-stage Dialogflow chatbot.",
+      "metrics": [],
+      "themes": [
+        "career-motivation",
+        "leadership",
+        "stakeholder-management"
+      ],
+      "tags": [
+        "priority-leads",
+        "career"
+      ],
+      "questionTags": [
+        "beh-073",
+        "beh-075"
+      ],
+      "sourceQuote": "Abhishek proactively told his manager where he wanted to grow — explicitly asked for product."
+    },
+    {
+      "id": "story-us-india-bridge",
+      "title": "Bridging US Leadership and the India Engineering Team",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "All our engineers were in India while leadership sat in the US.",
+      "task": "Make sure what US leadership wanted turned into specs the India engineering team could actually build.",
+      "action": "I acted as the bridge, translating US leadership requirements into specs for India engineering — across a team that grew from 2 developers and 1 QA to roughly 12 engineers, 3 QAs and 2 designers at its peak.",
+      "result": "This is how requirements flowed from US leadership to the India team throughout the chatbot and Oli work. (Add a concrete example here with the Edit button — a specific requirement you had to reshape.)",
+      "metrics": [],
+      "themes": [
+        "cross-functional",
+        "stakeholder-management",
+        "leadership"
+      ],
+      "tags": [
+        "geographies",
+        "specs"
+      ],
+      "questionTags": [
+        "beh-019",
+        "beh-022"
+      ],
+      "sourceQuote": "he was the bridge translating US leadership requirements into specs for India engineering"
+    },
+    {
+      "id": "story-team-without-dev-manager",
+      "title": "Running the Chatbot Team with No Dev Manager",
+      "company": "Fareportal (CheapOair)",
+      "period": "",
+      "role": "",
+      "situation": "I was handed the Dialogflow chatbot at a very early stage with 2 developers and 1 QA and no dev manager.",
+      "task": "Run the team and the product with nobody in the dev-manager seat.",
+      "action": "I filled the dev-manager gap myself while owning the product. The team grew to 4 developers and 1 QA, then added 2 developers and a QA when we onboarded transactions like exchange and cancel, and at its peak was about 12 engineers, 3 QAs and 2 designers.",
+      "result": "The chatbot grew from scratch into a mature product with around 50% end-to-end automation.",
+      "metrics": [
+        {
+          "label": "End-to-end automation",
+          "value": "~50%"
+        }
+      ],
+      "themes": [
+        "leadership",
+        "0-to-1",
+        "execution-under-constraint"
+      ],
+      "tags": [
+        "team",
+        "chatbot"
+      ],
+      "questionTags": [
+        "beh-006",
+        "beh-003"
+      ],
+      "sourceQuote": "handed the Dialogflow chatbot at a very early stage — 2 developers + 1 QA, no dev manager (he filled that gap)."
     }
   ]
 }

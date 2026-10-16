@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T03:38:21.444Z",
+  "generatedAt": "2026-10-16T02:11:35.452Z",
   "themeCount": 27,
   "gapCount": 5,
   "coverage": {
@@ -9,7 +9,8 @@
         "story-vertex-orchestrator",
         "story-eval-system",
         "story-search-explorer",
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-ai-agents-feedback-loop"
       ],
       "isGap": false
     },
@@ -19,7 +20,9 @@
         "story-dialogflow-es-automation",
         "story-vertex-orchestrator",
         "story-oli-trip-planner",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-self-serve-cancel-exchange",
+        "story-team-without-dev-manager"
       ],
       "isGap": false
     },
@@ -34,7 +37,9 @@
     "funnel-optimization": {
       "label": "Funnel optimization",
       "storyIds": [
-        "story-cancel-exchange-funnel"
+        "story-cancel-exchange-funnel",
+        "story-otp-sms",
+        "story-refund-details-upfront"
       ],
       "isGap": false
     },
@@ -45,7 +50,9 @@
         "story-dialogflow-cx-kill",
         "story-analytics-lead",
         "story-priority-leads",
-        "story-cancel-exchange-funnel"
+        "story-cancel-exchange-funnel",
+        "story-refund-details-upfront",
+        "story-ai-agents-feedback-loop"
       ],
       "isGap": false
     },
@@ -54,7 +61,10 @@
       "storyIds": [
         "story-dialogflow-es-automation",
         "story-compliance-rollout",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-self-serve-cancel-exchange",
+        "story-asked-for-product",
+        "story-us-india-bridge"
       ],
       "isGap": false
     },
@@ -65,14 +75,18 @@
         "story-priority-leads",
         "story-chat-listing-page",
         "story-oli-trip-planner",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-self-serve-cancel-exchange",
+        "story-otp-sms",
+        "story-us-india-bridge"
       ],
       "isGap": false
     },
     "influence-without-authority": {
       "label": "Influence without authority",
       "storyIds": [
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-otp-sms"
       ],
       "isGap": false
     },
@@ -119,14 +133,19 @@
       "storyIds": [
         "story-chatbot-origin",
         "story-typing-box-block",
-        "story-search-explorer"
+        "story-search-explorer",
+        "story-self-serve-cancel-exchange",
+        "story-otp-sms",
+        "story-refund-details-upfront",
+        "story-ai-agents-feedback-loop"
       ],
       "isGap": false
     },
     "user-research": {
       "label": "User research",
       "storyIds": [
-        "story-chatbot-origin"
+        "story-chatbot-origin",
+        "story-refund-details-upfront"
       ],
       "isGap": false
     },
@@ -169,7 +188,8 @@
         "story-typing-box-block",
         "story-vertex-orchestrator",
         "story-eval-system",
-        "story-chat-listing-page"
+        "story-chat-listing-page",
+        "story-ai-agents-feedback-loop"
       ],
       "isGap": false
     },
@@ -193,7 +213,10 @@
     "leadership": {
       "label": "Leadership",
       "storyIds": [
-        "story-analytics-lead"
+        "story-analytics-lead",
+        "story-asked-for-product",
+        "story-us-india-bridge",
+        "story-team-without-dev-manager"
       ],
       "isGap": false
     },
@@ -203,20 +226,22 @@
         "story-dialogflow-es-automation",
         "story-typing-box-block",
         "story-chat-listing-page",
-        "story-cancel-exchange-funnel"
+        "story-cancel-exchange-funnel",
+        "story-team-without-dev-manager"
       ],
       "isGap": false
     },
     "career-motivation": {
       "label": "Career & motivation",
       "storyIds": [
-        "story-analytics-lead"
+        "story-analytics-lead",
+        "story-asked-for-product"
       ],
       "isGap": false
     }
   },
   "questionCount": 75,
-  "questionGapCount": 46,
+  "questionGapCount": 45,
   "questionCoverage": {
     "beh-001": {
       "theme": "ai-product",
@@ -232,7 +257,9 @@
       "theme": "0-to-1",
       "storyIds": [
         "story-vertex-orchestrator",
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-self-serve-cancel-exchange",
+        "story-team-without-dev-manager"
       ],
       "isGap": false
     },
@@ -253,7 +280,8 @@
     "beh-006": {
       "theme": "0-to-1",
       "storyIds": [
-        "story-chat-listing-page"
+        "story-chat-listing-page",
+        "story-team-without-dev-manager"
       ],
       "isGap": false
     },
@@ -279,7 +307,9 @@
     "beh-010": {
       "theme": "funnel-optimization",
       "storyIds": [
-        "story-cancel-exchange-funnel"
+        "story-cancel-exchange-funnel",
+        "story-otp-sms",
+        "story-refund-details-upfront"
       ],
       "isGap": false
     },
@@ -335,7 +365,8 @@
       "theme": "stakeholder-management",
       "storyIds": [
         "story-dialogflow-es-automation",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-us-india-bridge"
       ],
       "isGap": false
     },
@@ -355,7 +386,9 @@
       "theme": "cross-functional",
       "storyIds": [
         "story-dialogflow-es-automation",
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-self-serve-cancel-exchange",
+        "story-us-india-bridge"
       ],
       "isGap": false
     },
@@ -377,7 +410,8 @@
       "theme": "influence-without-authority",
       "storyIds": [
         "story-priority-leads",
-        "story-chat-listing-page"
+        "story-chat-listing-page",
+        "story-otp-sms"
       ],
       "isGap": false
     },
@@ -513,7 +547,11 @@
       "theme": "customer-empathy",
       "storyIds": [
         "story-chatbot-origin",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-self-serve-cancel-exchange",
+        "story-otp-sms",
+        "story-refund-details-upfront",
+        "story-ai-agents-feedback-loop"
       ],
       "isGap": false
     },
@@ -539,7 +577,10 @@
         "story-vertex-orchestrator",
         "story-priority-leads",
         "story-search-explorer",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-self-serve-cancel-exchange",
+        "story-otp-sms",
+        "story-refund-details-upfront"
       ],
       "isGap": false
     },
@@ -654,8 +695,10 @@
     },
     "beh-073": {
       "theme": "career-motivation",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-asked-for-product"
+      ],
+      "isGap": false
     },
     "beh-074": {
       "theme": "career-motivation",
@@ -665,7 +708,8 @@
     "beh-075": {
       "theme": "career-motivation",
       "storyIds": [
-        "story-analytics-lead"
+        "story-analytics-lead",
+        "story-asked-for-product"
       ],
       "isGap": false
     }
