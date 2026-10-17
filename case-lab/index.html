@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PM Case Lab — daily interview practice</title>
 <link rel="stylesheet" href="./style.css">
+<style>
+  /* "Mock interview" link styled like the .seg tab buttons (kept here so style.css stays untouched) */
+  .seg a.tab-link { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--accent-ink); text-decoration: none; padding: 7px 13px; border-radius: 7px; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .seg a.tab-link:hover { background: var(--surface); box-shadow: var(--shadow); }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -26,6 +31,7 @@
         <button data-tab="stories" role="tab" aria-selected="false">Stories</button>
         <button data-tab="progress" role="tab" aria-selected="false">Progress</button>
         <button data-tab="live" role="tab" aria-selected="false">Live</button>
+        <a class="tab-link" href="./interview/">Mock interview</a>
       </div>
       <div class="spacer"></div>
     </div>

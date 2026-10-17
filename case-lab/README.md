@@ -108,6 +108,16 @@ After that it runs unattended via a time-driven trigger.
 
 This is a real limitation, not a footnote: clear your browser data, switch browsers, or switch devices, and your history is gone unless you exported it first. Export regularly if you're actually relying on the practice history.
 
+## Mock interview
+
+`interview/` is a voice-first PM mock interview that reuses this library: a configurable AI interviewer runs a loop (intro, resume deep dive, behavioural, product case, your questions), then a hiring-committee style report is generated from the transcript, the case's framework rubric and your story bank. Open `interview/` (linked from the nav) and see `interview/PLAN.md` for the design.
+
+- **Needs your own Anthropic API key**, entered in Setup and sent directly from the browser to `api.anthropic.com` (kept in `sessionStorage` unless you tick "Remember on this device"). There is no server component.
+- **Try it with no key:** open `interview/?mock=1` for canned interviewer lines and a canned report, so the whole flow can be exercised offline.
+- **Voice:** browser speech synthesis (optional ElevenLabs key) for the interviewer; browser speech recognition for you (Chrome sends that audio to Google; Firefox has none, so it falls back to typing).
+- **Deep link:** `interview/?case=<case id>` starts setup with that case selected.
+- Reports and history are stored only in this browser's `localStorage` (`mi_history_v1`); serve over `http://localhost` or https (the mic and storage need a real origin).
+
 ## Stack
 
 Vanilla HTML/CSS/JS (client-side, no build step for the site itself) · zero-dependency Node scripts for data validation and scheduling · Google Apps Script (MailApp + time-driven triggers) for the daily email · `localStorage` for all user state.
