@@ -336,18 +336,18 @@
     },
     {
       "id": "story-search-explorer",
-      "title": "Search Explorer: Anticipating the Next Filter",
+      "title": "Search Explorer: A Bet I Shut Down",
       "company": "Fareportal (CheapOair)",
       "period": "",
       "role": "Product Manager, Chatbot",
       "situation": "As part of the same chat-on-listing-page work, I saw that users were struggling to narrow down flight search results to the one that actually fit them.",
       "task": "I wanted to help users narrow their search by anticipating the filter they were likely to apply next, based on what they'd already selected.",
       "action": "I built Search Explorer, which anticipated the user's next filter and presented flight options as clean UI tiles that explained, in plain terms, why a given flight was the better option -- for example, that it was three hours faster for just $20 more -- so the user had a clear value trade-off instead of a bare list.",
-      "result": "Users who selected a contract through Search Explorer had 40% more chance of converting by the end of the funnel.",
+      "result": "Users who selected a flight through Search Explorer converted about 40% better, but many dropped out inside the explorer, so agents got about 5x fewer chats and net bookings fell. I shut it down and restored the previous flow. Lesson: measure the whole funnel, not just the step you changed.",
       "metrics": [
         {
-          "label": "Conversion likelihood",
-          "value": "+40%"
+          "label": "Agent chats",
+          "value": "5x fewer (shut down)"
         }
       ],
       "themes": [
