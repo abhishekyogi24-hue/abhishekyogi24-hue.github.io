@@ -8,6 +8,8 @@
 //   POST /retrieve   { query, k? } -> { chunks[] }   (retrieval only, no LLM call)
 //   POST /live-case  { caseText, framework, classifier, speakWpm, stream? } -> { answer } or SSE
 //                    Powers Case Lab's Live tab ("Get answer"). See live-case-prompt.js.
+//   POST /case-feedback { case, framework, notes, reference? } -> { feedback }
+//                    AI review of a written case answer (Case Lab "Submit for feedback"). See case-feedback-prompt.js.
 //   GET  /health     -> { ok: true }
 //   GET  /kb-meta    -> { chunkCount, sources }
 
@@ -16,6 +18,7 @@ import { loadKB } from "./kb.js";
 import { selectContext } from "./retrieve.js";
 import { buildSystemPrompt, buildUserContextBlock } from "./prompt.js";
 import { LIVE_CASE_SYSTEM, buildLiveCaseUserBlock } from "./live-case-prompt.js";
+import { CASE_FEEDBACK_SYSTEM, buildCaseFeedbackUserBlock, extractJsonObject } from "./case-feedback-prompt.js";
 
 const MODEL = "claude-sonnet-5";
 const MAX_TOKENS = 768;
@@ -32,6 +35,10 @@ const LIVE_MAX_STAGES = 12;
 const LIVE_MAX_RUBRIC_ROWS = 10;
 const LIVE_MAX_TOKENS = 8000;
 const LIVE_RATE_LIMIT_PER_DAY = 20;
+
+// Case feedback: one JSON review per submit (~1.5-3K output tokens), its own per-IP bucket.
+const FEEDBACK_MAX_TOKENS = 4000;
+const FEEDBACK_RATE_LIMIT_PER_DAY = 15;
 
 function json(obj, status, cors) {
   return new Response(JSON.stringify(obj), {
@@ -302,6 +309,67 @@ export default {
         .trim();
       if (!answer) return json({ error: "No answer generated.", code: "empty_answer" }, 502, cors);
       return json({ answer, model: MODEL }, 200, cors);
+    }
+
+    if (url.pathname === "/case-feedback" && request.method === "POST") {
+      const rl = await checkRateLimit(env, request, "rlf", FEEDBACK_RATE_LIMIT_PER_DAY);
+      if (!rl.ok) {
+        return json({ error: "Daily limit reached for AI case reviews. Try again tomorrow.", code: "rate_limited" }, 429, cors);
+      }
+
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return json({ error: "Invalid JSON", code: "bad_json" }, 400, cors);
+      }
+
+      const framework = body.framework && typeof body.framework === "object" ? body.framework : {};
+      if (!Array.isArray(framework.stages) || framework.stages.length === 0) {
+        return json({ error: "Missing framework stages", code: "bad_framework" }, 400, cors);
+      }
+      const notes = body.notes && typeof body.notes === "object" ? body.notes : {};
+      const anyNote = framework.stages.some((s) => typeof notes[s.key] === "string" && notes[s.key].trim().length > 0);
+      if (!anyNote) return json({ error: "No answer text to review", code: "empty_answer_notes" }, 400, cors);
+
+      const userBlock = buildCaseFeedbackUserBlock({
+        caseInfo: body.case && typeof body.case === "object" ? body.case : {},
+        framework,
+        notes,
+        reference: body.reference && typeof body.reference === "object" ? body.reference : null,
+      });
+
+      let upstream;
+      try {
+        upstream = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": env.ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            max_tokens: FEEDBACK_MAX_TOKENS,
+            thinking: { type: "disabled" },
+            system: [{ type: "text", text: CASE_FEEDBACK_SYSTEM, cache_control: { type: "ephemeral" } }],
+            messages: [{ role: "user", content: userBlock }],
+          }),
+        });
+      } catch (e) {
+        return json({ error: "Couldn't reach the review service.", code: "upstream_unreachable" }, 502, cors);
+      }
+      if (!upstream.ok) {
+        let detail = "";
+        try { detail = await upstream.text(); } catch {}
+        return json({ error: "The review service returned an error.", code: "upstream_failed", upstreamStatus: upstream.status, detail: detail.slice(0, 500) }, 502, cors);
+      }
+
+      const data = await upstream.json();
+      const text = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+      const feedback = extractJsonObject(text);
+      if (!feedback) return json({ error: "The AI returned a review in an unexpected format.", code: "bad_model_output" }, 502, cors);
+      return json({ feedback, model: MODEL }, 200, cors);
     }
 
     return json({ error: "Not found" }, 404, cors);

@@ -42,6 +42,7 @@ git add kb/ && git commit -m "Refresh Abhi AI knowledge base" && git push
 | `/chat` | POST | `{ messages[], style?: "text"\|"voice" }` → `{ reply, mode, sources[] }`. Main chat endpoint. |
 | `/retrieve` | POST | `{ query }` → `{ chunks[] }`. Retrieval only, no LLM call — the reusable knowledge layer for a future voice interface. |
 | `/live-case` | POST | `{ caseText, framework, classifier, speakWpm, stream? }` → `{ answer }` (or an SSE stream). Powers Case Lab's Live tab ("Get answer") — a separate, unrelated product from Abhi AI sharing this same worker for its already-configured API key, CORS allowlist, and rate limiting. See `src/live-case-prompt.js`. |
+| `/case-feedback` | POST | `{ case, framework, notes, reference? }` → `{ feedback }`. AI review of a written case answer (Case Lab's "Submit for feedback"): strengths, improvements, per-section and per-rubric-dimension ratings, as JSON. Own rate-limit bucket (15/day/IP). See `src/case-feedback-prompt.js`. Uses the same `LIVE_WORKER_URL` constant as `/live-case`. |
 | `/health` | GET | Liveness check. |
 | `/kb-meta` | GET | `{ chunkCount, sources }` — what the Worker currently has loaded. |
 

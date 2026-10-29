@@ -13,6 +13,10 @@ const LS_LIVE = 'caselab_live_v1';
 const LS_USER_STORIES = 'caselab_userstories_v1';
 const LS_STORY_EDITS = 'caselab_storyedits_v1';
 const LS_DICT_LANG = 'caselab_dictlang_v1';
+const LS_FEEDBACK = 'caselab_feedback_v1';
+// A section counts as "filled" once it has at least this many words — so a stray word or a placeholder
+// doesn't unlock Submit, but a real (even terse) answer does.
+const SUBMIT_MIN_WORDS = 8;
 const STATUSES = ['new', 'active', 'completed', 'bookmarked', 'skipped'];
 const TOTAL_TIMER_SEC = 45 * 60;
 const LIVE_MIN_WORDS = 5;
@@ -42,6 +46,7 @@ const state = {
   practiceCaseId: null,
   practiceReturnView: 'today',
   casesFilter: { status: 'all', track: 'all', type: 'all', company: 'all', region: 'all', difficulty: 'all', q: '' },
+  fb: null, // { caseId, loading, error, applied } — transient UI state for the feedback panel
   storyEditor: null, // { theme, id|null } — which story form is open on the Stories tab
   live: {
     text: '', typeOverride: null, frameworkOverride: null, cls: null,
@@ -1033,15 +1038,374 @@ function renderPractice(caseId) {
       </div>
     </div>
 
+    <div class="submit-region" id="submit-region">
+      <button type="button" class="btn" id="submit-case-btn" data-action="submit-case" disabled>Submit for feedback</button>
+      <span class="submit-hint note" id="submit-hint" role="status" aria-live="polite"></span>
+    </div>
+    <div id="feedback-area"></div>
+
     <div><button type="button" class="btn" id="show-model-btn">Show model answer</button></div>
     <div class="model-answer" id="model-answer-area" hidden></div>`;
 
   initTimerForCase(caseId);
+  updateSubmitState();
+  renderFeedbackArea();
   renderTimerBar();
   updateTimerDisplay();
 
   if (getCaseScore(c.id)) revealModelAnswer(c, fw);
 }
+/* ---- Submit for feedback: gating, and the saved-feedback store ---- */
+/* ---- Feedback: submit → instant checklist (+ AI review when a worker is configured) → highlighted panel ---- */
+// Tier 1 (feedback-rules.js): deterministic checklist, works offline, shown immediately.
+// Tier 2: AI review via POST /case-feedback on the worker (reuses LIVE_WORKER_URL). Tier 1 is never removed —
+// it is the floor when AI isn't configured or fails, and a collapsed "automatic checklist" under AI feedback.
+const FB_LEVEL_BADGE = { strong: 'fresh', solid: 'accent', weak: 'verify', developing: 'verify' };
+const FB_CHECK_BADGE = { strong: 'fresh', ok: 'accent', light: 'verify', thin: 'verify', missing: 'neutral' };
+const FB_CHECK_LABEL = { strong: 'Well covered', ok: 'Partly there', light: 'Light on specifics', thin: 'Thin', missing: 'Empty' };
+const FB_AI_TIMEOUT_MS = 70000;
+
+function feedbackRulesKey(c) { return (c.framework === 'cross-cutting') ? 'product-sense' : c.framework; }
+function fbClip(s, n) { s = String(s == null ? '' : s).trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
+function normalizeAiFeedback(raw, fw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const arr = v => (Array.isArray(v) ? v : []);
+  const level = v => { const l = String(v == null ? '' : v).toLowerCase(); return (l === 'weak' || l === 'solid' || l === 'strong') ? l : null; };
+  const keys = new Set((fw.stages || []).map(s => s.key));
+  const stageOf = v => (keys.has(v) ? v : null);
+  const text = x => fbClip(typeof x === 'string' ? x : (x && x.text), 320);
+  const dimensions = (fw.rubric || []).map(r => {
+    const m = arr(raw.dimensions).find(d => d && String(d.dimension || '').toLowerCase() === r.dimension.toLowerCase());
+    const rating = m && level(m.rating);
+    return rating ? { dimension: r.dimension, rating, why: fbClip(m.why, 320), next_level: fbClip(m.next_level, 320) } : null;
+  }).filter(Boolean);
+  const out = {
+    overall: {
+      verdict: ['strong', 'solid', 'developing'].includes(String(raw.overall && raw.overall.verdict).toLowerCase()) ? String(raw.overall.verdict).toLowerCase() : 'developing',
+      summary: fbClip(raw.overall && raw.overall.summary, 800)
+    },
+    strengths: arr(raw.strengths).map(x => ({ stage: stageOf(x && x.stage), text: text(x) })).filter(x => x.text).slice(0, 10),
+    improvements: arr(raw.improvements).map(x => ({ stage: stageOf(x && x.stage), text: text(x), fix: fbClip(x && x.fix, 320) })).filter(x => x.text).slice(0, 12),
+    stages: arr(raw.stages).filter(x => x && keys.has(x.key)).map(x => ({
+      key: x.key, verdict: level(x.verdict) || 'solid', quote: fbClip(x.quote, 260),
+      strengths: arr(x.strengths).map(t => fbClip(t, 260)).filter(Boolean).slice(0, 4),
+      improvements: arr(x.improvements).map(t => fbClip(t, 260)).filter(Boolean).slice(0, 4)
+    })),
+    dimensions,
+    top_improvements: arr(raw.top_improvements).map(text).filter(Boolean).slice(0, 3),
+    model_answer_gap: fbClip(raw.model_answer_gap, 700)
+  };
+  if (!out.overall.summary && !out.strengths.length && !out.improvements.length) return null;
+  return out;
+}
+
+function feedbackPayload(c, fw, notes, withReference) {
+  const ref = (withReference && c.modelAnswer && c.modelAnswer.stages) ? c.modelAnswer.stages.map(s => ({ stage: s.stage, walkthrough: s.walkthrough })) : null;
+  return {
+    case: { title: c.title, prompt: c.prompt, context: c.context || [], assumptions: c.assumptions || [], type: c.type, track: c.track },
+    framework: {
+      key: c.framework, label: fw.label, totalMin: fw.totalMin,
+      stages: (fw.stages || []).map(s => ({ key: s.key, name: s.name, minMin: s.minMin, maxMin: s.maxMin, guidance: s.guidance, whatGoodLooksLike: s.whatGoodLooksLike, pitfalls: s.pitfalls || [] })),
+      rubric: (fw.rubric || []).map(r => ({ dimension: r.dimension, weak: r.weak, solid: r.solid, strong: r.strong }))
+    },
+    notes, reference: ref
+  };
+}
+
+// Readable prompt for the "copy into Claude/ChatGPT" fallback. Same instructions in substance as the worker's
+// system prompt (chatbot-worker/src/case-feedback-prompt.js), but asks for a human-readable review, not JSON.
+function buildFeedbackPrompt(c, fw, notes) {
+  const stages = (fw.stages || []).map((s, i) => `${i + 1}. ${s.name} (${s.minMin}–${s.maxMin} min) — what good looks like: ${s.whatGoodLooksLike}`).join('\n');
+  const rubric = (fw.rubric || []).map(r => `- ${r.dimension}\n    weak: ${r.weak}\n    solid: ${r.solid}\n    strong: ${r.strong}`).join('\n');
+  const answer = (fw.stages || []).map(s => `### ${s.name}\n${String(notes[s.key] || '').trim() || '(left empty)'}`).join('\n\n');
+  return `You are a tough but fair product-management interview coach. Review the written case answer below.
+
+Be specific: quote the candidate's own words as evidence, grade against the rubric's own weak/solid/strong descriptors, and don't flatter. Do not simply say what you'd have written — judge what they wrote.
+
+=== THE CASE ===
+${c.title}
+${c.prompt}
+${(c.context || []).length ? 'Context: ' + c.context.join(' ') : ''}
+${(c.assumptions || []).length ? 'Assumptions given: ' + c.assumptions.join(' ') : ''}
+
+=== THE FRAMEWORK (${fw.label}, ${fw.totalMin || 45} min) ===
+${stages}
+
+=== THE RUBRIC ===
+${rubric}
+
+=== THE CANDIDATE'S ANSWER ===
+${answer}
+
+=== WHAT TO PRODUCE ===
+1. OVERALL — one paragraph verdict.
+2. STRENGTHS — what was genuinely good, each tied to a section and a quote.
+3. IMPROVE NEXT — the 3 highest-impact fixes, each with a concrete phrase or move they could add.
+4. SECTION BY SECTION — for each section: strong / solid / weak, one strength, one improvement.
+5. RUBRIC RATINGS — each dimension rated weak / solid / strong, with one line of why and what would push it up a level.`;
+}
+
+/* ---- submit flow ---- */
+function setFbUi(caseId, patch) { state.fb = Object.assign({ caseId }, state.fb && state.fb.caseId === caseId ? state.fb : {}, patch); }
+
+async function submitCaseForFeedback() {
+  if (!timerState) return;
+  const c = getCaseById(timerState.caseId);
+  if (!c) return;
+  const fw = getFrameworkForCase(c);
+  const notes = practiceNotesNow();
+  if (stageFillStatus(fw, notes).some(x => !x.filled)) { updateSubmitState(); return; }
+  // Flush notes now (the per-keystroke save is debounced) so the stored answer matches what is being graded.
+  Object.keys(notes).forEach(k => setCaseNote(c.id, k, notes[k]));
+  if (timerState.running) pauseTimer();
+  const signature = notesSignature(notes, fw);
+  const checklist = buildChecklistFeedback(c, feedbackRulesKey(c), fw, notes);
+  const prev = getFeedbackFor(c.id);
+  // Keep an AI review only if it was written for exactly these notes; otherwise it's stale and is replaced.
+  const keepAi = prev && prev.ai && prev.signature === signature;
+  saveFeedbackFor(c.id, { createdAt: new Date().toISOString(), signature, checklist, ai: keepAi ? prev.ai : null, aiAt: keepAi ? prev.aiAt : null });
+  setFbUi(c.id, { loading: false, error: null });
+  recordActivity();
+  renderFeedbackArea();
+  const card = document.getElementById('feedback-card');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  updateSubmitState();
+  if (liveWorkerConfigured() && !keepAi) await fetchAiFeedback(c, fw, notes, signature);
+  renderStats();
+}
+
+async function fetchAiFeedback(c, fw, notes, signature) {
+  setFbUi(c.id, { loading: true, error: null });
+  renderFeedbackArea();
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), FB_AI_TIMEOUT_MS);
+  let error = null;
+  try {
+    const res = await fetch(LIVE_WORKER_URL + '/case-feedback', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(feedbackPayload(c, fw, notes, true)), signal: ac.signal
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) {
+      const code = (data && data.code) || (res.status === 429 ? 'rate_limited' : (res.status === 403 ? 'origin_not_allowed' : 'upstream_failed'));
+      error = { code, message: (data && data.error) || ('The review service returned an error (' + res.status + ').') };
+    } else {
+      const ai = normalizeAiFeedback(data && data.feedback, fw);
+      if (!ai) error = { code: 'bad_model_output', message: 'The AI returned a review in an unexpected format.' };
+      else {
+        const cur = getFeedbackFor(c.id);
+        // Only attach if the user hasn't resubmitted different notes while this was in flight.
+        if (cur && cur.signature === signature) saveFeedbackFor(c.id, Object.assign({}, cur, { ai, aiAt: new Date().toISOString() }));
+      }
+    }
+  } catch (e) {
+    error = (e && e.name === 'AbortError')
+      ? { code: 'timeout', message: 'The AI review took too long and was stopped.' }
+      : { code: 'network_error', message: 'Couldn’t reach the review service — check your connection.' };
+  } finally {
+    clearTimeout(timer);
+  }
+  setFbUi(c.id, { loading: false, error });
+  renderFeedbackArea();
+}
+
+function applyAiRatings() {
+  if (!timerState) return;
+  const c = getCaseById(timerState.caseId);
+  const fb = c && getFeedbackFor(c.id);
+  if (!c || !fb || !fb.ai) return;
+  const fw = getFrameworkForCase(c);
+  (fb.ai.dimensions || []).forEach(d => setCaseScoreDim(c.id, d.dimension, d.rating));
+  const cur = getCaseScore(c.id) || { dims: {} };
+  const allScored = (fw.rubric || []).length > 0 && fw.rubric.every(r => (cur.dims || {})[r.dimension]);
+  if (allScored) setCaseStatus(c.id, 'completed');
+  revealModelAnswer(c, fw); // shows the self-score widget with the applied ratings
+  updatePracticeStatusSelect(c.id);
+  afterMutation();
+  setFbUi(c.id, { applied: true });
+  renderFeedbackArea();
+  const area = document.getElementById('rubric-widget-area');
+  if (area) area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ---- rendering ---- */
+function fbChip(stageKey, stageName) {
+  if (!stageName) return '';
+  return stageKey
+    ? `<button type="button" class="tag-chip fb-stage-chip" data-action="feedback-goto" data-stage="${esc(stageKey)}" title="Jump to this section">${esc(stageName)}</button>`
+    : `<span class="tag-chip fb-stage-chip">${esc(stageName)}</span>`;
+}
+
+function renderFeedbackArea() {
+  const area = document.getElementById('feedback-area');
+  if (!area) return;
+  const c = timerState ? getCaseById(timerState.caseId) : null;
+  const fb = c ? getFeedbackFor(c.id) : null;
+  if (!c || !fb) { area.innerHTML = ''; return; }
+  const fw = getFrameworkForCase(c);
+  const ui = (state.fb && state.fb.caseId === c.id) ? state.fb : {};
+  const ai = fb.ai, ck = fb.checklist || { stages: [], strengths: [], improvements: [], topImprovements: [], dimensions: [], overall: { summary: '' } };
+  const configured = liveWorkerConfigured();
+  const stageName = key => ((fw.stages || []).find(s => s.key === key) || {}).name || '';
+  const stale = fb.signature !== notesSignature(practiceNotesNow(), fw);
+  const when = fb.aiAt || fb.createdAt;
+
+  // --- status strip: loading / error / not-configured -------------------------------------------------
+  let strip = '';
+  if (ui.loading) {
+    strip = `<div class="fb-strip"><span class="live-spinner" aria-hidden="true"></span><span class="live-answer-status" role="status">Getting the AI review… the checklist below is already ready.</span></div>`;
+  } else if (ui.error) {
+    const canRetry = ui.error.code !== 'rate_limited' && ui.error.code !== 'origin_not_allowed';
+    strip = `<div class="live-answer-error"><p>${esc(ui.error.message)} Showing the automatic checklist instead.</p>${canRetry ? '<button type="button" class="btn ghost small" data-action="feedback-retry">Retry AI review</button>' : ''}</div>`;
+  } else if (!ai && !configured) {
+    strip = `<p class="note fb-note">This is the automatic checklist. A full AI review isn’t set up on this device — you can <button type="button" class="linklike" data-action="feedback-copy-prompt">copy a feedback prompt</button> and paste it into Claude or ChatGPT instead.</p>`;
+  }
+
+  // --- overall -----------------------------------------------------------------------------------------
+  const overall = ai
+    ? `<div class="fb-overall"><span class="badge ${FB_LEVEL_BADGE[ai.overall.verdict] || 'neutral'}">${esc(titleCase(ai.overall.verdict))}</span><p>${esc(ai.overall.summary)}</p></div>`
+    : `<div class="fb-overall"><span class="badge neutral">${esc(ck.overall.hits)}/${esc(ck.overall.total)} points</span><p>${esc(ck.overall.summary)}</p></div>
+       <p class="note fb-note">A keyword checklist — not an expert judgment. It can miss a point you made in different words, and it can’t tell how <em>good</em> a point is.</p>`;
+
+  // --- strengths / improvements (AI preferred, checklist otherwise) -------------------------------------
+  const strengths = ai ? ai.strengths : ck.strengths.map(s => ({ stage: s.stage, text: s.text }));
+  const improvements = ai ? ai.improvements : ck.improvements;
+  const strengthsHTML = strengths.length
+    ? `<ul class="fb-list fb-good">${strengths.slice(0, 12).map(s => `<li>${fbChip(s.stage, s.stage ? stageName(s.stage) : (s.stageName || 'Whole answer'))}<span>${esc(s.text)}</span></li>`).join('')}</ul>`
+    : '<p class="note">Nothing stood out yet — fill the sections out in more detail and resubmit.</p>';
+  const improvementsHTML = improvements.length
+    ? `<ul class="fb-list fb-improve">${improvements.slice(0, 14).map(i => `<li>${fbChip(i.stage, i.stage ? stageName(i.stage) : (i.stageName || 'Whole answer'))}<span>${esc(i.text)}${i.fix ? `<span class="fb-fix">→ ${esc(i.fix)}</span>` : ''}</span></li>`).join('')}</ul>`
+    : '<p class="note">No gaps spotted — nice.</p>';
+
+  const top = ai ? ai.top_improvements.map(t => ({ text: t })) : ck.topImprovements.map(i => ({ text: (i.stageName ? i.stageName + ': ' : '') + i.text, fix: i.fix }));
+  const topHTML = top.length ? `<div class="fb-top"><p class="block-label">Fix these first</p><ol>${top.map(t => `<li>${esc(t.text)}${t.fix ? `<span class="fb-fix">→ ${esc(t.fix)}</span>` : ''}</li>`).join('')}</ol></div>` : '';
+
+  // --- per section --------------------------------------------------------------------------------------
+  const stagesHTML = (fw.stages || []).map(st => {
+    const a = ai && (ai.stages || []).find(x => x.key === st.key);
+    const k = (ck.stages || []).find(x => x.key === st.key);
+    if (!a && !k) return '';
+    const badge = a ? `<span class="badge ${FB_LEVEL_BADGE[a.verdict] || 'neutral'}">${esc(titleCase(a.verdict))}</span>` : `<span class="badge ${FB_CHECK_BADGE[k.verdict] || 'neutral'}">${esc(FB_CHECK_LABEL[k.verdict] || '')}</span>`;
+    const body = a
+      ? `${a.quote ? `<blockquote class="quote">“${esc(a.quote)}”</blockquote>` : ''}${a.strengths.length ? `<p class="block-label">Went well</p><ul class="fb-list fb-good">${a.strengths.map(t => `<li><span>${esc(t)}</span></li>`).join('')}</ul>` : ''}${a.improvements.length ? `<p class="block-label">Improve</p><ul class="fb-list fb-improve">${a.improvements.map(t => `<li><span>${esc(t)}</span></li>`).join('')}</ul>` : ''}`
+      : `${k.hits.length ? `<p class="block-label">Covered</p><ul class="fb-list fb-good">${k.hits.map(h => `<li><span>${esc(h.label)}</span></li>`).join('')}</ul>` : ''}${k.misses.length ? `<p class="block-label">Didn’t see</p><ul class="fb-list fb-improve">${k.misses.map(m => `<li><span>${esc(m.label)}<span class="fb-fix">→ ${esc(m.fix)}</span></span></li>`).join('')}</ul>` : ''}`;
+    return `<details class="followups fb-stage"><summary>${esc(st.name)} ${badge}<span class="note fb-words">${k ? esc(k.words) + ' words' : ''}</span></summary>${body}</details>`;
+  }).join('');
+
+  // --- rubric dimensions --------------------------------------------------------------------------------
+  let dimsHTML = '';
+  if (ai && ai.dimensions.length) {
+    dimsHTML = `<p class="block-label">Suggested rubric ratings (AI)</p>` + ai.dimensions.map(d => {
+      const r = (fw.rubric || []).find(x => x.dimension === d.dimension) || {};
+      return `<div class="rubric-row"><div class="rubric-dim">${esc(d.dimension)}</div>
+        <div class="rubric-levels">${['weak', 'solid', 'strong'].map(l => `<div class="rubric-level static ${l} ${d.rating === l ? 'selected' : ''}"><b>${l}</b><p>${esc(r[l] || '')}</p></div>`).join('')}</div>
+        <p class="note fb-why">${esc(d.why)}${d.next_level ? `<span class="fb-fix">→ To reach the next level: ${esc(d.next_level)}</span>` : ''}</p></div>`;
+    }).join('');
+  } else if (ck.dimensions.length) {
+    const lab = { covered: ['fresh', '✔ Covered'], partial: ['accent', '◐ Partly'], little: ['verify', '✖ Little evidence'] };
+    dimsHTML = `<p class="block-label">Evidence for each rubric dimension (checklist)</p><div class="fb-dims">` + ck.dimensions.map(d => `
+      <div class="fb-dim"><div class="fb-dim-head"><b>${esc(d.dimension)}</b><span class="badge ${lab[d.coverage][0]}">${lab[d.coverage][1]}</span></div>
+        ${d.found.length ? `<p class="note"><b>Found:</b> ${esc(d.found.join('; '))}</p>` : ''}${d.notSeen.length ? `<p class="note"><b>Not seen:</b> ${esc(d.notSeen.join('; '))}</p>` : ''}</div>`).join('') + `</div>
+      <p class="note fb-note">The checklist shows evidence, not a weak/solid/strong verdict — rate yourself honestly below, or get the AI review.</p>`;
+  }
+
+  const gap = (ai && ai.model_answer_gap) ? `<div class="fb-top"><p class="block-label">Versus a strong answer</p><p>${esc(ai.model_answer_gap)}</p></div>` : '';
+
+  // --- actions ------------------------------------------------------------------------------------------
+  const actions = `<div class="live-actions">
+    ${ai && ai.dimensions.length ? `<button type="button" class="btn" data-action="feedback-apply" ${ui.applied ? 'disabled' : ''}>${ui.applied ? 'Applied to self-score ✓' : 'Apply these ratings to my self-score'}</button>` : ''}
+    <button type="button" class="btn ghost small" data-action="feedback-show-model">Compare with the model answer</button>
+    ${(configured && !ai && !ui.loading && !(ui.error && (ui.error.code === 'rate_limited' || ui.error.code === 'origin_not_allowed'))) ? '<button type="button" class="btn ghost small" data-action="feedback-retry">Get AI review</button>' : ''}
+    ${(ai || configured) ? '<button type="button" class="btn ghost small" data-action="feedback-copy-prompt">Copy a feedback prompt</button>' : ''}
+  </div>`;
+
+  area.innerHTML = `
+    <section class="fb-card" id="feedback-card">
+      <div class="fb-head">
+        <p class="block-label">Your feedback</p>
+        ${ai ? '<span class="badge accent">AI review</span>' : '<span class="badge neutral">Checklist · automatic</span>'}
+        <span class="note">${esc(new Date(when).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }))}</span>
+      </div>
+      <div class="live-answer-error" id="feedback-stale" ${stale ? '' : 'hidden'}><p>You’ve edited your notes since this feedback was generated.</p><button type="button" class="btn ghost small" data-action="submit-case">Get fresh feedback</button></div>
+      ${strip}
+      ${overall}
+      ${topHTML}
+      <div class="fb-grid">
+        <div><p class="block-label fb-good-label">What went well</p>${strengthsHTML}</div>
+        <div><p class="block-label fb-improve-label">Improve next</p>${improvementsHTML}</div>
+      </div>
+      ${gap}
+      <div class="fb-sections"><p class="block-label">Section by section</p>${stagesHTML}</div>
+      ${dimsHTML}
+      ${actions}
+      ${ai ? `<details class="followups"><summary>Automatic checklist (instant, keyword-based)</summary><p class="note">${esc(ck.overall.summary)}</p></details>` : ''}
+    </section>`;
+}
+
+function feedbackGoto(stageKey) {
+  const ta = document.querySelector(`#notepad-grid textarea[data-stage-key="${window.CSS && CSS.escape ? CSS.escape(stageKey) : stageKey}"]`);
+  if (!ta) return;
+  ta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  ta.focus();
+}
+function feedbackCopyPrompt() {
+  if (!timerState) return;
+  const c = getCaseById(timerState.caseId);
+  if (!c) return;
+  const prompt = buildFeedbackPrompt(c, getFrameworkForCase(c), practiceNotesNow());
+  copyTextToClipboard(prompt).then(ok => {
+    const btn = document.querySelector('[data-action="feedback-copy-prompt"]');
+    if (ok && btn) { const o = btn.textContent; btn.textContent = 'Copied ✓'; setTimeout(() => { if (btn.isConnected) btn.textContent = o; }, 2000); }
+    else if (!ok) window.prompt('Copy this prompt (Cmd/Ctrl+C):', prompt);
+  });
+}
+
+function wordCount(text) { const t = String(text || '').trim(); return t ? t.split(/\s+/).length : 0; }
+// Reads the CURRENT textarea values (not localStorage, which is debounced), so the button reacts the
+// instant a stage is filled — typed or dictated.
+function practiceNotesNow() {
+  const out = {};
+  document.querySelectorAll('#notepad-grid textarea[data-stage-key]').forEach(t => { out[t.dataset.stageKey] = t.value; });
+  return out;
+}
+function stageFillStatus(fw, notes) {
+  return (fw.stages || []).map(st => ({ key: st.key, name: st.name, words: wordCount(notes[st.key]), filled: wordCount(notes[st.key]) >= SUBMIT_MIN_WORDS }));
+}
+function updateSubmitState() {
+  const btn = document.getElementById('submit-case-btn');
+  const hint = document.getElementById('submit-hint');
+  if (!btn || !hint || !timerState) return;
+  const c = getCaseById(timerState.caseId);
+  if (!c) return;
+  const fw = getFrameworkForCase(c);
+  const status = stageFillStatus(fw, practiceNotesNow());
+  const missing = status.filter(x => !x.filled);
+  btn.disabled = missing.length > 0;
+  if (!missing.length) {
+    const fb = getFeedbackFor(c.id);
+    hint.textContent = fb ? 'All sections filled — you can re-submit after editing.' : 'All sections filled — ready to submit.';
+    hint.classList.remove('submit-hint-pending');
+  } else {
+    const names = missing.map(x => x.name);
+    hint.textContent = missing.length + ' of ' + status.length + (missing.length === 1 ? ' section still needs' : ' sections still need') + ' an answer (at least ' + SUBMIT_MIN_WORDS + ' words each): ' + names.slice(0, 3).join(', ') + (names.length > 3 ? ' +' + (names.length - 3) + ' more' : '') + '.';
+    hint.classList.add('submit-hint-pending');
+  }
+  // If feedback exists but the notes have changed since, say so instead of silently showing stale feedback.
+  const stale = document.getElementById('feedback-stale');
+  const fb2 = getFeedbackFor(c.id);
+  if (stale && fb2) stale.hidden = (fb2.signature === notesSignature(practiceNotesNow(), fw));
+}
+function notesSignature(notes, fw) {
+  const str = (fw.stages || []).map(st => st.key + ':' + String(notes[st.key] || '').trim()).join('|');
+  let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return String(h >>> 0);
+}
+function getAllFeedback() { const v = lsGet(LS_FEEDBACK, {}); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; }
+function getFeedbackFor(caseId) { return getAllFeedback()[caseId] || null; }
+function saveFeedbackFor(caseId, fb) { const all = getAllFeedback(); all[caseId] = fb; lsSet(LS_FEEDBACK, all); }
+
 function revealModelAnswer(c, fw) {
   const area = document.getElementById('model-answer-area');
   if (!area) return;
@@ -1871,7 +2235,8 @@ function buildExportPayload() {
     activity: lsGet(LS_ACTIVITY, {}),
     live: lsGet(LS_LIVE, null),
     userStories: lsGet(LS_USER_STORIES, []),
-    storyEdits: lsGet(LS_STORY_EDITS, {})
+    storyEdits: lsGet(LS_STORY_EDITS, {}),
+    feedback: lsGet(LS_FEEDBACK, {})
   };
 }
 function exportJSON() {
@@ -1909,6 +2274,7 @@ function importJSON(file) {
     if (isPlainObject(data.live)) { lsSet(LS_LIVE, data.live); loadLiveDraft(); }
     if (Array.isArray(data.userStories)) lsSet(LS_USER_STORIES, data.userStories);
     if (isPlainObject(data.storyEdits)) lsSet(LS_STORY_EDITS, data.storyEdits);
+    if (isPlainObject(data.feedback)) lsSet(LS_FEEDBACK, data.feedback);
     afterMutation();
     alert('Import complete.');
   };
@@ -2219,6 +2585,21 @@ function wireEvents() {
   const practiceEl = document.getElementById('view-practice');
   practiceEl.addEventListener('click', e => {
     if (e.target.closest('#practice-back')) { goBackFromPractice(); return; }
+    if (e.target.closest('[data-action="submit-case"]')) { submitCaseForFeedback(); return; }
+    if (e.target.closest('[data-action="feedback-retry"]')) {
+      const c = timerState && getCaseById(timerState.caseId); const fbk = c && getFeedbackFor(c.id);
+      if (c && fbk) fetchAiFeedback(c, getFrameworkForCase(c), practiceNotesNow(), fbk.signature);
+      return;
+    }
+    if (e.target.closest('[data-action="feedback-apply"]')) { applyAiRatings(); return; }
+    if (e.target.closest('[data-action="feedback-copy-prompt"]')) { feedbackCopyPrompt(); return; }
+    const gt = e.target.closest('[data-action="feedback-goto"]');
+    if (gt) { feedbackGoto(gt.dataset.stage); return; }
+    if (e.target.closest('[data-action="feedback-show-model"]')) {
+      const mb = document.getElementById('show-model-btn'); if (mb) mb.click();
+      const ma = document.getElementById('model-answer-area'); if (ma) ma.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
     if (e.target.closest('#timer-start')) { startTimer(); return; }
     if (e.target.closest('#timer-pause')) { pauseTimer(); return; }
     if (e.target.closest('#timer-reset')) { resetTimer(); renderTimerBar(); updateTimerDisplay(); return; }
@@ -2249,7 +2630,7 @@ function wireEvents() {
   });
   practiceEl.addEventListener('input', e => {
     const ta = e.target.closest('[data-stage-key]');
-    if (ta && timerState) debounceSaveNote(timerState.caseId, ta.dataset.stageKey, ta.value);
+    if (ta && timerState) { debounceSaveNote(timerState.caseId, ta.dataset.stageKey, ta.value); updateSubmitState(); }
   });
   practiceEl.addEventListener('change', e => {
     const sel = e.target.closest('#practice-status-select');
