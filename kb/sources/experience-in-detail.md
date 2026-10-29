@@ -66,13 +66,13 @@ Integrated a chat option on the flight listing page to help users during the boo
 
 Integrated seamlessly with OBE (the agent booking tool) so a single click opens the same search on OBE that the customer searched online — including highlighting any flight the customer had selected for review — cutting agent handle time.
 
-Also built Search Explorer: narrows the search for the user by anticipating the next filter to apply based on prior selections, with UI tiles clearly explaining why a flight is a better option (e.g. "faster by 3hrs for just $20 more") to give users a clear value comparison. Users who selected a flight via Search Explorer had 40% higher conversion.
+Also built Search Explorer: narrows the search for the user by anticipating the next filter to apply based on prior selections, with UI tiles clearly explaining why a flight is a better option (e.g. "faster by 3hrs for just $20 more") to give users a clear value comparison. Users who selected a flight via Search Explorer converted about 40% better, but many users dropped out inside the explorer, so agents received about 5× fewer chats and net bookings went down. Search Explorer was shut down and the previous flow restored — the lesson was to measure the whole funnel, not just the step you changed.
 
 Goal throughout: not to cannibalize online conversion/bookings, but to add incremental bookings from the chatbot — validated with A/B tests at every step.
 
 ## AI Trip Planner (Oli) — full story
 
-Idea came from leadership to explore how AI could solve trip planning and discovery. Started with competitive analysis on Trip.com and Mindtrip, compiling what they were doing and where there was room to differentiate, and circulated internally to gather ideas on how people plan trips, looking for a common pattern. Then ran a month-long design process with a UX designer, iterating multiple times with leadership review before locking the final version. In parallel, wrote the PRD and scoped what would land in phase 1 vs. later phases.
+Oli was his own idea: he proposed exploring how AI could solve trip planning and discovery, and got leadership buy-in. Started with competitive analysis on Trip.com and Mindtrip, compiling what they were doing and where there was room to differentiate, and circulated internally to gather ideas on how people plan trips, looking for a common pattern. Then ran a month-long design process with a UX designer, iterating multiple times with leadership review before locking the final version. In parallel, wrote the PRD and scoped what would land in phase 1 vs. later phases.
 
 Three engineering teams involved: Chatbot (UI and chat functionality), RPA (the backend generating AI content), and App (where Oli surfaces). Daily syncs with all three to groom requirements and rework anything missed or unknown.
 
