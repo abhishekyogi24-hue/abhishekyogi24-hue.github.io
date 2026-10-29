@@ -12,6 +12,7 @@ const LS_ACTIVITY = 'caselab_activity_v1';
 const LS_LIVE = 'caselab_live_v1';
 const LS_USER_STORIES = 'caselab_userstories_v1';
 const LS_STORY_EDITS = 'caselab_storyedits_v1';
+const LS_DICT_LANG = 'caselab_dictlang_v1';
 const STATUSES = ['new', 'active', 'completed', 'bookmarked', 'skipped'];
 const TOTAL_TIMER_SEC = 45 * 60;
 const LIVE_MIN_WORDS = 5;
@@ -1915,6 +1916,137 @@ function importJSON(file) {
   reader.readAsText(file);
 }
 
+/* ============================== Dictation (mic → text) ============================== */
+// Uses the browser's built-in SpeechRecognition (Chrome/Edge/Safari) — no backend, no API key. A
+// "Dictate" button is added under every field you fill in (practice notepad, behavioural answers,
+// the story form, the Live case box). Text streams into the field at the caret and fires a normal
+// 'input' event, so autosave / classification keep working exactly as if you had typed it.
+const DICTATE_SELECTOR = '.notepad-stage textarea, .answer-field textarea, .answer-field input[type="text"]:not(#sf-metric), #live-input';
+const DICT_LANGS = [['en-IN', 'English (India)'], ['en-US', 'English (US)'], ['en-GB', 'English (UK)'], ['hi-IN', 'Hindi']];
+function getSpeechRecognition() { return window.SpeechRecognition || window.webkitSpeechRecognition || null; }
+let dict = null; // the one active dictation session: { rec, field, btn, msg, base, tail, finalText, want, restarts, writing }
+
+function decorateDictation() {
+  if (!getSpeechRecognition()) return;
+  document.querySelectorAll(DICTATE_SELECTOR).forEach(f => {
+    if (f.dataset.mic === '1' || f.readOnly || f.disabled) return;
+    f.dataset.mic = '1';
+    const row = document.createElement('div');
+    row.className = 'mic-row';
+    row.innerHTML = '<button type="button" class="btn ghost small mic-btn" aria-pressed="false" title="Speak instead of typing">🎤 Dictate</button><span class="mic-msg" role="status" aria-live="polite"></span>';
+    f.insertAdjacentElement('afterend', row);
+  });
+}
+let dictDecorateTimer = null;
+function scheduleDecorateDictation() { clearTimeout(dictDecorateTimer); dictDecorateTimer = setTimeout(decorateDictation, 0); }
+
+function setDictState(listening, message) {
+  if (!dict) return;
+  dict.btn.setAttribute('aria-pressed', String(listening));
+  dict.btn.classList.toggle('listening', listening);
+  dict.btn.textContent = listening ? '● Listening — tap to stop' : '🎤 Dictate';
+  dict.msg.textContent = message || '';
+}
+function writeDictation(interim) {
+  const d = dict;
+  if (!d || !d.field.isConnected) return stopDictation();
+  const text = [d.finalText, interim].filter(Boolean).join(' ').trim();
+  if (!text) return;
+  const sep = d.base && !/\s$/.test(d.base) ? ' ' : '';
+  const tailSep = d.tail && !/^\s/.test(d.tail) ? ' ' : '';
+  d.writing = true;
+  d.field.value = d.base + sep + text + tailSep + d.tail;
+  const caret = (d.base + sep + text).length;
+  try { d.field.setSelectionRange(caret, caret); } catch (e) {}
+  d.field.dispatchEvent(new Event('input', { bubbles: true }));
+  d.writing = false;
+}
+function stopDictation(message) {
+  const d = dict;
+  if (!d) return;
+  d.want = false;
+  d.field.removeEventListener('input', d.onUserInput);
+  setDictState(false, message || '');
+  dict = null; // the late onend/onresult events from the recognizer see dict===null and do nothing
+  try { d.rec.stop(); } catch (e) {}
+}
+function startDictation(field, btn, msg) {
+  const SR = getSpeechRecognition();
+  if (!SR) return;
+  stopDictation();
+  const rec = new SR();
+  rec.lang = lsGet(LS_DICT_LANG, 'en-IN');
+  rec.continuous = true;
+  rec.interimResults = true;
+  const start = typeof field.selectionStart === 'number' ? field.selectionStart : field.value.length;
+  const end = typeof field.selectionEnd === 'number' ? field.selectionEnd : start;
+  const session = { rec, field, btn, msg, base: field.value.slice(0, start), tail: field.value.slice(end), finalText: '', want: true, restarts: 0, writing: false };
+  // Typing by hand while dictating ends the session, so the next result can't overwrite your edit.
+  session.onUserInput = () => { if (dict === session && !session.writing) stopDictation(); };
+  field.addEventListener('input', session.onUserInput);
+  dict = session;
+  rec.onresult = e => {
+    if (dict !== session) return;
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const r = e.results[i];
+      if (r.isFinal) session.finalText += (session.finalText ? ' ' : '') + String(r[0].transcript).trim();
+      else interim += r[0].transcript;
+    }
+    session.restarts = 0; // real speech arrived — the silence-restart budget resets
+    writeDictation(interim.trim());
+  };
+  rec.onerror = e => {
+    if (dict !== session) return;
+    const msgs = {
+      'not-allowed': 'Microphone blocked — allow it in the browser’s site settings, then try again.',
+      'service-not-allowed': 'Speech recognition is blocked in this browser.',
+      'audio-capture': 'No microphone found.',
+      'network': 'Couldn’t reach the browser’s speech service — check your connection.',
+      'language-not-supported': 'That dictation language isn’t supported here.'
+    };
+    if (msgs[e.error]) stopDictation(msgs[e.error]); // no-speech / aborted: onend handles the restart
+  };
+  rec.onend = () => {
+    if (dict !== session) return;
+    // Browsers end a session after a pause even with continuous=true; keep going while the user hasn't stopped it.
+    if (session.want && session.field.isConnected && session.restarts < 20) {
+      session.restarts++;
+      try { rec.start(); return; } catch (e) { /* fall through */ }
+    }
+    stopDictation(session.restarts >= 20 ? 'Stopped after a long silence.' : '');
+  };
+  setDictState(true, '');
+  try { rec.start(); } catch (e) { stopDictation('Couldn’t start the microphone.'); }
+}
+function setupDictation() {
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.mic-btn');
+    if (!btn) return;
+    const row = btn.closest('.mic-row');
+    const field = row && row.previousElementSibling;
+    if (!field) return;
+    if (dict && dict.btn === btn) { stopDictation(); return; }
+    startDictation(field, btn, row.querySelector('.mic-msg'));
+  });
+  const foot = document.getElementById('footer-stamp');
+  if (foot) {
+    const note = document.createElement('div');
+    note.className = 'stamp dict-foot';
+    if (getSpeechRecognition()) {
+      note.innerHTML = 'Dictation: <select id="dict-lang" aria-label="Dictation language">' +
+        DICT_LANGS.map(l => '<option value="' + l[0] + '"' + (l[0] === lsGet(LS_DICT_LANG, 'en-IN') ? ' selected' : '') + '>' + l[1] + '</option>').join('') +
+        '</select> · uses your browser’s speech service (audio goes to Google in Chrome, Apple in Safari).';
+      note.querySelector('select').addEventListener('change', ev => { lsSet(LS_DICT_LANG, ev.target.value); stopDictation(); });
+    } else {
+      note.textContent = 'Dictation needs Chrome, Edge or Safari — this browser doesn’t support speech recognition.';
+    }
+    foot.insertAdjacentElement('afterend', note);
+  }
+  new MutationObserver(scheduleDecorateDictation).observe(document.body, { childList: true, subtree: true });
+  decorateDictation();
+}
+
 /* ============================== Theme toggle ============================== */
 function applyStoredTheme() {
   const saved = lsGet(LS_THEME, null);
@@ -2015,6 +2147,7 @@ function wireEvents() {
     if (e.isComposing || e.keyCode === 229) return; // IME composition — never hijack
     if (e.shiftKey || e.altKey) return; // Shift+Enter (or Alt+Enter) = newline, textarea default
     e.preventDefault();
+    stopDictation();
     submitLiveCase({ source: 'enter' });
   });
   liveEl.addEventListener('change', e => {
@@ -2146,6 +2279,7 @@ async function init() {
   wireThemeToggle();
   applyStoredTheme();
   wireEvents();
+  setupDictation();
 
   try {
     await loadCoreData();

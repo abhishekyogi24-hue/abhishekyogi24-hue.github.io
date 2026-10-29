@@ -111,3 +111,7 @@ This is a real limitation, not a footnote: clear your browser data, switch brows
 ## Stack
 
 Vanilla HTML/CSS/JS (client-side, no build step for the site itself) · zero-dependency Node scripts for data validation and scheduling · Google Apps Script (MailApp + time-driven triggers) for the daily email · `localStorage` for all user state.
+
+## Dictation (mic → text)
+
+Every field you fill in — practice notepad stages, behavioural answers, the story form, and the Live case box — has a **Dictate** button under it. It uses the browser's built-in `SpeechRecognition` (Chrome, Edge, Safari; not Firefox): no backend and no API key. Speech streams into the field at the caret and fires a normal `input` event, so autosave and classification work as if you had typed it. Starting a second field stops the first, and typing by hand ends the session. The language (English India/US/UK, Hindi) is chosen in the footer. The browser's speech service handles the audio (Google in Chrome, Apple in Safari), and the site must be on https or localhost for the mic prompt to appear. See `setupDictation()` in `script.js`.
