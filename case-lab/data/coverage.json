@@ -1,16 +1,20 @@
 {
-  "generatedAt": "2026-10-16T02:11:35.452Z",
+  "generatedAt": "2026-10-29T03:41:36.603Z",
   "themeCount": 27,
-  "gapCount": 5,
+  "gapCount": 1,
   "coverage": {
     "ai-product": {
       "label": "AI product judgment",
       "storyIds": [
         "story-vertex-orchestrator",
         "story-eval-system",
-        "story-search-explorer",
         "story-oli-trip-planner",
-        "story-ai-agents-feedback-loop"
+        "story-ai-agents-feedback-loop",
+        "story-ops-pushback-ai",
+        "story-prompt-engineering",
+        "story-gated-ai-rollout",
+        "story-oli-users-wrong",
+        "story-oli-eval-catches"
       ],
       "isGap": false
     },
@@ -22,7 +26,8 @@
         "story-oli-trip-planner",
         "story-whatsapp-meta",
         "story-self-serve-cancel-exchange",
-        "story-team-without-dev-manager"
+        "story-team-without-dev-manager",
+        "story-oli-mvp-scope"
       ],
       "isGap": false
     },
@@ -30,7 +35,8 @@
       "label": "Root-cause diagnosis",
       "storyIds": [
         "story-priority-leads",
-        "story-cancel-exchange-funnel"
+        "story-cancel-exchange-funnel",
+        "story-oli-data-contract"
       ],
       "isGap": false
     },
@@ -39,7 +45,8 @@
       "storyIds": [
         "story-cancel-exchange-funnel",
         "story-otp-sms",
-        "story-refund-details-upfront"
+        "story-refund-details-upfront",
+        "story-queue-abandonment"
       ],
       "isGap": false
     },
@@ -50,9 +57,14 @@
         "story-dialogflow-cx-kill",
         "story-analytics-lead",
         "story-priority-leads",
+        "story-search-explorer",
         "story-cancel-exchange-funnel",
         "story-refund-details-upfront",
-        "story-ai-agents-feedback-loop"
+        "story-ai-agents-feedback-loop",
+        "story-b2b-not-now",
+        "story-gated-ai-rollout",
+        "story-mandatory-signin",
+        "story-oli-users-wrong"
       ],
       "isGap": false
     },
@@ -60,11 +72,16 @@
       "label": "Stakeholder management",
       "storyIds": [
         "story-dialogflow-es-automation",
+        "story-typing-box-block",
         "story-compliance-rollout",
         "story-whatsapp-meta",
         "story-self-serve-cancel-exchange",
         "story-asked-for-product",
-        "story-us-india-bridge"
+        "story-us-india-bridge",
+        "story-irop-hurricane",
+        "story-ops-pushback-ai",
+        "story-b2b-not-now",
+        "story-mandatory-signin"
       ],
       "isGap": false
     },
@@ -78,7 +95,10 @@
         "story-whatsapp-meta",
         "story-self-serve-cancel-exchange",
         "story-otp-sms",
-        "story-us-india-bridge"
+        "story-us-india-bridge",
+        "story-oli-data-contract",
+        "story-seat-map-blocked",
+        "story-whatsapp-billing"
       ],
       "isGap": false
     },
@@ -86,45 +106,62 @@
       "label": "Influence without authority",
       "storyIds": [
         "story-whatsapp-meta",
-        "story-otp-sms"
+        "story-otp-sms",
+        "story-ops-pushback-ai",
+        "story-whatsapp-billing"
       ],
       "isGap": false
     },
     "conflict": {
       "label": "Conflict & disagreement",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-mandatory-signin"
+      ],
+      "isGap": false
     },
     "saying-no": {
       "label": "Saying no",
       "storyIds": [
-        "story-typing-box-block",
-        "story-dialogflow-cx-kill"
+        "story-dialogflow-cx-kill",
+        "story-b2b-not-now",
+        "story-gated-ai-rollout",
+        "story-oli-mvp-scope"
       ],
       "isGap": false
     },
     "killed-a-project": {
       "label": "Killing a project",
       "storyIds": [
-        "story-dialogflow-cx-kill"
+        "story-dialogflow-cx-kill",
+        "story-search-explorer"
       ],
       "isGap": false
     },
     "failure": {
       "label": "Failure & self-awareness",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-search-explorer",
+        "story-signin-rollback",
+        "story-oli-users-wrong",
+        "story-seat-map-blocked"
+      ],
+      "isGap": false
     },
     "ambiguity": {
       "label": "Ambiguity",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-prompt-engineering"
+      ],
+      "isGap": false
     },
     "prioritization": {
       "label": "Prioritization",
       "storyIds": [
         "story-priority-leads",
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-irop-hurricane",
+        "story-b2b-not-now",
+        "story-oli-mvp-scope"
       ],
       "isGap": false
     },
@@ -133,11 +170,13 @@
       "storyIds": [
         "story-chatbot-origin",
         "story-typing-box-block",
-        "story-search-explorer",
         "story-self-serve-cancel-exchange",
         "story-otp-sms",
         "story-refund-details-upfront",
-        "story-ai-agents-feedback-loop"
+        "story-ai-agents-feedback-loop",
+        "story-irop-hurricane",
+        "story-queue-abandonment",
+        "story-clubmiles-customer-first"
       ],
       "isGap": false
     },
@@ -145,7 +184,8 @@
       "label": "User research",
       "storyIds": [
         "story-chatbot-origin",
-        "story-refund-details-upfront"
+        "story-refund-details-upfront",
+        "story-oli-users-wrong"
       ],
       "isGap": false
     },
@@ -155,7 +195,7 @@
         "story-dialogflow-es-automation",
         "story-vertex-orchestrator",
         "story-eval-system",
-        "story-search-explorer"
+        "story-queue-abandonment"
       ],
       "isGap": false
     },
@@ -163,7 +203,8 @@
       "label": "Experimentation",
       "storyIds": [
         "story-chat-listing-page",
-        "story-search-explorer"
+        "story-search-explorer",
+        "story-queue-abandonment"
       ],
       "isGap": false
     },
@@ -171,14 +212,19 @@
       "label": "Phased launches",
       "storyIds": [
         "story-compliance-rollout",
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-ops-pushback-ai",
+        "story-gated-ai-rollout",
+        "story-oli-eval-catches"
       ],
       "isGap": false
     },
     "compliance-risk": {
       "label": "Compliance & risk",
       "storyIds": [
-        "story-compliance-rollout"
+        "story-compliance-rollout",
+        "story-signin-rollback",
+        "story-oli-eval-catches"
       ],
       "isGap": false
     },
@@ -189,7 +235,10 @@
         "story-vertex-orchestrator",
         "story-eval-system",
         "story-chat-listing-page",
-        "story-ai-agents-feedback-loop"
+        "story-ai-agents-feedback-loop",
+        "story-prompt-engineering",
+        "story-signin-rollback",
+        "story-oli-data-contract"
       ],
       "isGap": false
     },
@@ -207,8 +256,11 @@
     },
     "ethical-call": {
       "label": "Ethical calls",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-oli-eval-catches",
+        "story-clubmiles-customer-first"
+      ],
+      "isGap": false
     },
     "leadership": {
       "label": "Leadership",
@@ -227,7 +279,10 @@
         "story-typing-box-block",
         "story-chat-listing-page",
         "story-cancel-exchange-funnel",
-        "story-team-without-dev-manager"
+        "story-team-without-dev-manager",
+        "story-irop-hurricane",
+        "story-oli-mvp-scope",
+        "story-whatsapp-billing"
       ],
       "isGap": false
     },
@@ -241,17 +296,22 @@
     }
   },
   "questionCount": 75,
-  "questionGapCount": 45,
+  "questionGapCount": 20,
   "questionCoverage": {
     "beh-001": {
       "theme": "ai-product",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-prompt-engineering"
+      ],
+      "isGap": false
     },
     "beh-002": {
       "theme": "ai-product",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-prompt-engineering",
+        "story-oli-eval-catches"
+      ],
+      "isGap": false
     },
     "beh-003": {
       "theme": "0-to-1",
@@ -266,7 +326,8 @@
     "beh-004": {
       "theme": "0-to-1",
       "storyIds": [
-        "story-chatbot-origin"
+        "story-chatbot-origin",
+        "story-oli-trip-planner"
       ],
       "isGap": false
     },
@@ -295,7 +356,8 @@
     "beh-008": {
       "theme": "rca",
       "storyIds": [
-        "story-cancel-exchange-funnel"
+        "story-cancel-exchange-funnel",
+        "story-oli-data-contract"
       ],
       "isGap": false
     },
@@ -309,40 +371,46 @@
       "storyIds": [
         "story-cancel-exchange-funnel",
         "story-otp-sms",
-        "story-refund-details-upfront"
+        "story-refund-details-upfront",
+        "story-queue-abandonment"
       ],
       "isGap": false
     },
     "beh-011": {
       "theme": "funnel-optimization",
       "storyIds": [
+        "story-typing-box-block",
         "story-chat-listing-page"
       ],
       "isGap": false
     },
     "beh-012": {
       "theme": "data-driven-decision",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-mandatory-signin",
+        "story-oli-users-wrong"
+      ],
+      "isGap": false
     },
     "beh-013": {
       "theme": "data-driven-decision",
-      "storyIds": [
-        "story-typing-box-block"
-      ],
-      "isGap": false
+      "storyIds": [],
+      "isGap": true
     },
     "beh-014": {
       "theme": "data-driven-decision",
       "storyIds": [
-        "story-dialogflow-cx-kill"
+        "story-dialogflow-cx-kill",
+        "story-search-explorer"
       ],
       "isGap": false
     },
     "beh-015": {
       "theme": "data-driven-decision",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-gated-ai-rollout"
+      ],
+      "isGap": false
     },
     "beh-016": {
       "theme": "data-driven-decision",
@@ -352,14 +420,19 @@
     "beh-017": {
       "theme": "stakeholder-management",
       "storyIds": [
-        "story-compliance-rollout"
+        "story-typing-box-block",
+        "story-compliance-rollout",
+        "story-irop-hurricane",
+        "story-ops-pushback-ai"
       ],
       "isGap": false
     },
     "beh-018": {
       "theme": "stakeholder-management",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-b2b-not-now"
+      ],
+      "isGap": false
     },
     "beh-019": {
       "theme": "stakeholder-management",
@@ -372,13 +445,16 @@
     },
     "beh-020": {
       "theme": "stakeholder-management",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-ops-pushback-ai"
+      ],
+      "isGap": false
     },
     "beh-021": {
       "theme": "stakeholder-management",
       "storyIds": [
-        "story-dialogflow-cx-kill"
+        "story-dialogflow-cx-kill",
+        "story-b2b-not-now"
       ],
       "isGap": false
     },
@@ -388,7 +464,9 @@
         "story-dialogflow-es-automation",
         "story-oli-trip-planner",
         "story-self-serve-cancel-exchange",
-        "story-us-india-bridge"
+        "story-us-india-bridge",
+        "story-ops-pushback-ai",
+        "story-oli-data-contract"
       ],
       "isGap": false
     },
@@ -397,21 +475,27 @@
       "storyIds": [
         "story-compliance-rollout",
         "story-priority-leads",
-        "story-whatsapp-meta"
+        "story-whatsapp-meta",
+        "story-whatsapp-billing"
       ],
       "isGap": false
     },
     "beh-024": {
       "theme": "cross-functional",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-oli-data-contract",
+        "story-seat-map-blocked"
+      ],
+      "isGap": false
     },
     "beh-025": {
       "theme": "influence-without-authority",
       "storyIds": [
         "story-priority-leads",
         "story-chat-listing-page",
-        "story-otp-sms"
+        "story-otp-sms",
+        "story-ops-pushback-ai",
+        "story-whatsapp-billing"
       ],
       "isGap": false
     },
@@ -427,13 +511,17 @@
     },
     "beh-028": {
       "theme": "conflict",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-mandatory-signin"
+      ],
+      "isGap": false
     },
     "beh-029": {
       "theme": "conflict",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-mandatory-signin"
+      ],
+      "isGap": false
     },
     "beh-030": {
       "theme": "conflict",
@@ -442,18 +530,25 @@
     },
     "beh-031": {
       "theme": "conflict",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-mandatory-signin"
+      ],
+      "isGap": false
     },
     "beh-032": {
       "theme": "saying-no",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-b2b-not-now",
+        "story-oli-mvp-scope"
+      ],
+      "isGap": false
     },
     "beh-033": {
       "theme": "saying-no",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-search-explorer"
+      ],
+      "isGap": false
     },
     "beh-034": {
       "theme": "saying-no",
@@ -463,7 +558,8 @@
     "beh-035": {
       "theme": "killed-a-project",
       "storyIds": [
-        "story-dialogflow-cx-kill"
+        "story-dialogflow-cx-kill",
+        "story-search-explorer"
       ],
       "isGap": false
     },
@@ -474,32 +570,40 @@
     },
     "beh-037": {
       "theme": "failure",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-search-explorer",
+        "story-signin-rollback"
+      ],
+      "isGap": false
     },
     "beh-038": {
       "theme": "failure",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-seat-map-blocked"
+      ],
+      "isGap": false
     },
     "beh-039": {
       "theme": "failure",
       "storyIds": [
-        "story-vertex-orchestrator"
+        "story-vertex-orchestrator",
+        "story-oli-users-wrong"
       ],
       "isGap": false
     },
     "beh-040": {
       "theme": "failure",
       "storyIds": [
-        "story-typing-box-block"
+        "story-signin-rollback"
       ],
       "isGap": false
     },
     "beh-041": {
       "theme": "failure",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-seat-map-blocked"
+      ],
+      "isGap": false
     },
     "beh-042": {
       "theme": "ambiguity",
@@ -507,7 +611,8 @@
         "story-chatbot-origin",
         "story-typing-box-block",
         "story-priority-leads",
-        "story-search-explorer"
+        "story-prompt-engineering",
+        "story-oli-data-contract"
       ],
       "isGap": false
     },
@@ -518,23 +623,31 @@
     },
     "beh-044": {
       "theme": "prioritization",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-irop-hurricane"
+      ],
+      "isGap": false
     },
     "beh-045": {
       "theme": "prioritization",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-oli-users-wrong"
+      ],
+      "isGap": false
     },
     "beh-046": {
       "theme": "prioritization",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-irop-hurricane",
+        "story-b2b-not-now"
+      ],
+      "isGap": false
     },
     "beh-047": {
       "theme": "prioritization",
       "storyIds": [
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-oli-mvp-scope"
       ],
       "isGap": false
     },
@@ -551,19 +664,24 @@
         "story-self-serve-cancel-exchange",
         "story-otp-sms",
         "story-refund-details-upfront",
-        "story-ai-agents-feedback-loop"
+        "story-ai-agents-feedback-loop",
+        "story-clubmiles-customer-first"
       ],
       "isGap": false
     },
     "beh-050": {
       "theme": "customer-empathy",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-irop-hurricane"
+      ],
+      "isGap": false
     },
     "beh-051": {
       "theme": "user-research",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-oli-users-wrong"
+      ],
+      "isGap": false
     },
     "beh-052": {
       "theme": "user-research",
@@ -576,11 +694,11 @@
         "story-dialogflow-es-automation",
         "story-vertex-orchestrator",
         "story-priority-leads",
-        "story-search-explorer",
         "story-whatsapp-meta",
         "story-self-serve-cancel-exchange",
         "story-otp-sms",
-        "story-refund-details-upfront"
+        "story-refund-details-upfront",
+        "story-queue-abandonment"
       ],
       "isGap": false
     },
@@ -591,38 +709,50 @@
     },
     "beh-055": {
       "theme": "experimentation",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-search-explorer",
+        "story-queue-abandonment"
+      ],
+      "isGap": false
     },
     "beh-056": {
       "theme": "experimentation",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-gated-ai-rollout",
+        "story-oli-eval-catches"
+      ],
+      "isGap": false
     },
     "beh-057": {
       "theme": "phased-launch",
       "storyIds": [
         "story-compliance-rollout",
-        "story-oli-trip-planner"
+        "story-oli-trip-planner",
+        "story-gated-ai-rollout"
       ],
       "isGap": false
     },
     "beh-058": {
       "theme": "phased-launch",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-gated-ai-rollout"
+      ],
+      "isGap": false
     },
     "beh-059": {
       "theme": "compliance-risk",
       "storyIds": [
-        "story-compliance-rollout"
+        "story-compliance-rollout",
+        "story-signin-rollback",
+        "story-oli-eval-catches"
       ],
       "isGap": false
     },
     "beh-060": {
       "theme": "compliance-risk",
       "storyIds": [
-        "story-compliance-rollout"
+        "story-compliance-rollout",
+        "story-oli-eval-catches"
       ],
       "isGap": false
     },
@@ -632,7 +762,9 @@
         "story-dialogflow-es-automation",
         "story-typing-box-block",
         "story-vertex-orchestrator",
-        "story-eval-system"
+        "story-eval-system",
+        "story-prompt-engineering",
+        "story-signin-rollback"
       ],
       "isGap": false
     },
@@ -665,13 +797,17 @@
     },
     "beh-067": {
       "theme": "ethical-call",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-clubmiles-customer-first"
+      ],
+      "isGap": false
     },
     "beh-068": {
       "theme": "ethical-call",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-clubmiles-customer-first"
+      ],
+      "isGap": false
     },
     "beh-069": {
       "theme": "leadership",
@@ -685,8 +821,10 @@
     },
     "beh-071": {
       "theme": "execution-under-constraint",
-      "storyIds": [],
-      "isGap": true
+      "storyIds": [
+        "story-oli-mvp-scope"
+      ],
+      "isGap": false
     },
     "beh-072": {
       "theme": "execution-under-constraint",
