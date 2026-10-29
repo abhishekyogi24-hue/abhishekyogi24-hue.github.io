@@ -1927,7 +1927,8 @@ function getSpeechRecognition() { return window.SpeechRecognition || window.webk
 let dict = null; // the one active dictation session: { rec, field, btn, msg, base, tail, finalText, want, restarts, writing }
 
 function decorateDictation() {
-  if (!getSpeechRecognition()) return;
+  // Buttons are always added — if the browser lacks speech recognition, clicking one says why, so a
+  // missing button never silently means "unsupported".
   document.querySelectorAll(DICTATE_SELECTOR).forEach(f => {
     if (f.dataset.mic === '1' || f.readOnly || f.disabled) return;
     f.dataset.mic = '1';
@@ -1970,9 +1971,10 @@ function stopDictation(message) {
   dict = null; // the late onend/onresult events from the recognizer see dict===null and do nothing
   try { d.rec.stop(); } catch (e) {}
 }
+const DICT_UNSUPPORTED = 'Dictation isn’t available in this browser. It needs Chrome, Edge or Safari 14.1+ (on a Mac, also turn on Dictation in System Settings → Keyboard).';
 function startDictation(field, btn, msg) {
   const SR = getSpeechRecognition();
-  if (!SR) return;
+  if (!SR) { if (msg) msg.textContent = DICT_UNSUPPORTED; return; }
   stopDictation();
   const rec = new SR();
   rec.lang = lsGet(LS_DICT_LANG, 'en-IN');
@@ -1999,8 +2001,8 @@ function startDictation(field, btn, msg) {
   rec.onerror = e => {
     if (dict !== session) return;
     const msgs = {
-      'not-allowed': 'Microphone blocked — allow it in the browser’s site settings, then try again.',
-      'service-not-allowed': 'Speech recognition is blocked in this browser.',
+      'not-allowed': 'Microphone blocked — allow it for this site (Safari: Settings → Websites → Microphone; Chrome: the lock icon in the address bar), then try again.',
+      'service-not-allowed': 'Speech recognition is switched off. On a Mac, turn on Dictation in System Settings → Keyboard (Safari needs it), then try again.',
       'audio-capture': 'No microphone found.',
       'network': 'Couldn’t reach the browser’s speech service — check your connection.',
       'language-not-supported': 'That dictation language isn’t supported here.'
@@ -2014,7 +2016,7 @@ function startDictation(field, btn, msg) {
       session.restarts++;
       try { rec.start(); return; } catch (e) { /* fall through */ }
     }
-    stopDictation(session.restarts >= 20 ? 'Stopped after a long silence.' : '');
+    stopDictation(session.restarts >= 20 ? 'Stopped after a long silence.' : 'Dictation paused — tap Dictate to continue.');
   };
   setDictState(true, '');
   try { rec.start(); } catch (e) { stopDictation('Couldn’t start the microphone.'); }
@@ -2039,7 +2041,7 @@ function setupDictation() {
         '</select> · uses your browser’s speech service (audio goes to Google in Chrome, Apple in Safari).';
       note.querySelector('select').addEventListener('change', ev => { lsSet(LS_DICT_LANG, ev.target.value); stopDictation(); });
     } else {
-      note.textContent = 'Dictation needs Chrome, Edge or Safari — this browser doesn’t support speech recognition.';
+      note.textContent = DICT_UNSUPPORTED;
     }
     foot.insertAdjacentElement('afterend', note);
   }
